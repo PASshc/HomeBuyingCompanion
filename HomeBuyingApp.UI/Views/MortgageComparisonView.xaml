@@ -1,0 +1,26 @@
+<UserControl x:Class="HomeBuyingApp.UI.Views.MortgageComparisonView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:HomeBuyingApp.UI.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="1200">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        
+        <GroupBox Header="Scenario A" Grid.Column="0" Margin="5">
+            <local:MortgageCalculatorView DataContext="{Binding ScenarioA}"/>
+        </GroupBox>
+        
+        <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Center" VerticalAlignment="Stretch" Background="LightGray"/>
+        
+        <GroupBox Header="Scenario B" Grid.Column="2" Margin="5">
+            <local:MortgageCalculatorView DataContext="{Binding ScenarioB}"/>
+        </GroupBox>
+    </Grid>
+</UserControl>

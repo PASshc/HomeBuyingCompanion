@@ -1,0 +1,218 @@
+<UserControl x:Class="HomeBuyingApp.UI.Views.PropertyDetailView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:HomeBuyingApp.UI.Views"
+             xmlns:converters="clr-namespace:HomeBuyingApp.UI.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="800">
+    <UserControl.Resources>
+        <converters:CurrencyConverter x:Key="CurrencyConverter"/>
+        <converters:PercentageConverter x:Key="PercentageConverter"/>
+        <converters:BooleanToYesNoConverter x:Key="BooleanToYesNoConverter"/>
+    </UserControl.Resources>
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Property Details" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
+
+        <ScrollViewer Grid.Row="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="20"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="20"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="20"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Address -->
+                <TextBlock Text="Address:" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Margin="0,5"/>
+                <TextBox Text="{Binding Property.Address, UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="10" Margin="0,5"/>
+
+                <!-- City, State, Zip Code, MLS # -->
+                <TextBlock Text="City:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Margin="0,5"/>
+                <TextBox Text="{Binding Property.City, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="1" Margin="0,5"/>
+
+                <TextBlock Text="State:" Grid.Row="1" Grid.Column="3" VerticalAlignment="Center" Margin="0,5"/>
+                <TextBox Text="{Binding Property.State, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="4" Margin="0,5"/>
+
+                <TextBlock Text="Zip Code:" Grid.Row="1" Grid.Column="6" VerticalAlignment="Center" Margin="0,5"/>
+                <TextBox Text="{Binding Property.ZipCode, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="7" Margin="0,5"/>
+
+                <TextBlock Text="MLS #:" Grid.Row="1" Grid.Column="9" VerticalAlignment="Center" Margin="0,5"/>
+                <TextBox Text="{Binding Property.MlsNumber, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="10" Margin="0,5"/>
+
+                <!-- List Price, Est. Offer, Willing to Pay, HOA -->
+                <TextBlock Text="List Price:" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Margin="0,5"/>
+                <TextBox Text="{Binding Property.ListPrice, Converter={StaticResource CurrencyConverter}, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="1" Margin="0,5"/>
+
+                <TextBlock Text="Est. Offer:" Grid.Row="2" Grid.Column="3" VerticalAlignment="Center" Margin="0,5"/>
+                <TextBox Text="{Binding Property.EstimatedOffer, Converter={StaticResource CurrencyConverter}, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="4" Margin="0,5"/>
+
+                <TextBlock Text="Willing to Pay:" Grid.Row="2" Grid.Column="6" VerticalAlignment="Center" Margin="0,5"/>
+                <TextBox Text="{Binding Property.WillingToPay, Converter={StaticResource CurrencyConverter}, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="7" Margin="0,5"/>
+
+                <TextBlock Text="HOA:" Grid.Row="2" Grid.Column="9" VerticalAlignment="Center" Margin="0,5"/>
+                <ComboBox SelectedValue="{Binding Property.HasHoa, Converter={StaticResource BooleanToYesNoConverter}}" SelectedValuePath="Content" Grid.Row="2" Grid.Column="10" Margin="0,5">
+                    <ComboBoxItem Content="Yes"/>
+                    <ComboBoxItem Content="No"/>
+                </ComboBox>
+
+                <!-- HOA Fee, Bedrooms, Bathrooms, Square Feet -->
+                <TextBlock Text="HOA Fee:" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" Margin="0,5"/>
+                <TextBox Text="{Binding Property.HoaFee, Converter={StaticResource CurrencyConverter}, UpdateSourceTrigger=PropertyChanged}" Grid.Row="3" Grid.Column="1" Margin="0,5"/>
+
+                <TextBlock Text="Bedrooms:" Grid.Row="3" Grid.Column="3" VerticalAlignment="Center" Margin="0,5"/>
+                <TextBox Text="{Binding Property.Bedrooms, UpdateSourceTrigger=PropertyChanged}" Grid.Row="3" Grid.Column="4" Margin="0,5"/>
+
+                <TextBlock Text="Bathrooms:" Grid.Row="3" Grid.Column="6" VerticalAlignment="Center" Margin="0,5"/>
+                <TextBox Text="{Binding Property.Bathrooms, UpdateSourceTrigger=PropertyChanged}" Grid.Row="3" Grid.Column="7" Margin="0,5"/>
+
+                <TextBlock Text="Square Feet:" Grid.Row="3" Grid.Column="9" VerticalAlignment="Center" Margin="0,5"/>
+                <TextBox Text="{Binding Property.SquareFeet, UpdateSourceTrigger=PropertyChanged}" Grid.Row="3" Grid.Column="10" Margin="0,5"/>
+
+                <!-- Status, Rating, Viewing Date, Inspection Date -->
+                <TextBlock Text="Status:" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center" Margin="0,5"/>
+                <ComboBox ItemsSource="{Binding Statuses}" SelectedItem="{Binding Property.Status, Mode=TwoWay}" Grid.Row="4" Grid.Column="1" Margin="0,5"/>
+
+                <TextBlock Text="Rating (1-5):" Grid.Row="4" Grid.Column="3" VerticalAlignment="Center" Margin="0,5"/>
+                <TextBox Text="{Binding Property.Rating, UpdateSourceTrigger=PropertyChanged}" Grid.Row="4" Grid.Column="4" Margin="0,5"/>
+
+                <TextBlock Text="Viewing Date:" Grid.Row="4" Grid.Column="6" VerticalAlignment="Center" Margin="0,5"/>
+                <DatePicker SelectedDate="{Binding Property.ViewingDate, UpdateSourceTrigger=PropertyChanged}" Grid.Row="4" Grid.Column="7" Margin="0,5"/>
+
+                <TextBlock Text="Inspection Date:" Grid.Row="4" Grid.Column="9" VerticalAlignment="Center" Margin="0,5"/>
+                <DatePicker SelectedDate="{Binding Property.InspectionDate, UpdateSourceTrigger=PropertyChanged}" Grid.Row="4" Grid.Column="10" Margin="0,5"/>
+
+                <!-- Closing Date, Flags -->
+                <TextBlock Text="Closing Date:" Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" Margin="0,5"/>
+                <DatePicker SelectedDate="{Binding Property.ClosingDate, UpdateSourceTrigger=PropertyChanged}" Grid.Row="5" Grid.Column="1" Margin="0,5"/>
+
+                <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="3" Grid.ColumnSpan="8" Margin="0,5" VerticalAlignment="Center">
+                    <CheckBox Content="Look At?" IsChecked="{Binding Property.LookAt}" Margin="0,0,20,0"/>
+                    <CheckBox Content="Interest?" IsChecked="{Binding Property.Interest}" Margin="0,0,20,0"/>
+                    <CheckBox Content="Archived" IsChecked="{Binding Property.IsArchived}"/>
+                </StackPanel>
+
+                <!-- Listing URL -->
+                <TextBlock Text="Listing URL:" Grid.Row="6" Grid.Column="0" VerticalAlignment="Top" Margin="0,5"/>
+                <StackPanel Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="10" Margin="0,5">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox Text="{Binding Property.ListingUrl, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,5,5"/>
+                        <Button Grid.Column="1" Content="Auto-fill" Command="{Binding AutoFillFromUrlCommand}" Padding="5,0" Margin="0,0,0,5"/>
+                    </Grid>
+                    <TextBlock TextTrimming="CharacterEllipsis" ToolTip="{Binding Property.ListingUrl}">
+                        <Hyperlink NavigateUri="{Binding Property.ListingUrl}" RequestNavigate="Hyperlink_RequestNavigate">
+                            <TextBlock Text="Open Listing in Browser"/>
+                        </Hyperlink>
+                    </TextBlock>
+                </StackPanel>
+
+                <!-- Features -->
+                <TextBlock Text="Features:" Grid.Row="7" Grid.Column="0" VerticalAlignment="Top" Margin="0,5"/>
+                <UniformGrid Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="10" Columns="4" Margin="0,5">
+                    <CheckBox Content="AC" IsChecked="{Binding Property.HasAC}" Margin="0,0,10,5"/>
+                    <CheckBox Content="Landscape" IsChecked="{Binding Property.HasLandscape}" Margin="0,0,10,5"/>
+                    <CheckBox Content="Pool" IsChecked="{Binding Property.HasPool}" Margin="0,0,10,5"/>
+                    <CheckBox Content="Jacuzzi" IsChecked="{Binding Property.HasJacuzzi}" Margin="0,0,10,5"/>
+                    <CheckBox Content="Lanai" IsChecked="{Binding Property.HasLanai}" Margin="0,0,10,5"/>
+                    <CheckBox Content="Carpet" IsChecked="{Binding Property.HasCarpet}" Margin="0,0,10,5"/>
+                    <CheckBox Content="Tile" IsChecked="{Binding Property.HasTile}" Margin="0,0,10,5"/>
+                    <CheckBox Content="Wood Flooring" IsChecked="{Binding Property.HasWoodFlooring}" Margin="0,0,10,5"/>
+                    <CheckBox Content="Oven" IsChecked="{Binding Property.HasOven}" Margin="0,0,10,5"/>
+                    <CheckBox Content="Refrigerator" IsChecked="{Binding Property.HasRefrigerator}" Margin="0,0,10,5"/>
+                    <CheckBox Content="Washer/Dryer" IsChecked="{Binding Property.HasWasherDryer}" Margin="0,0,10,5"/>
+                </UniformGrid>
+
+                <!-- Other Features -->
+                <TextBlock Text="Other Features:" Grid.Row="8" Grid.Column="0" VerticalAlignment="Center" Margin="0,5"/>
+                <TextBox Text="{Binding Property.OtherFeatures, UpdateSourceTrigger=PropertyChanged}" Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="10" Margin="0,5"/>
+
+                <!-- Comments -->
+                <TextBlock Text="Comments:" Grid.Row="9" Grid.Column="0" VerticalAlignment="Top" Margin="0,5"/>
+                <TextBox Text="{Binding Property.Comments, UpdateSourceTrigger=PropertyChanged}" Grid.Row="9" Grid.Column="1" Grid.ColumnSpan="10" Height="60" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="0,5"/>
+
+                <!-- Notes -->
+                <TextBlock Text="Notes:" Grid.Row="10" Grid.Column="0" VerticalAlignment="Top" Margin="0,5"/>
+                <TextBox Text="{Binding Property.Notes, UpdateSourceTrigger=PropertyChanged}" Grid.Row="10" Grid.Column="1" Grid.ColumnSpan="10" Height="60" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="0,5"/>
+
+                <!-- Attachments -->
+                <TextBlock Text="Attachments" FontSize="18" FontWeight="Bold" Grid.Row="11" Grid.Column="0" Grid.ColumnSpan="11" Margin="0,20,0,10"/>
+                
+                <Grid Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="11">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    
+                    <Button Content="Add Attachment" Command="{Binding AddAttachmentCommand}" HorizontalAlignment="Left" Margin="0,0,0,10" Padding="10,5"/>
+                    
+                    <ListView ItemsSource="{Binding Attachments}" Grid.Row="1" MaxHeight="200" BorderThickness="1" BorderBrush="#CCCCCC">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="File Name" Width="250" DisplayMemberBinding="{Binding FileName}"/>
+                                <GridViewColumn Header="Date" Width="100" DisplayMemberBinding="{Binding DateAdded, StringFormat=d}"/>
+                                <GridViewColumn Header="Actions" Width="150">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <Button Content="Open" Command="{Binding DataContext.OpenAttachmentCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Margin="0,0,5,0" Padding="5,2"/>
+                                                <Button Content="Delete" Command="{Binding DataContext.DeleteAttachmentCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Padding="5,2"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </Grid>
+
+                <!-- Mortgage Calculator -->
+                <local:MortgageCalculatorView Grid.Row="13" Grid.Column="0" Grid.ColumnSpan="11" DataContext="{Binding MortgageCalculator}"/>
+
+            </Grid>
+        </ScrollViewer>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+            <Button Content="Save" Command="{Binding SaveCommand}" Width="100" Margin="0,0,10,0" Padding="10,5"/>
+            <Button Content="Cancel" Command="{Binding CancelCommand}" Width="100" Padding="10,5"/>
+        </StackPanel>
+    </Grid>
+</UserControl>
