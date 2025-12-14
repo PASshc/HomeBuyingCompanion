@@ -25,16 +25,16 @@
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="3*"/>
                     <ColumnDefinition Width="20"/>
                     <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="2*"/>
                     <ColumnDefinition Width="20"/>
                     <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="60"/>
                     <ColumnDefinition Width="20"/>
                     <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="100"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -58,74 +58,74 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <!-- Address -->
+                <!-- Line 1: Address, City, State, Zip Code -->
                 <TextBlock Text="Address:" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Margin="0,5"/>
-                <TextBox Text="{Binding Property.Address, UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="10" Margin="0,5"/>
+                <TextBox Text="{Binding Property.Address, UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.Column="1" Margin="0,5"/>
 
-                <!-- City, State, Zip Code, MLS # -->
-                <TextBlock Text="City:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Margin="0,5"/>
-                <TextBox Text="{Binding Property.City, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="1" Margin="0,5"/>
+                <TextBlock Text="City:" Grid.Row="0" Grid.Column="3" VerticalAlignment="Center" Margin="0,5"/>
+                <TextBox Text="{Binding Property.City, UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.Column="4" Margin="0,5"/>
 
-                <TextBlock Text="State:" Grid.Row="1" Grid.Column="3" VerticalAlignment="Center" Margin="0,5"/>
-                <TextBox Text="{Binding Property.State, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="4" Margin="0,5"/>
+                <TextBlock Text="State:" Grid.Row="0" Grid.Column="6" VerticalAlignment="Center" Margin="0,5"/>
+                <TextBox Text="{Binding Property.State, UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.Column="7" Margin="0,5"/>
 
-                <TextBlock Text="Zip Code:" Grid.Row="1" Grid.Column="6" VerticalAlignment="Center" Margin="0,5"/>
-                <TextBox Text="{Binding Property.ZipCode, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="7" Margin="0,5"/>
+                <TextBlock Text="Zip Code:" Grid.Row="0" Grid.Column="9" VerticalAlignment="Center" Margin="0,5"/>
+                <TextBox Text="{Binding Property.ZipCode, UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.Column="10" Margin="0,5"/>
+
+                <!-- Line 2: Bedrooms, Bathrooms, Square Feet, MLS # -->
+                <TextBlock Text="Bedrooms:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Margin="0,5"/>
+                <TextBox Text="{Binding Property.Bedrooms, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="1" Margin="0,5"/>
+
+                <TextBlock Text="Bathrooms:" Grid.Row="1" Grid.Column="3" VerticalAlignment="Center" Margin="0,5"/>
+                <TextBox Text="{Binding Property.Bathrooms, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="4" Margin="0,5"/>
+
+                <TextBlock Text="Square Feet:" Grid.Row="1" Grid.Column="6" VerticalAlignment="Center" Margin="0,5"/>
+                <TextBox Text="{Binding Property.SquareFeet, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="7" Margin="0,5"/>
 
                 <TextBlock Text="MLS #:" Grid.Row="1" Grid.Column="9" VerticalAlignment="Center" Margin="0,5"/>
                 <TextBox Text="{Binding Property.MlsNumber, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="10" Margin="0,5"/>
 
-                <!-- List Price, Est. Offer, Willing to Pay, HOA -->
-                <TextBlock Text="List Price:" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Margin="0,5"/>
-                <TextBox Text="{Binding Property.ListPrice, Converter={StaticResource CurrencyConverter}, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="1" Margin="0,5"/>
-
-                <TextBlock Text="Est. Offer:" Grid.Row="2" Grid.Column="3" VerticalAlignment="Center" Margin="0,5"/>
-                <TextBox Text="{Binding Property.EstimatedOffer, Converter={StaticResource CurrencyConverter}, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="4" Margin="0,5"/>
-
-                <TextBlock Text="Willing to Pay:" Grid.Row="2" Grid.Column="6" VerticalAlignment="Center" Margin="0,5"/>
-                <TextBox Text="{Binding Property.WillingToPay, Converter={StaticResource CurrencyConverter}, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="7" Margin="0,5"/>
-
-                <TextBlock Text="HOA:" Grid.Row="2" Grid.Column="9" VerticalAlignment="Center" Margin="0,5"/>
-                <ComboBox SelectedValue="{Binding Property.HasHoa, Converter={StaticResource BooleanToYesNoConverter}}" SelectedValuePath="Content" Grid.Row="2" Grid.Column="10" Margin="0,5">
+                <!-- Line 3: HOA, HOA Fee -->
+                <TextBlock Text="HOA:" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Margin="0,5"/>
+                <ComboBox SelectedValue="{Binding Property.HasHoa, Converter={StaticResource BooleanToYesNoConverter}}" SelectedValuePath="Content" Grid.Row="2" Grid.Column="1" Margin="0,5">
                     <ComboBoxItem Content="Yes"/>
                     <ComboBoxItem Content="No"/>
                 </ComboBox>
 
-                <!-- HOA Fee, Bedrooms, Bathrooms, Square Feet -->
-                <TextBlock Text="HOA Fee:" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" Margin="0,5"/>
-                <TextBox Text="{Binding Property.HoaFee, Converter={StaticResource CurrencyConverter}, UpdateSourceTrigger=PropertyChanged}" Grid.Row="3" Grid.Column="1" Margin="0,5"/>
+                <TextBlock Text="HOA Fee:" Grid.Row="2" Grid.Column="3" VerticalAlignment="Center" Margin="0,5"/>
+                <TextBox Text="{Binding Property.HoaFee, Converter={StaticResource CurrencyConverter}, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="4" Margin="0,5"/>
 
-                <TextBlock Text="Bedrooms:" Grid.Row="3" Grid.Column="3" VerticalAlignment="Center" Margin="0,5"/>
-                <TextBox Text="{Binding Property.Bedrooms, UpdateSourceTrigger=PropertyChanged}" Grid.Row="3" Grid.Column="4" Margin="0,5"/>
+                <!-- Line 4: List Price, Est. Offer, Willing to Pay -->
+                <TextBlock Text="List Price:" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" Margin="0,5"/>
+                <TextBox Text="{Binding Property.ListPrice, Converter={StaticResource CurrencyConverter}, UpdateSourceTrigger=PropertyChanged}" Grid.Row="3" Grid.Column="1" Margin="0,5"/>
 
-                <TextBlock Text="Bathrooms:" Grid.Row="3" Grid.Column="6" VerticalAlignment="Center" Margin="0,5"/>
-                <TextBox Text="{Binding Property.Bathrooms, UpdateSourceTrigger=PropertyChanged}" Grid.Row="3" Grid.Column="7" Margin="0,5"/>
+                <TextBlock Text="Est. Offer:" Grid.Row="3" Grid.Column="3" VerticalAlignment="Center" Margin="0,5"/>
+                <TextBox Text="{Binding Property.EstimatedOffer, Converter={StaticResource CurrencyConverter}, UpdateSourceTrigger=PropertyChanged}" Grid.Row="3" Grid.Column="4" Margin="0,5"/>
 
-                <TextBlock Text="Square Feet:" Grid.Row="3" Grid.Column="9" VerticalAlignment="Center" Margin="0,5"/>
-                <TextBox Text="{Binding Property.SquareFeet, UpdateSourceTrigger=PropertyChanged}" Grid.Row="3" Grid.Column="10" Margin="0,5"/>
+                <TextBlock Text="Willing to Pay:" Grid.Row="3" Grid.Column="6" VerticalAlignment="Center" Margin="0,5"/>
+                <TextBox Text="{Binding Property.WillingToPay, Converter={StaticResource CurrencyConverter}, UpdateSourceTrigger=PropertyChanged}" Grid.Row="3" Grid.Column="7" Grid.ColumnSpan="4" Margin="0,5"/>
 
-                <!-- Status, Rating, Viewing Date, Inspection Date -->
+                <!-- Line 5: Status, Rating, Checkboxes -->
                 <TextBlock Text="Status:" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center" Margin="0,5"/>
                 <ComboBox ItemsSource="{Binding Statuses}" SelectedItem="{Binding Property.Status, Mode=TwoWay}" Grid.Row="4" Grid.Column="1" Margin="0,5"/>
 
                 <TextBlock Text="Rating (1-5):" Grid.Row="4" Grid.Column="3" VerticalAlignment="Center" Margin="0,5"/>
                 <TextBox Text="{Binding Property.Rating, UpdateSourceTrigger=PropertyChanged}" Grid.Row="4" Grid.Column="4" Margin="0,5"/>
 
-                <TextBlock Text="Viewing Date:" Grid.Row="4" Grid.Column="6" VerticalAlignment="Center" Margin="0,5"/>
-                <DatePicker SelectedDate="{Binding Property.ViewingDate, UpdateSourceTrigger=PropertyChanged}" Grid.Row="4" Grid.Column="7" Margin="0,5"/>
-
-                <TextBlock Text="Inspection Date:" Grid.Row="4" Grid.Column="9" VerticalAlignment="Center" Margin="0,5"/>
-                <DatePicker SelectedDate="{Binding Property.InspectionDate, UpdateSourceTrigger=PropertyChanged}" Grid.Row="4" Grid.Column="10" Margin="0,5"/>
-
-                <!-- Closing Date, Flags -->
-                <TextBlock Text="Closing Date:" Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" Margin="0,5"/>
-                <DatePicker SelectedDate="{Binding Property.ClosingDate, UpdateSourceTrigger=PropertyChanged}" Grid.Row="5" Grid.Column="1" Margin="0,5"/>
-
-                <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="3" Grid.ColumnSpan="8" Margin="0,5" VerticalAlignment="Center">
+                <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="6" Grid.ColumnSpan="5" Margin="0,5" VerticalAlignment="Center">
                     <CheckBox Content="Look At?" IsChecked="{Binding Property.LookAt}" Margin="0,0,20,0"/>
                     <CheckBox Content="Interest?" IsChecked="{Binding Property.Interest}" Margin="0,0,20,0"/>
-                    <CheckBox Content="Archived" IsChecked="{Binding Property.IsArchived}"/>
+                    <CheckBox Content="Archive" IsChecked="{Binding Property.IsArchived}"/>
                 </StackPanel>
+
+                <!-- Line 6: View Date, Inspection Date, Closing Date -->
+                <TextBlock Text="Viewing Date:" Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" Margin="0,5"/>
+                <DatePicker SelectedDate="{Binding Property.ViewingDate, UpdateSourceTrigger=PropertyChanged}" Grid.Row="5" Grid.Column="1" Margin="0,5"/>
+
+                <TextBlock Text="Inspection Date:" Grid.Row="5" Grid.Column="3" VerticalAlignment="Center" Margin="0,5"/>
+                <DatePicker SelectedDate="{Binding Property.InspectionDate, UpdateSourceTrigger=PropertyChanged}" Grid.Row="5" Grid.Column="4" Margin="0,5"/>
+
+                <TextBlock Text="Closing Date:" Grid.Row="5" Grid.Column="6" VerticalAlignment="Center" Margin="0,5"/>
+                <DatePicker SelectedDate="{Binding Property.ClosingDate, UpdateSourceTrigger=PropertyChanged}" Grid.Row="5" Grid.Column="7" Grid.ColumnSpan="4" Margin="0,5"/>
 
                 <!-- Listing URL -->
                 <TextBlock Text="Listing URL:" Grid.Row="6" Grid.Column="0" VerticalAlignment="Top" Margin="0,5"/>
@@ -167,11 +167,11 @@
 
                 <!-- Comments -->
                 <TextBlock Text="Comments:" Grid.Row="9" Grid.Column="0" VerticalAlignment="Top" Margin="0,5"/>
-                <TextBox Text="{Binding Property.Comments, UpdateSourceTrigger=PropertyChanged}" Grid.Row="9" Grid.Column="1" Grid.ColumnSpan="10" Height="60" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="0,5"/>
+                <TextBox Text="{Binding Property.Comments, UpdateSourceTrigger=PropertyChanged}" Grid.Row="9" Grid.Column="1" Grid.ColumnSpan="10" MinHeight="60" MaxHeight="200" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="0,5"/>
 
                 <!-- Notes -->
                 <TextBlock Text="Notes:" Grid.Row="10" Grid.Column="0" VerticalAlignment="Top" Margin="0,5"/>
-                <TextBox Text="{Binding Property.Notes, UpdateSourceTrigger=PropertyChanged}" Grid.Row="10" Grid.Column="1" Grid.ColumnSpan="10" Height="60" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="0,5"/>
+                <TextBox Text="{Binding Property.Notes, UpdateSourceTrigger=PropertyChanged}" Grid.Row="10" Grid.Column="1" Grid.ColumnSpan="10" MinHeight="60" MaxHeight="200" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="0,5"/>
 
                 <!-- Attachments -->
                 <TextBlock Text="Attachments" FontSize="18" FontWeight="Bold" Grid.Row="11" Grid.Column="0" Grid.ColumnSpan="11" Margin="0,20,0,10"/>

@@ -62,6 +62,7 @@ namespace HomeBuyingApp.UI
             services.AddScoped<IPropertyService, PropertyService>();
             services.AddScoped<ICsvService, CsvService>();
             services.AddScoped<IWebScraperService, WebScraperService>();
+            services.AddSingleton<IBackupService>(provider => new BackupService(dbPath, Path.Combine(appDataPath, "Attachments")));
 
             // ViewModels
             services.AddTransient<MortgageCalculatorViewModel>();

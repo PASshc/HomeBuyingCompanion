@@ -24,7 +24,16 @@ namespace HomeBuyingApp.UI.ViewModels
         public MortgageCalculatorViewModel MortgageCalculator { get; }
         public ObservableCollection<PropertyAttachment> Attachments { get; }
 
-        public IEnumerable<PropertyStatus> Statuses => Enum.GetValues(typeof(PropertyStatus)).Cast<PropertyStatus>();
+        public IEnumerable<PropertyStatus> Statuses => new[]
+        {
+            PropertyStatus.PendingVisit,
+            PropertyStatus.Interested,
+            PropertyStatus.PropertyInspection,
+            PropertyStatus.OfferMade,
+            PropertyStatus.OfferRejected,
+            PropertyStatus.Closed,
+            PropertyStatus.NotInterested
+        };
 
         public ICommand SaveCommand { get; }
         public ICommand CancelCommand { get; }

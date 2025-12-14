@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Input;
 using HomeBuyingApp.Core.Services;
 using HomeBuyingApp.Core.Models;
+using HomeBuyingApp.Infrastructure.Data;
 
 namespace HomeBuyingApp.UI.ViewModels
 {
@@ -14,6 +15,8 @@ namespace HomeBuyingApp.UI.ViewModels
         private readonly IPropertyService _propertyService;
         private readonly ICsvService _csvService;
         private readonly IWebScraperService _webScraperService;
+        private readonly IBackupService _backupService;
+        private readonly AppDbContext _dbContext;
         private ObservableCollection<PropertyViewModel> _properties;
         private List<PropertyViewModel> _allProperties = new List<PropertyViewModel>();
         private PropertyDetailViewModel _currentDetailViewModel;
@@ -84,12 +87,16 @@ namespace HomeBuyingApp.UI.ViewModels
         public ICommand DeletePropertyCommand { get; }
         public ICommand ExportCommand { get; }
         public ICommand ImportCommand { get; }
+        public ICommand BackupCommand { get; }
+        public ICommand RestoreCommand { get; }
 
-        public PropertyListViewModel(IPropertyService propertyService, ICsvService csvService, IWebScraperService webScraperService)
+        public PropertyListViewModel(IPropertyService propertyService, ICsvService csvService, IWebScraperService webScraperService, IBackupService backupService, AppDbContext dbContext)
         {
             _propertyService = propertyService;
             _csvService = csvService;
             _webScraperService = webScraperService;
+            _backupService = backupService;
+            _dbContext = dbContext;
             Properties = new ObservableCollection<PropertyViewModel>();
             LoadPropertiesCommand = new RelayCommand(async _ => await LoadPropertiesAsync());
             AddPropertyCommand = new RelayCommand(_ => AddProperty());
@@ -97,6 +104,8 @@ namespace HomeBuyingApp.UI.ViewModels
             DeletePropertyCommand = new RelayCommand(async _ => await DeletePropertyAsync(), _ => SelectedProperty != null);
             ExportCommand = new RelayCommand(_ => ExportProperties());
             ImportCommand = new RelayCommand(async _ => await ImportPropertiesAsync());
+            BackupCommand = new RelayCommand(_ => BackupData());
+            RestoreCommand = new RelayCommand(_ => RestoreData());
         }
 
         private void ExportProperties()
@@ -266,6 +275,61 @@ namespace HomeBuyingApp.UI.ViewModels
                 {
                     await _propertyService.DeletePropertyAsync(SelectedProperty.Id);
                     await LoadPropertiesAsync();
+                }
+            }
+        }
+
+        private async void BackupData()
+        {
+            var dialog = new Microsoft.Win32.SaveFileDialog
+            {
+                FileName = $"HomeBuyingApp_Backup_{System.DateTime.Now:yyyyMMdd}",
+                DefaultExt = ".zip",
+                Filter = "Zip Files (*.zip)|*.zip"
+            };
+
+            if (dialog.ShowDialog() == true)
+            {
+                try
+                {
+                    await _backupService.CreateBackupAsync(dialog.FileName);
+                    MessageBox.Show("Backup created successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                catch (System.Exception ex)
+                {
+                    MessageBox.Show($"Error creating backup: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
+        private async void RestoreData()
+        {
+            var dialog = new Microsoft.Win32.OpenFileDialog
+            {
+                DefaultExt = ".zip",
+                Filter = "Zip Files (*.zip)|*.zip"
+            };
+
+            if (dialog.ShowDialog() == true)
+            {
+                var result = MessageBox.Show("Restoring data will overwrite current data. Are you sure?", "Confirm Restore", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if (result == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        // Close database connections before restore
+                        Microsoft.Data.Sqlite.SqliteConnection.ClearAllPools();
+                        System.GC.Collect();
+                        System.GC.WaitForPendingFinalizers();
+                        
+                        await _backupService.RestoreBackupAsync(dialog.FileName);
+                        MessageBox.Show("Data restored successfully! The application will now reload data.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                        await LoadPropertiesAsync();
+                    }
+                    catch (System.Exception ex)
+                    {
+                        MessageBox.Show($"Error restoring backup: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
             }
         }

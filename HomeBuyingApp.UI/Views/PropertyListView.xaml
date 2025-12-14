@@ -28,6 +28,8 @@
                 <Button Content="Delete" Command="{Binding DeletePropertyCommand}" Margin="10,0,0,0" Padding="10,5"/>
                 <Button Content="Export CSV" Command="{Binding ExportCommand}" Margin="10,0,0,0" Padding="10,5"/>
                 <Button Content="Import CSV" Command="{Binding ImportCommand}" Margin="10,0,0,0" Padding="10,5"/>
+                <Button Content="Backup" Command="{Binding BackupCommand}" Margin="10,0,0,0" Padding="10,5"/>
+                <Button Content="Restore" Command="{Binding RestoreCommand}" Margin="10,0,0,0" Padding="10,5"/>
                 <CheckBox Content="Show Archived" IsChecked="{Binding ShowArchived}" VerticalAlignment="Center" Margin="20,0,0,0"/>
             </StackPanel>
 
