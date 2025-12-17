@@ -1,6 +1,8 @@
 using System.Diagnostics;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
+using HomeBuyingApp.UI.ViewModels;
 
 namespace HomeBuyingApp.UI.Views
 {
@@ -30,6 +32,15 @@ namespace HomeBuyingApp.UI.Views
                 // Handle invalid URLs or other errors silently
             }
             e.Handled = true;
+        }
+
+        private void ClearFilters_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is PropertyListViewModel viewModel)
+            {
+                viewModel.FilterCity = string.Empty;
+                viewModel.FilterState = string.Empty;
+            }
         }
     }
 }

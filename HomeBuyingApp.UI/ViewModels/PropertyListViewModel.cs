@@ -23,6 +23,8 @@ namespace HomeBuyingApp.UI.ViewModels
         private bool _isDetailVisible;
         private PropertyViewModel _selectedProperty;
         private bool _showArchived;
+        private string _filterCity = string.Empty;
+        private string _filterState = string.Empty;
 
         public bool ShowArchived
         {
@@ -32,6 +34,34 @@ namespace HomeBuyingApp.UI.ViewModels
                 if (_showArchived != value)
                 {
                     _showArchived = value;
+                    OnPropertyChanged();
+                    ApplyFilter();
+                }
+            }
+        }
+
+        public string FilterCity
+        {
+            get => _filterCity;
+            set
+            {
+                if (_filterCity != value)
+                {
+                    _filterCity = value;
+                    OnPropertyChanged();
+                    ApplyFilter();
+                }
+            }
+        }
+
+        public string FilterState
+        {
+            get => _filterState;
+            set
+            {
+                if (_filterState != value)
+                {
+                    _filterState = value;
                     OnPropertyChanged();
                     ApplyFilter();
                 }
@@ -218,7 +248,15 @@ namespace HomeBuyingApp.UI.ViewModels
             Properties.Clear();
             foreach (var property in _allProperties)
             {
-                if (ShowArchived || !property.IsArchived)
+                bool matchesArchiveFilter = ShowArchived || !property.IsArchived;
+                
+                bool matchesCityFilter = string.IsNullOrWhiteSpace(FilterCity) || 
+                    (property.City?.Contains(FilterCity, System.StringComparison.OrdinalIgnoreCase) == true);
+                
+                bool matchesStateFilter = string.IsNullOrWhiteSpace(FilterState) || 
+                    (property.State?.Contains(FilterState, System.StringComparison.OrdinalIgnoreCase) == true);
+                
+                if (matchesArchiveFilter && matchesCityFilter && matchesStateFilter)
                 {
                     Properties.Add(property);
                 }

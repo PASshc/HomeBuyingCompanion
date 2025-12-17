@@ -17,23 +17,35 @@
         <Grid Visibility="{Binding IsListVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                <TextBlock Text="My Properties" FontSize="24" FontWeight="Bold" VerticalAlignment="Center"/>
-                <Button Content="Refresh" Command="{Binding LoadPropertiesCommand}" Margin="20,0,0,0" Padding="10,5"/>
-                <Button Content="Add Property" Command="{Binding AddPropertyCommand}" Margin="10,0,0,0" Padding="10,5"/>
-                <Button Content="Edit" Command="{Binding EditPropertyCommand}" Margin="10,0,0,0" Padding="10,5"/>
-                <Button Content="Delete" Command="{Binding DeletePropertyCommand}" Margin="10,0,0,0" Padding="10,5"/>
-                <Button Content="Export CSV" Command="{Binding ExportCommand}" Margin="10,0,0,0" Padding="10,5"/>
-                <Button Content="Import CSV" Command="{Binding ImportCommand}" Margin="10,0,0,0" Padding="10,5"/>
-                <Button Content="Backup" Command="{Binding BackupCommand}" Margin="10,0,0,0" Padding="10,5"/>
-                <Button Content="Restore" Command="{Binding RestoreCommand}" Margin="10,0,0,0" Padding="10,5"/>
-                <CheckBox Content="Show Archived" IsChecked="{Binding ShowArchived}" VerticalAlignment="Center" Margin="20,0,0,0"/>
+            <TextBlock Text="My Properties" FontSize="24" FontWeight="Bold" Margin="0,0,0,10"/>
+
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,10">
+                <Button Content="Refresh" Command="{Binding LoadPropertiesCommand}" Margin="0,0,10,0" Padding="10,5"/>
+                <Button Content="Add Property" Command="{Binding AddPropertyCommand}" Margin="0,0,10,0" Padding="10,5"/>
+                <Button Content="Edit" Command="{Binding EditPropertyCommand}" Margin="0,0,10,0" Padding="10,5"/>
+                <Button Content="Delete" Command="{Binding DeletePropertyCommand}" Margin="0,0,10,0" Padding="10,5"/>
+                <Button Content="Export CSV" Command="{Binding ExportCommand}" Margin="0,0,10,0" Padding="10,5"/>
+                <Button Content="Import CSV" Command="{Binding ImportCommand}" Margin="0,0,10,0" Padding="10,5"/>
+                <Button Content="Backup" Command="{Binding BackupCommand}" Margin="0,0,10,0" Padding="10,5"/>
+                <Button Content="Restore" Command="{Binding RestoreCommand}" Margin="0,0,10,0" Padding="10,5"/>
+                <CheckBox Content="Show Archived" IsChecked="{Binding ShowArchived}" VerticalAlignment="Center" Margin="10,0,0,0"/>
             </StackPanel>
 
-            <DataGrid Grid.Row="1" ItemsSource="{Binding Properties}" SelectedItem="{Binding SelectedProperty}" AutoGenerateColumns="False" IsReadOnly="False" SelectionMode="Single">
+            <!-- Filter Row -->
+            <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,10">
+                <TextBlock Text="Filter by City:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                <TextBox Text="{Binding FilterCity, UpdateSourceTrigger=PropertyChanged}" Width="150" Margin="0,0,15,0" Padding="5,3"/>
+                <TextBlock Text="State:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                <TextBox Text="{Binding FilterState, UpdateSourceTrigger=PropertyChanged}" Width="100" Margin="0,0,15,0" Padding="5,3"/>
+                <Button Content="Clear Filters" Click="ClearFilters_Click" Padding="10,5"/>
+            </StackPanel>
+
+            <DataGrid Grid.Row="3" ItemsSource="{Binding Properties}" SelectedItem="{Binding SelectedProperty}" AutoGenerateColumns="False" IsReadOnly="False" SelectionMode="Single">
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn Header="Archived" Binding="{Binding IsArchived, UpdateSourceTrigger=PropertyChanged}" Width="60" IsReadOnly="False"/>
                     <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="80" IsReadOnly="True"/>

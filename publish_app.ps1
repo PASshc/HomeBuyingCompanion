@@ -17,7 +17,8 @@ Write-Host "----------------------------------------------------------------"
 Write-Host "Packaging complete!"
 if (Test-Path "./Dist/HomeBuyingApp/HomeBuyingApp.UI.exe") {
     Write-Host "You can find the executable here: $(Resolve-Path ./Dist/HomeBuyingApp/HomeBuyingApp.UI.exe)"
-} else {
+}
+else {
     Write-Host "Executable not found in expected location."
 }
 Write-Host "You can zip the contents of './Dist/HomeBuyingApp' and share it."
