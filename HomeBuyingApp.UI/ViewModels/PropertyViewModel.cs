@@ -1,4 +1,5 @@
 using HomeBuyingApp.Core.Models;
+using HomeBuyingApp.UI.Helpers;
 
 namespace HomeBuyingApp.UI.ViewModels
 {
@@ -93,7 +94,7 @@ namespace HomeBuyingApp.UI.ViewModels
             }
         }
 
-        public int Bedrooms
+        public int? Bedrooms
         {
             get => _model.Bedrooms;
             set
@@ -106,7 +107,7 @@ namespace HomeBuyingApp.UI.ViewModels
             }
         }
 
-        public double Bathrooms
+        public double? Bathrooms
         {
             get => _model.Bathrooms;
             set
@@ -171,7 +172,7 @@ namespace HomeBuyingApp.UI.ViewModels
             }
         }
 
-        public int SquareFeet
+        public int? SquareFeet
         {
             get => _model.SquareFeet;
             set
@@ -232,9 +233,12 @@ namespace HomeBuyingApp.UI.ViewModels
                 {
                     _model.Notes = value;
                     OnPropertyChanged();
+                    OnPropertyChanged(nameof(NotesPreview));
                 }
             }
         }
+
+        public string NotesPreview => RichTextBoxBinding.ToPlainText(_model.Notes);
 
         public string Comments
         {
@@ -245,9 +249,12 @@ namespace HomeBuyingApp.UI.ViewModels
                 {
                     _model.Comments = value;
                     OnPropertyChanged();
+                    OnPropertyChanged(nameof(CommentsPreview));
                 }
             }
         }
+
+        public string CommentsPreview => RichTextBoxBinding.ToPlainText(_model.Comments);
 
         public bool LookAt
         {

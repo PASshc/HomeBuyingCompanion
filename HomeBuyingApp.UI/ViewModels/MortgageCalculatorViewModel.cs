@@ -11,6 +11,11 @@ namespace HomeBuyingApp.UI.ViewModels
         private MortgageScenario _scenario;
         private bool _isUpdatingDownPayment;
 
+        public List<decimal> DownPaymentPercentOptions { get; } = new List<decimal>
+        {
+            3m, 3.5m, 5m, 10m, 20m
+        };
+
         public MortgageCalculatorViewModel()
         {
             _calculatorService = new MortgageCalculatorService();
@@ -56,24 +61,6 @@ namespace HomeBuyingApp.UI.ViewModels
         public decimal DownPaymentAmount
         {
             get => _scenario.DownPaymentAmount;
-            set
-            {
-                if (_scenario.DownPaymentAmount != value)
-                {
-                    _scenario.DownPaymentAmount = value;
-                    OnPropertyChanged();
-
-                    if (!_isUpdatingDownPayment && _scenario.PurchasePrice > 0)
-                    {
-                        _isUpdatingDownPayment = true;
-                        DownPaymentPercent = (_scenario.DownPaymentAmount / _scenario.PurchasePrice) * 100m;
-                        OnPropertyChanged(nameof(DownPaymentPercent));
-                        _isUpdatingDownPayment = false;
-                    }
-
-                    Calculate();
-                }
-            }
         }
 
         private decimal _downPaymentPercent = 20;

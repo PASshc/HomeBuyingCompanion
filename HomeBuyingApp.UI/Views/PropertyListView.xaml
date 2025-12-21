@@ -10,6 +10,7 @@
     <UserControl.Resources>
         <converters:CurrencyConverter x:Key="CurrencyConverter"/>
         <converters:BooleanToYesNoConverter x:Key="BooleanToYesNoConverter"/>
+        <converters:NumberWithCommasConverter x:Key="NumberWithCommasConverter"/>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </UserControl.Resources>
     <Grid Margin="10">
@@ -73,11 +74,11 @@
                     <DataGridTextColumn Header="Willing To Pay" Binding="{Binding WillingToPay, Converter={StaticResource CurrencyConverter}}" Width="90" IsReadOnly="True"/>
                     <DataGridTextColumn Header="Beds" Binding="{Binding Bedrooms}" Width="40" IsReadOnly="True"/>
                     <DataGridTextColumn Header="Baths" Binding="{Binding Bathrooms}" Width="40" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="SqFt" Binding="{Binding SquareFeet}" Width="60" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="SqFt" Binding="{Binding SquareFeet, Converter={StaticResource NumberWithCommasConverter}}" Width="60" IsReadOnly="True"/>
                     <DataGridTextColumn Header="HOA" Binding="{Binding HasHoa, Converter={StaticResource BooleanToYesNoConverter}}" Width="50" IsReadOnly="True"/>
                     <DataGridTextColumn Header="HOA $" Binding="{Binding HoaFee, Converter={StaticResource CurrencyConverter}}" Width="60" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Peter's Notes" Binding="{Binding Comments}" Width="150" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="General Notes" Binding="{Binding Notes}" Width="150" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Peter's Notes" Binding="{Binding CommentsPreview}" Width="150" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="General Notes" Binding="{Binding NotesPreview}" Width="150" IsReadOnly="True"/>
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>

@@ -5,12 +5,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:HomeBuyingApp.UI.Views"
              xmlns:converters="clr-namespace:HomeBuyingApp.UI.Converters"
+             xmlns:helpers="clr-namespace:HomeBuyingApp.UI.Helpers"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="800">
     <UserControl.Resources>
         <converters:CurrencyConverter x:Key="CurrencyConverter"/>
         <converters:PercentageConverter x:Key="PercentageConverter"/>
         <converters:BooleanToYesNoConverter x:Key="BooleanToYesNoConverter"/>
+        <converters:NumberWithCommasConverter x:Key="NumberWithCommasConverter"/>
     </UserControl.Resources>
     <Grid Margin="20">
         <Grid.RowDefinitions>
@@ -76,10 +78,10 @@
                 <TextBox Text="{Binding Property.Bedrooms, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="1" Margin="0,5"/>
 
                 <TextBlock Text="Bathrooms:" Grid.Row="1" Grid.Column="3" VerticalAlignment="Center" Margin="0,5"/>
-                <TextBox Text="{Binding Property.Bathrooms, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="4" Margin="0,5"/>
+                <TextBox Text="{Binding Property.Bathrooms, UpdateSourceTrigger=LostFocus, StringFormat={}{0:0.#}}" Grid.Row="1" Grid.Column="4" Margin="0,5"/>
 
                 <TextBlock Text="Square Feet:" Grid.Row="1" Grid.Column="6" VerticalAlignment="Center" Margin="0,5"/>
-                <TextBox Text="{Binding Property.SquareFeet, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="7" Margin="0,5"/>
+                <TextBox Text="{Binding Property.SquareFeet, Converter={StaticResource NumberWithCommasConverter}, UpdateSourceTrigger=LostFocus}" Grid.Row="1" Grid.Column="7" Margin="0,5"/>
 
                 <TextBlock Text="MLS #:" Grid.Row="1" Grid.Column="9" VerticalAlignment="Center" Margin="0,5"/>
                 <TextBox Text="{Binding Property.MlsNumber, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="10" Margin="0,5"/>
@@ -167,11 +169,19 @@
 
                 <!-- Comments -->
                 <TextBlock Text="Comments:" Grid.Row="9" Grid.Column="0" VerticalAlignment="Top" Margin="0,5"/>
-                <TextBox Text="{Binding Property.Comments, UpdateSourceTrigger=PropertyChanged}" Grid.Row="9" Grid.Column="1" Grid.ColumnSpan="10" MinHeight="60" MaxHeight="200" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="0,5"/>
+                <RichTextBox helpers:RichTextBoxBinding.XamlText="{Binding Property.Comments, Mode=TwoWay}"
+                             Grid.Row="9" Grid.Column="1" Grid.ColumnSpan="10"
+                             MinHeight="60" MaxHeight="200"
+                             VerticalScrollBarVisibility="Auto"
+                             Margin="0,5" />
 
                 <!-- Notes -->
                 <TextBlock Text="Notes:" Grid.Row="10" Grid.Column="0" VerticalAlignment="Top" Margin="0,5"/>
-                <TextBox Text="{Binding Property.Notes, UpdateSourceTrigger=PropertyChanged}" Grid.Row="10" Grid.Column="1" Grid.ColumnSpan="10" MinHeight="60" MaxHeight="200" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="0,5"/>
+                <RichTextBox helpers:RichTextBoxBinding.XamlText="{Binding Property.Notes, Mode=TwoWay}"
+                             Grid.Row="10" Grid.Column="1" Grid.ColumnSpan="10"
+                             MinHeight="60" MaxHeight="200"
+                             VerticalScrollBarVisibility="Auto"
+                             Margin="0,5" />
 
                 <!-- Attachments -->
                 <TextBlock Text="Attachments" FontSize="18" FontWeight="Bold" Grid.Row="11" Grid.Column="0" Grid.ColumnSpan="11" Margin="0,20,0,10"/>

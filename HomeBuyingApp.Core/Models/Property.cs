@@ -14,9 +14,9 @@ namespace HomeBuyingApp.Core.Models
         public decimal ListPrice { get; set; }
         public decimal? EstimatedOffer { get; set; }
         public decimal? WillingToPay { get; set; }
-        public int Bedrooms { get; set; }
-        public double Bathrooms { get; set; }
-        public int SquareFeet { get; set; }
+        public int? Bedrooms { get; set; }
+        public double? Bathrooms { get; set; }
+        public int? SquareFeet { get; set; }
         public bool HasHoa { get; set; }
         public decimal HoaFee { get; set; }
         public decimal PropertyTaxRate { get; set; } // e.g. 0.012 for 1.2%

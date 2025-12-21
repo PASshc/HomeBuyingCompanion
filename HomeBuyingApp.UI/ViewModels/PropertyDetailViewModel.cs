@@ -79,10 +79,16 @@ namespace HomeBuyingApp.UI.ViewModels
 
                 if (scrapedData != null)
                 {
+                    // Always copy Comments field (contains scraper status/errors)
+                    if (!string.IsNullOrWhiteSpace(scrapedData.Comments))
+                    {
+                        Property.Comments = scrapedData.Comments;
+                    }
+                    
                     if (scrapedData.ListPrice > 0) Property.ListPrice = scrapedData.ListPrice;
-                    if (scrapedData.Bedrooms > 0) Property.Bedrooms = scrapedData.Bedrooms;
-                    if (scrapedData.Bathrooms > 0) Property.Bathrooms = scrapedData.Bathrooms;
-                    if (scrapedData.SquareFeet > 0) Property.SquareFeet = scrapedData.SquareFeet;
+                    if (scrapedData.Bedrooms.HasValue && scrapedData.Bedrooms.Value > 0) Property.Bedrooms = scrapedData.Bedrooms;
+                    if (scrapedData.Bathrooms.HasValue && scrapedData.Bathrooms.Value > 0) Property.Bathrooms = scrapedData.Bathrooms;
+                    if (scrapedData.SquareFeet.HasValue && scrapedData.SquareFeet.Value > 0) Property.SquareFeet = scrapedData.SquareFeet;
                     
                     if (!string.IsNullOrWhiteSpace(scrapedData.Address)) Property.Address = scrapedData.Address;
                     if (!string.IsNullOrWhiteSpace(scrapedData.City)) Property.City = scrapedData.City;
@@ -92,7 +98,11 @@ namespace HomeBuyingApp.UI.ViewModels
                     // Update Mortgage Calculator with new price
                     InitializeMortgageCalculator();
                     
-                    MessageBox.Show("Property details updated from URL.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    // Only show success if we actually got data
+                    if (scrapedData.ListPrice > 0 || !string.IsNullOrWhiteSpace(scrapedData.Address))
+                    {
+                        MessageBox.Show("Property details updated from URL.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
                 }
             }
             catch (Exception ex)
@@ -119,7 +129,6 @@ namespace HomeBuyingApp.UI.ViewModels
             }
 
             // Load saved calculation values if they exist
-            if (_property.Model.CalcDownPaymentAmount.HasValue) MortgageCalculator.DownPaymentAmount = _property.Model.CalcDownPaymentAmount.Value;
             if (_property.Model.CalcInterestRate.HasValue) MortgageCalculator.InterestRate = _property.Model.CalcInterestRate.Value;
             if (_property.Model.CalcLoanTermYears.HasValue) MortgageCalculator.LoanTermYears = _property.Model.CalcLoanTermYears.Value;
             if (_property.Model.CalcPropertyTaxAnnualAmount.HasValue) MortgageCalculator.PropertyTaxAnnualAmount = _property.Model.CalcPropertyTaxAnnualAmount.Value;

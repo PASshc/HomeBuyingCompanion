@@ -12,7 +12,7 @@ namespace HomeBuyingApp.UI.ViewModels
             
             // Initialize with slightly different defaults so they are distinguishable
             ScenarioB.PurchasePrice = 350000;
-            ScenarioB.DownPaymentAmount = 70000;
+            ScenarioB.DownPaymentPercent = 20m;
         }
     }
 }

@@ -23,3 +23,25 @@ else {
 }
 Write-Host "You can zip the contents of './Dist/HomeBuyingApp' and share it."
 Write-Host "----------------------------------------------------------------"
+
+Write-Host ""
+Write-Host "Compiling Inno Setup installer..."
+$isccPath = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
+if (Test-Path $isccPath) {
+    & $isccPath "setup.iss"
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host "----------------------------------------------------------------"
+        Write-Host "Installer created successfully!"
+        if (Test-Path "./Dist/Installer/HomeBuyingAppSetup_v3.4.1.exe") {
+            Write-Host "Installer location: $(Resolve-Path ./Dist/Installer/HomeBuyingAppSetup_v3.4.1.exe)"
+        }
+        Write-Host "----------------------------------------------------------------"
+    }
+    else {
+        Write-Host "ERROR: Inno Setup compilation failed with exit code $LASTEXITCODE" -ForegroundColor Red
+    }
+}
+else {
+    Write-Host "WARNING: Inno Setup not found at $isccPath" -ForegroundColor Yellow
+    Write-Host "Skipping installer creation. Install Inno Setup or compile setup.iss manually."
+}
