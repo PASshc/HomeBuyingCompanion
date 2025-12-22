@@ -61,7 +61,6 @@ namespace HomeBuyingApp.UI
             services.AddSingleton<IMortgageCalculatorService, MortgageCalculatorService>();
             services.AddScoped<IPropertyService, PropertyService>();
             services.AddScoped<ICsvService, CsvService>();
-            services.AddScoped<IWebScraperService, WebScraperService>();
             services.AddSingleton<IBackupService>(provider => new BackupService(dbPath, Path.Combine(appDataPath, "Attachments")));
 
             // ViewModels
@@ -114,7 +113,34 @@ namespace HomeBuyingApp.UI
                         "HasOven INTEGER DEFAULT 0",
                         "HasRefrigerator INTEGER DEFAULT 0",
                         "HasWasherDryer INTEGER DEFAULT 0",
-                        "OtherFeatures TEXT DEFAULT ''"
+                        "HasDishwasher INTEGER DEFAULT 0",
+                        // v4.2.0 - Additional features
+                        "HasCentralHeat INTEGER DEFAULT 0",
+                        "HasFireplace INTEGER DEFAULT 0",
+                        "HasCeilingFans INTEGER DEFAULT 0",
+                        "HasWalkInCloset INTEGER DEFAULT 0",
+                        "HasAttic INTEGER DEFAULT 0",
+                        "HasBasement INTEGER DEFAULT 0",
+                        "HasCoveredPatio INTEGER DEFAULT 0",
+                        "HasDeckPatio INTEGER DEFAULT 0",
+                        "HasFencedYard INTEGER DEFAULT 0",
+                        "HasSprinklerSystem INTEGER DEFAULT 0",
+                        "HasGarage INTEGER DEFAULT 0",
+                        "HasCarport INTEGER DEFAULT 0",
+                        "HasStorageShed INTEGER DEFAULT 0",
+                        "HasGuestHouse INTEGER DEFAULT 0",
+                        "HasSolarPanels INTEGER DEFAULT 0",
+                        "HasSecuritySystem INTEGER DEFAULT 0",
+                        "HasCustomFeature1 INTEGER DEFAULT 0",
+                        "CustomFeature1Name TEXT DEFAULT ''",
+                        "HasCustomFeature2 INTEGER DEFAULT 0",
+                        "CustomFeature2Name TEXT DEFAULT ''",
+                        "OtherFeatures TEXT DEFAULT ''",
+                        "PrimaryImagePath TEXT DEFAULT ''",
+                        "ImagePath1 TEXT DEFAULT ''",
+                        "ImagePath2 TEXT DEFAULT ''",
+                        "ImagePath3 TEXT DEFAULT ''",
+                        "ImagePath4 TEXT DEFAULT ''"
                     };
 
                     foreach (var col in columns)
@@ -131,7 +157,12 @@ namespace HomeBuyingApp.UI
                     var boolColumns = new[] {
                         "HasAC", "HasLandscape", "HasPool", "HasJacuzzi",
                         "HasLanai", "HasCarpet", "HasTile", "HasWoodFlooring",
-                        "HasOven", "HasRefrigerator", "HasWasherDryer"
+                        "HasOven", "HasRefrigerator", "HasWasherDryer", "HasDishwasher",
+                        // v4.2.0 - Additional features
+                        "HasCentralHeat", "HasFireplace", "HasCeilingFans", "HasWalkInCloset",
+                        "HasAttic", "HasBasement", "HasCoveredPatio", "HasDeckPatio", "HasFencedYard",
+                        "HasSprinklerSystem", "HasGarage", "HasCarport", "HasStorageShed",
+                        "HasGuestHouse", "HasSolarPanels", "HasSecuritySystem", "HasCustomFeature1", "HasCustomFeature2"
                     };
 
                     foreach (var col in boolColumns)
@@ -151,6 +182,17 @@ namespace HomeBuyingApp.UI
                         context.Database.ExecuteSqlRaw("UPDATE Properties SET HasRefrigerator = 0 WHERE HasRefrigerator IS NULL;");
                         context.Database.ExecuteSqlRaw("UPDATE Properties SET HasWasherDryer = 0 WHERE HasWasherDryer IS NULL;");
                         context.Database.ExecuteSqlRaw("UPDATE Properties SET OtherFeatures = '' WHERE OtherFeatures IS NULL;");
+                    }
+                    catch { /* Ignore */ }
+
+                    // Migrate PrimaryImagePath to ImagePath1 (v4.1.0 migration)
+                    try
+                    {
+                        context.Database.ExecuteSqlRaw("UPDATE Properties SET ImagePath1 = PrimaryImagePath WHERE ImagePath1 = '' AND PrimaryImagePath != '' AND PrimaryImagePath IS NOT NULL;");
+                        context.Database.ExecuteSqlRaw("UPDATE Properties SET ImagePath1 = '' WHERE ImagePath1 IS NULL;");
+                        context.Database.ExecuteSqlRaw("UPDATE Properties SET ImagePath2 = '' WHERE ImagePath2 IS NULL;");
+                        context.Database.ExecuteSqlRaw("UPDATE Properties SET ImagePath3 = '' WHERE ImagePath3 IS NULL;");
+                        context.Database.ExecuteSqlRaw("UPDATE Properties SET ImagePath4 = '' WHERE ImagePath4 IS NULL;");
                     }
                     catch { /* Ignore */ }
 

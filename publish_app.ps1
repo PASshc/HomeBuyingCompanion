@@ -32,8 +32,8 @@ if (Test-Path $isccPath) {
     if ($LASTEXITCODE -eq 0) {
         Write-Host "----------------------------------------------------------------"
         Write-Host "Installer created successfully!"
-        if (Test-Path "./Dist/Installer/HomeBuyingAppSetup_v3.4.1.exe") {
-            Write-Host "Installer location: $(Resolve-Path ./Dist/Installer/HomeBuyingAppSetup_v3.4.1.exe)"
+        if (Test-Path "./Dist/Installer/HomeBuyingAppSetup_v4.1.0.exe") {
+            Write-Host "Installer location: $(Resolve-Path ./Dist/Installer/HomeBuyingAppSetup_v4.1.0.exe)"
         }
         Write-Host "----------------------------------------------------------------"
     }

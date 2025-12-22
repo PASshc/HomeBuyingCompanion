@@ -16,7 +16,7 @@ namespace HomeBuyingApp.UI.Views
             try
             {
                 string url = e.Uri.ToString();
-                // Handle URLs missing the protocol (e.g. "www.zillow.com")
+                // Handle URLs missing the protocol (e.g. "www.example.com")
                 if (!url.StartsWith("http://", System.StringComparison.OrdinalIgnoreCase) && 
                     !url.StartsWith("https://", System.StringComparison.OrdinalIgnoreCase))
                 {

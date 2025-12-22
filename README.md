@@ -8,7 +8,6 @@ A comprehensive desktop application designed to assist home buyers in tracking p
 - **Mortgage Calculator**: Built-in calculator to estimate monthly payments, including PMI, HOA, and taxes.
 - **Viewing Management**: Track viewing appointments, agent details, and notes.
 - **Attachments**: Attach files (images, documents) to specific properties.
-- **Web Scraper**: (Experimental) Scrape property details from supported real estate websites.
 - **Comparison**: Compare multiple properties side-by-side.
 - **Status Tracking**: Mark properties as "Interested", "Offer Made", "Under Contract", etc.
 

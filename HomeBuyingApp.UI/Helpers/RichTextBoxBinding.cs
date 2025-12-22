@@ -115,7 +115,10 @@ namespace HomeBuyingApp.UI.Helpers
         {
             if (string.IsNullOrWhiteSpace(xamlOrPlain))
             {
-                return new FlowDocument();
+                var emptyDoc = new FlowDocument();
+                // Remove default paragraph spacing for single-line look
+                emptyDoc.Blocks.Add(new Paragraph { Margin = new Thickness(0) });
+                return emptyDoc;
             }
 
             var trimmed = xamlOrPlain.TrimStart();
@@ -126,6 +129,12 @@ namespace HomeBuyingApp.UI.Helpers
                 {
                     if (XamlReader.Parse(xamlOrPlain) is FlowDocument parsedDoc)
                     {
+                        // Remove paragraph margins for consistent spacing
+                        foreach (var block in parsedDoc.Blocks)
+                        {
+                            if (block is Paragraph p)
+                                p.Margin = new Thickness(0);
+                        }
                         return parsedDoc;
                     }
                 }
@@ -143,6 +152,12 @@ namespace HomeBuyingApp.UI.Helpers
                     var range = new TextRange(doc.ContentStart, doc.ContentEnd);
                     using var ms = new MemoryStream(Encoding.UTF8.GetBytes(xamlOrPlain));
                     range.Load(ms, DataFormats.Xaml);
+                    // Remove paragraph margins for consistent spacing
+                    foreach (var block in doc.Blocks)
+                    {
+                        if (block is Paragraph p)
+                            p.Margin = new Thickness(0);
+                    }
                     return doc;
                 }
                 catch
@@ -153,7 +168,7 @@ namespace HomeBuyingApp.UI.Helpers
 
             // Legacy/plain text
             var flow = new FlowDocument();
-            flow.Blocks.Add(new Paragraph(new Run(xamlOrPlain)));
+            flow.Blocks.Add(new Paragraph(new Run(xamlOrPlain)) { Margin = new Thickness(0) });
             return flow;
         }
 

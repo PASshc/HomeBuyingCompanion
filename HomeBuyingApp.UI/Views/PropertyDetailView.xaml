@@ -13,6 +13,8 @@
         <converters:PercentageConverter x:Key="PercentageConverter"/>
         <converters:BooleanToYesNoConverter x:Key="BooleanToYesNoConverter"/>
         <converters:NumberWithCommasConverter x:Key="NumberWithCommasConverter"/>
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
     </UserControl.Resources>
     <Grid Margin="20">
         <Grid.RowDefinitions>
@@ -21,7 +23,10 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Text="Property Details" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,20">
+            <TextBlock Text="Property Details" FontSize="24" FontWeight="Bold"/>
+            <Button Content="Paste details" Command="{Binding PasteDetailsFromClipboardCommand}" Padding="10,3" Margin="20,0,0,0" VerticalAlignment="Center"/>
+        </StackPanel>
 
         <ScrollViewer Grid.Row="1">
             <Grid>
@@ -132,14 +137,7 @@
                 <!-- Listing URL -->
                 <TextBlock Text="Listing URL:" Grid.Row="6" Grid.Column="0" VerticalAlignment="Top" Margin="0,5"/>
                 <StackPanel Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="10" Margin="0,5">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBox Text="{Binding Property.ListingUrl, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,5,5"/>
-                        <Button Grid.Column="1" Content="Auto-fill" Command="{Binding AutoFillFromUrlCommand}" Padding="5,0" Margin="0,0,0,5"/>
-                    </Grid>
+                    <TextBox Text="{Binding Property.ListingUrl, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,5"/>
                     <TextBlock TextTrimming="CharacterEllipsis" ToolTip="{Binding Property.ListingUrl}">
                         <Hyperlink NavigateUri="{Binding Property.ListingUrl}" RequestNavigate="Hyperlink_RequestNavigate">
                             <TextBlock Text="Open Listing in Browser"/>
@@ -147,46 +145,190 @@
                     </TextBlock>
                 </StackPanel>
 
-                <!-- Features -->
-                <TextBlock Text="Features:" Grid.Row="7" Grid.Column="0" VerticalAlignment="Top" Margin="0,5"/>
-                <UniformGrid Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="10" Columns="4" Margin="0,5">
-                    <CheckBox Content="AC" IsChecked="{Binding Property.HasAC}" Margin="0,0,10,5"/>
-                    <CheckBox Content="Landscape" IsChecked="{Binding Property.HasLandscape}" Margin="0,0,10,5"/>
-                    <CheckBox Content="Pool" IsChecked="{Binding Property.HasPool}" Margin="0,0,10,5"/>
-                    <CheckBox Content="Jacuzzi" IsChecked="{Binding Property.HasJacuzzi}" Margin="0,0,10,5"/>
-                    <CheckBox Content="Lanai" IsChecked="{Binding Property.HasLanai}" Margin="0,0,10,5"/>
-                    <CheckBox Content="Carpet" IsChecked="{Binding Property.HasCarpet}" Margin="0,0,10,5"/>
-                    <CheckBox Content="Tile" IsChecked="{Binding Property.HasTile}" Margin="0,0,10,5"/>
-                    <CheckBox Content="Wood Flooring" IsChecked="{Binding Property.HasWoodFlooring}" Margin="0,0,10,5"/>
-                    <CheckBox Content="Oven" IsChecked="{Binding Property.HasOven}" Margin="0,0,10,5"/>
-                    <CheckBox Content="Refrigerator" IsChecked="{Binding Property.HasRefrigerator}" Margin="0,0,10,5"/>
-                    <CheckBox Content="Washer/Dryer" IsChecked="{Binding Property.HasWasherDryer}" Margin="0,0,10,5"/>
-                </UniformGrid>
+                <!-- Interior Features -->
+                <TextBlock Text="Interior Features:" Grid.Row="7" Grid.Column="0" VerticalAlignment="Top" Margin="0,5" FontWeight="SemiBold"/>
+                <StackPanel Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="10" Margin="0,5">
+                    <!-- Flooring -->
+                    <TextBlock Text="Flooring" FontSize="11" Foreground="Gray" Margin="0,0,0,3"/>
+                    <UniformGrid Columns="4" Margin="0,0,0,8">
+                        <CheckBox Content="Carpet" IsChecked="{Binding Property.HasCarpet}" Margin="0,0,10,3"/>
+                        <CheckBox Content="Tile" IsChecked="{Binding Property.HasTile}" Margin="0,0,10,3"/>
+                        <CheckBox Content="Wood Flooring" IsChecked="{Binding Property.HasWoodFlooring}" Margin="0,0,10,3"/>
+                    </UniformGrid>
+                    <!-- Appliances -->
+                    <TextBlock Text="Appliances" FontSize="11" Foreground="Gray" Margin="0,0,0,3"/>
+                    <UniformGrid Columns="4" Margin="0,0,0,8">
+                        <CheckBox Content="Oven" IsChecked="{Binding Property.HasOven}" Margin="0,0,10,3"/>
+                        <CheckBox Content="Refrigerator" IsChecked="{Binding Property.HasRefrigerator}" Margin="0,0,10,3"/>
+                        <CheckBox Content="Washer/Dryer" IsChecked="{Binding Property.HasWasherDryer}" Margin="0,0,10,3"/>
+                        <CheckBox Content="Dishwasher" IsChecked="{Binding Property.HasDishwasher}" Margin="0,0,10,3"/>
+                    </UniformGrid>
+                    <!-- Climate/Systems -->
+                    <TextBlock Text="Climate/Systems" FontSize="11" Foreground="Gray" Margin="0,0,0,3"/>
+                    <UniformGrid Columns="4" Margin="0,0,0,8">
+                        <CheckBox Content="AC" IsChecked="{Binding Property.HasAC}" Margin="0,0,10,3"/>
+                        <CheckBox Content="Central Heat" IsChecked="{Binding Property.HasCentralHeat}" Margin="0,0,10,3"/>
+                        <CheckBox Content="Fireplace" IsChecked="{Binding Property.HasFireplace}" Margin="0,0,10,3"/>
+                        <CheckBox Content="Ceiling Fans" IsChecked="{Binding Property.HasCeilingFans}" Margin="0,0,10,3"/>
+                    </UniformGrid>
+                    <!-- Storage -->
+                    <TextBlock Text="Storage" FontSize="11" Foreground="Gray" Margin="0,0,0,3"/>
+                    <UniformGrid Columns="4" Margin="0,0,0,3">
+                        <CheckBox Content="Walk-in Closet" IsChecked="{Binding Property.HasWalkInCloset}" Margin="0,0,10,3"/>
+                        <CheckBox Content="Attic" IsChecked="{Binding Property.HasAttic}" Margin="0,0,10,3"/>
+                        <CheckBox Content="Basement" IsChecked="{Binding Property.HasBasement}" Margin="0,0,10,3"/>
+                    </UniformGrid>
+                </StackPanel>
+
+                <!-- Exterior Features -->
+                <TextBlock Text="Exterior Features:" Grid.Row="8" Grid.Column="0" VerticalAlignment="Top" Margin="0,5" FontWeight="SemiBold"/>
+                <StackPanel Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="10" Margin="0,5">
+                    <!-- Outdoor -->
+                    <TextBlock Text="Outdoor" FontSize="11" Foreground="Gray" Margin="0,0,0,3"/>
+                    <UniformGrid Columns="4" Margin="0,0,0,8">
+                        <CheckBox Content="Landscape" IsChecked="{Binding Property.HasLandscape}" Margin="0,0,10,3"/>
+                        <CheckBox Content="Pool" IsChecked="{Binding Property.HasPool}" Margin="0,0,10,3"/>
+                        <CheckBox Content="Jacuzzi" IsChecked="{Binding Property.HasJacuzzi}" Margin="0,0,10,3"/>
+                        <CheckBox Content="Lanai" IsChecked="{Binding Property.HasLanai}" Margin="0,0,10,3"/>
+                        <CheckBox Content="Covered Patio" IsChecked="{Binding Property.HasCoveredPatio}" Margin="0,0,10,3"/>
+                        <CheckBox Content="Deck/Patio" IsChecked="{Binding Property.HasDeckPatio}" Margin="0,0,10,3"/>
+                        <CheckBox Content="Fenced Yard" IsChecked="{Binding Property.HasFencedYard}" Margin="0,0,10,3"/>
+                        <CheckBox Content="Sprinkler System" IsChecked="{Binding Property.HasSprinklerSystem}" Margin="0,0,10,3"/>
+                    </UniformGrid>
+                    <!-- Structures -->
+                    <TextBlock Text="Structures" FontSize="11" Foreground="Gray" Margin="0,0,0,3"/>
+                    <UniformGrid Columns="4" Margin="0,0,0,3">
+                        <CheckBox Content="Garage" IsChecked="{Binding Property.HasGarage}" Margin="0,0,10,3"/>
+                        <CheckBox Content="Carport" IsChecked="{Binding Property.HasCarport}" Margin="0,0,10,3"/>
+                        <CheckBox Content="Storage Shed" IsChecked="{Binding Property.HasStorageShed}" Margin="0,0,10,3"/>
+                        <CheckBox Content="Guest House" IsChecked="{Binding Property.HasGuestHouse}" Margin="0,0,10,3"/>
+                    </UniformGrid>
+                </StackPanel>
 
                 <!-- Other Features -->
-                <TextBlock Text="Other Features:" Grid.Row="8" Grid.Column="0" VerticalAlignment="Center" Margin="0,5"/>
-                <TextBox Text="{Binding Property.OtherFeatures, UpdateSourceTrigger=PropertyChanged}" Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="10" Margin="0,5"/>
+                <TextBlock Text="Other Features:" Grid.Row="9" Grid.Column="0" VerticalAlignment="Top" Margin="0,5" FontWeight="SemiBold"/>
+                <StackPanel Grid.Row="9" Grid.Column="1" Grid.ColumnSpan="10" Margin="0,5">
+                    <UniformGrid Columns="4" Margin="0,0,0,8">
+                        <CheckBox Content="Solar Panels" IsChecked="{Binding Property.HasSolarPanels}" Margin="0,0,10,3"/>
+                        <CheckBox Content="Security System" IsChecked="{Binding Property.HasSecuritySystem}" Margin="0,0,10,3"/>
+                        <StackPanel Orientation="Horizontal">
+                            <CheckBox IsChecked="{Binding Property.HasCustomFeature1}" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                            <TextBox Text="{Binding Property.CustomFeature1Name, UpdateSourceTrigger=PropertyChanged}" 
+                                     Width="120" VerticalAlignment="Center" Padding="2"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <CheckBox IsChecked="{Binding Property.HasCustomFeature2}" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                            <TextBox Text="{Binding Property.CustomFeature2Name, UpdateSourceTrigger=PropertyChanged}" 
+                                     Width="120" VerticalAlignment="Center" Padding="2"/>
+                        </StackPanel>
+                    </UniformGrid>
+                    <TextBox Text="{Binding Property.OtherFeatures, UpdateSourceTrigger=PropertyChanged}" 
+                             ToolTip="Other features not listed above"
+                             Margin="0,0,0,5"/>
+                </StackPanel>
 
                 <!-- Comments -->
-                <TextBlock Text="Comments:" Grid.Row="9" Grid.Column="0" VerticalAlignment="Top" Margin="0,5"/>
+                <TextBlock Text="Comments:" Grid.Row="10" Grid.Column="0" VerticalAlignment="Top" Margin="0,5"/>
                 <RichTextBox helpers:RichTextBoxBinding.XamlText="{Binding Property.Comments, Mode=TwoWay}"
-                             Grid.Row="9" Grid.Column="1" Grid.ColumnSpan="10"
-                             MinHeight="60" MaxHeight="200"
-                             VerticalScrollBarVisibility="Auto"
-                             Margin="0,5" />
-
-                <!-- Notes -->
-                <TextBlock Text="Notes:" Grid.Row="10" Grid.Column="0" VerticalAlignment="Top" Margin="0,5"/>
-                <RichTextBox helpers:RichTextBoxBinding.XamlText="{Binding Property.Notes, Mode=TwoWay}"
                              Grid.Row="10" Grid.Column="1" Grid.ColumnSpan="10"
                              MinHeight="60" MaxHeight="200"
                              VerticalScrollBarVisibility="Auto"
                              Margin="0,5" />
 
-                <!-- Attachments -->
-                <TextBlock Text="Attachments" FontSize="18" FontWeight="Bold" Grid.Row="11" Grid.Column="0" Grid.ColumnSpan="11" Margin="0,20,0,10"/>
+                <!-- Notes -->
+                <TextBlock Text="Notes:" Grid.Row="11" Grid.Column="0" VerticalAlignment="Top" Margin="0,5"/>
+                <RichTextBox helpers:RichTextBoxBinding.XamlText="{Binding Property.Notes, Mode=TwoWay}"
+                             Grid.Row="11" Grid.Column="1" Grid.ColumnSpan="10"
+                             MinHeight="60" MaxHeight="200"
+                             VerticalScrollBarVisibility="Auto"
+                             Margin="0,5" />
+
+                <!-- Property Images (up to 4) -->
+                <TextBlock Text="Property Images" FontSize="18" FontWeight="Bold" Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="11" Margin="0,20,0,10"/>
                 
-                <Grid Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="11">
+                <Grid Grid.Row="13" Grid.Column="0" Grid.ColumnSpan="11">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    
+                    <!-- Image 1 -->
+                    <Border Grid.Row="0" Grid.Column="0" BorderBrush="#CCCCCC" BorderThickness="1" Margin="0,0,10,10" MinHeight="180">
+                        <Grid>
+                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center"
+                                        Visibility="{Binding HasImage1, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+                                <TextBlock Text="Image 1" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                                <Button Content="Paste Image" Command="{Binding PasteImage1Command}" Padding="10,5" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                            <Grid Visibility="{Binding HasImage1, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <Image Source="{Binding Image1}" MaxHeight="160" MaxWidth="300" Stretch="Uniform" Margin="5"/>
+                                <Button Content="✕" Command="{Binding DeleteImage1Command}" 
+                                        VerticalAlignment="Top" HorizontalAlignment="Right" 
+                                        Padding="5,2" Margin="5" FontWeight="Bold" Background="#FF6B6B" Foreground="White"/>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                    
+                    <!-- Image 2 -->
+                    <Border Grid.Row="0" Grid.Column="1" BorderBrush="#CCCCCC" BorderThickness="1" Margin="0,0,0,10" MinHeight="180">
+                        <Grid>
+                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center"
+                                        Visibility="{Binding HasImage2, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+                                <TextBlock Text="Image 2" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                                <Button Content="Paste Image" Command="{Binding PasteImage2Command}" Padding="10,5" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                            <Grid Visibility="{Binding HasImage2, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <Image Source="{Binding Image2}" MaxHeight="160" MaxWidth="300" Stretch="Uniform" Margin="5"/>
+                                <Button Content="✕" Command="{Binding DeleteImage2Command}" 
+                                        VerticalAlignment="Top" HorizontalAlignment="Right" 
+                                        Padding="5,2" Margin="5" FontWeight="Bold" Background="#FF6B6B" Foreground="White"/>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                    
+                    <!-- Image 3 -->
+                    <Border Grid.Row="1" Grid.Column="0" BorderBrush="#CCCCCC" BorderThickness="1" Margin="0,0,10,10" MinHeight="180">
+                        <Grid>
+                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center"
+                                        Visibility="{Binding HasImage3, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+                                <TextBlock Text="Image 3" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                                <Button Content="Paste Image" Command="{Binding PasteImage3Command}" Padding="10,5" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                            <Grid Visibility="{Binding HasImage3, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <Image Source="{Binding Image3}" MaxHeight="160" MaxWidth="300" Stretch="Uniform" Margin="5"/>
+                                <Button Content="✕" Command="{Binding DeleteImage3Command}" 
+                                        VerticalAlignment="Top" HorizontalAlignment="Right" 
+                                        Padding="5,2" Margin="5" FontWeight="Bold" Background="#FF6B6B" Foreground="White"/>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                    
+                    <!-- Image 4 -->
+                    <Border Grid.Row="1" Grid.Column="1" BorderBrush="#CCCCCC" BorderThickness="1" Margin="0,0,0,10" MinHeight="180">
+                        <Grid>
+                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center"
+                                        Visibility="{Binding HasImage4, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+                                <TextBlock Text="Image 4" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                                <Button Content="Paste Image" Command="{Binding PasteImage4Command}" Padding="10,5" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                            <Grid Visibility="{Binding HasImage4, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <Image Source="{Binding Image4}" MaxHeight="160" MaxWidth="300" Stretch="Uniform" Margin="5"/>
+                                <Button Content="✕" Command="{Binding DeleteImage4Command}" 
+                                        VerticalAlignment="Top" HorizontalAlignment="Right" 
+                                        Padding="5,2" Margin="5" FontWeight="Bold" Background="#FF6B6B" Foreground="White"/>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                </Grid>
+
+                <!-- Attachments -->
+                <TextBlock Text="Attachments" FontSize="18" FontWeight="Bold" Grid.Row="13" Grid.Column="0" Grid.ColumnSpan="11" Margin="0,20,0,10"/>
+                
+                <Grid Grid.Row="14" Grid.Column="0" Grid.ColumnSpan="11">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
@@ -215,7 +357,7 @@
                 </Grid>
 
                 <!-- Mortgage Calculator -->
-                <local:MortgageCalculatorView Grid.Row="13" Grid.Column="0" Grid.ColumnSpan="11" DataContext="{Binding MortgageCalculator}"/>
+                <local:MortgageCalculatorView Grid.Row="15" Grid.Column="0" Grid.ColumnSpan="11" DataContext="{Binding MortgageCalculator}"/>
 
             </Grid>
         </ScrollViewer>

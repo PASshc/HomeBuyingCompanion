@@ -198,6 +198,12 @@ PublishScripts/
 # NuGet Packages
 *.nupkg
 # The packages folder can be ignored because of Package Restore
+
+# Environment variable files (never commit secrets)
+.env
+.env.local
+.env.*.local
+*.env
 **/[Pp]ackages/*
 # except build/, which is used as an MSBuild target.
 !**/[Pp]ackages/build/
@@ -319,3 +325,9 @@ Dist/
 
 # Database
 homebuying.db
+
+# Environment variables and API keys
+appsettings.local.json
+secrets.json
+
+# Saved HTML test files (may contain personal data)

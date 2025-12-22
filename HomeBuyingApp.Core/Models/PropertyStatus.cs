@@ -8,6 +8,7 @@ namespace HomeBuyingApp.Core.Models
         OfferRejected = 3,
         Closed = 4,
         PropertyInspection = 5,
-        NotInterested = 6
+        NotInterested = 6,
+        Researching = 7  // Data extraction in progress or incomplete
     }
 }

@@ -33,18 +33,52 @@ namespace HomeBuyingApp.Core.Models
         public System.DateTime? InspectionDate { get; set; }
         public System.DateTime? ClosingDate { get; set; }
 
-        // Features
+        // Interior Features - Flooring
+        public bool HasCarpet { get; set; }
+        public bool HasTile { get; set; }
+        public bool HasWoodFlooring { get; set; }
+
+        // Interior Features - Appliances
+        public bool HasOven { get; set; }
+        public bool HasRefrigerator { get; set; }
+        public bool HasWasherDryer { get; set; }
+        public bool HasDishwasher { get; set; }
+
+        // Interior Features - Climate/Systems
         public bool HasAC { get; set; }
+        public bool HasCentralHeat { get; set; }
+        public bool HasFireplace { get; set; }
+        public bool HasCeilingFans { get; set; }
+
+        // Interior Features - Storage
+        public bool HasWalkInCloset { get; set; }
+        public bool HasAttic { get; set; }
+        public bool HasBasement { get; set; }
+
+        // Exterior Features - Outdoor
         public bool HasLandscape { get; set; }
         public bool HasPool { get; set; }
         public bool HasJacuzzi { get; set; }
         public bool HasLanai { get; set; }
-        public bool HasCarpet { get; set; }
-        public bool HasTile { get; set; }
-        public bool HasWoodFlooring { get; set; }
-        public bool HasOven { get; set; }
-        public bool HasRefrigerator { get; set; }
-        public bool HasWasherDryer { get; set; }
+        public bool HasCoveredPatio { get; set; }
+        public bool HasDeckPatio { get; set; }
+        public bool HasFencedYard { get; set; }
+        public bool HasSprinklerSystem { get; set; }
+
+        // Exterior Features - Structures
+        public bool HasGarage { get; set; }
+        public bool HasCarport { get; set; }
+        public bool HasStorageShed { get; set; }
+        public bool HasGuestHouse { get; set; }
+
+        // Other Features
+        public bool HasSolarPanels { get; set; }
+        public bool HasSecuritySystem { get; set; }
+        public bool HasCustomFeature1 { get; set; }
+        public string CustomFeature1Name { get; set; } = string.Empty;
+        public bool HasCustomFeature2 { get; set; }
+        public string CustomFeature2Name { get; set; } = string.Empty;
+
         public string OtherFeatures { get; set; } = string.Empty;
 
         // Saved Mortgage Calculation
@@ -59,5 +93,15 @@ namespace HomeBuyingApp.Core.Models
         public List<MortgageScenario> MortgageScenarios { get; set; } = new List<MortgageScenario>();
         public List<ViewingAppointment> Viewings { get; set; } = new List<ViewingAppointment>();
         public List<PropertyAttachment> Attachments { get; set; } = new List<PropertyAttachment>();
+
+        // Property images (pasted from clipboard, up to 4)
+        public string ImagePath1 { get; set; } = string.Empty;
+        public string ImagePath2 { get; set; } = string.Empty;
+        public string ImagePath3 { get; set; } = string.Empty;
+        public string ImagePath4 { get; set; } = string.Empty;
+
+        // Keep for migration compatibility (will be migrated to ImagePath1)
+        [Obsolete("Use ImagePath1-4 instead")]
+        public string PrimaryImagePath { get; set; } = string.Empty;
     }
 }

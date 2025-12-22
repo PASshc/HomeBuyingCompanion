@@ -11,6 +11,7 @@
         <converters:CurrencyConverter x:Key="CurrencyConverter"/>
         <converters:BooleanToYesNoConverter x:Key="BooleanToYesNoConverter"/>
         <converters:NumberWithCommasConverter x:Key="NumberWithCommasConverter"/>
+        <converters:StatusToBorderBrushConverter x:Key="StatusToBorderBrushConverter"/>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </UserControl.Resources>
     <Grid Margin="10">
@@ -46,7 +47,47 @@
                 <Button Content="Clear Filters" Click="ClearFilters_Click" Padding="10,5"/>
             </StackPanel>
 
-            <DataGrid Grid.Row="3" ItemsSource="{Binding Properties}" SelectedItem="{Binding SelectedProperty}" AutoGenerateColumns="False" IsReadOnly="False" SelectionMode="Single">
+            <DataGrid Grid.Row="3" ItemsSource="{Binding Properties}" SelectedItem="{Binding SelectedProperty}" 
+                      AutoGenerateColumns="False" IsReadOnly="False" SelectionMode="Single"
+                      AlternatingRowBackground="#F5F5F5" RowBackground="White"
+                      GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#E0E0E0"
+                      RowHeight="28">
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Setter Property="BorderThickness" Value="4,0,0,0"/>
+                        <Setter Property="BorderBrush" Value="{Binding Status, Converter={StaticResource StatusToBorderBrushConverter}}"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#E3F2FD"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="#BBDEFB"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.RowStyle>
+                <DataGrid.CellStyle>
+                    <Style TargetType="DataGridCell">
+                        <Setter Property="Padding" Value="5,4"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Foreground" Value="Black"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.CellStyle>
+                <DataGrid.ColumnHeaderStyle>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="#424242"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="FontWeight" Value="SemiBold"/>
+                        <Setter Property="Padding" Value="8,6"/>
+                        <Setter Property="BorderThickness" Value="0,0,1,0"/>
+                        <Setter Property="BorderBrush" Value="#616161"/>
+                    </Style>
+                </DataGrid.ColumnHeaderStyle>
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn Header="Archived" Binding="{Binding IsArchived, UpdateSourceTrigger=PropertyChanged}" Width="60" IsReadOnly="False"/>
                     <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="80" IsReadOnly="True"/>

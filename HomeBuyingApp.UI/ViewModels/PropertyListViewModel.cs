@@ -14,7 +14,6 @@ namespace HomeBuyingApp.UI.ViewModels
     {
         private readonly IPropertyService _propertyService;
         private readonly ICsvService _csvService;
-        private readonly IWebScraperService _webScraperService;
         private readonly IBackupService _backupService;
         private readonly AppDbContext _dbContext;
         private ObservableCollection<PropertyViewModel> _properties;
@@ -120,11 +119,10 @@ namespace HomeBuyingApp.UI.ViewModels
         public ICommand BackupCommand { get; }
         public ICommand RestoreCommand { get; }
 
-        public PropertyListViewModel(IPropertyService propertyService, ICsvService csvService, IWebScraperService webScraperService, IBackupService backupService, AppDbContext dbContext)
+        public PropertyListViewModel(IPropertyService propertyService, ICsvService csvService, IBackupService backupService, AppDbContext dbContext)
         {
             _propertyService = propertyService;
             _csvService = csvService;
-            _webScraperService = webScraperService;
             _backupService = backupService;
             _dbContext = dbContext;
             Properties = new ObservableCollection<PropertyViewModel>();
@@ -281,8 +279,7 @@ namespace HomeBuyingApp.UI.ViewModels
         private void OpenDetailView(PropertyViewModel property)
         {
             CurrentDetailViewModel = new PropertyDetailViewModel(
-                _propertyService, 
-                _webScraperService,
+                _propertyService,
                 property, 
                 OnSave, 
                 OnCancel);
