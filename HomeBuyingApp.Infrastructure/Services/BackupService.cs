@@ -13,11 +13,13 @@ namespace HomeBuyingApp.Infrastructure.Services
     {
         private readonly string _dbPath;
         private readonly string _attachmentsPath;
+        private readonly string _imagesPath;
 
-        public BackupService(string dbPath, string attachmentsPath)
+        public BackupService(string dbPath, string attachmentsPath, string imagesPath)
         {
             _dbPath = dbPath;
             _attachmentsPath = attachmentsPath;
+            _imagesPath = imagesPath;
         }
 
         public async Task CreateBackupAsync(string destinationPath)
@@ -50,7 +52,15 @@ namespace HomeBuyingApp.Infrastructure.Services
                         CopyDirectory(_attachmentsPath, destAttachmentsPath, true);
                     }
 
-                    // 3. Zip it all
+                    // 3. Copy Images
+                    var destImagesPath = Path.Combine(tempDir, "Images");
+                    
+                    if (Directory.Exists(_imagesPath))
+                    {
+                        CopyDirectory(_imagesPath, destImagesPath, true);
+                    }
+
+                    // 4. Zip it all
                     if (File.Exists(destinationPath)) File.Delete(destinationPath);
                     ZipFile.CreateFromDirectory(tempDir, destinationPath);
                 }
@@ -107,6 +117,16 @@ namespace HomeBuyingApp.Infrastructure.Services
                         if (!Directory.Exists(_attachmentsPath)) Directory.CreateDirectory(_attachmentsPath);
                         
                         CopyDirectory(attachmentsSource, _attachmentsPath, true);
+                    }
+
+                    // 3. Restore Images
+                    var imagesSource = Path.Combine(tempDir, "Images");
+                    
+                    if (Directory.Exists(imagesSource))
+                    {
+                        if (!Directory.Exists(_imagesPath)) Directory.CreateDirectory(_imagesPath);
+                        
+                        CopyDirectory(imagesSource, _imagesPath, true);
                     }
                 }
                 finally
