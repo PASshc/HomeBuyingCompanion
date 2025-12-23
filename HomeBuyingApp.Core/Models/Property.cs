@@ -22,7 +22,8 @@ namespace HomeBuyingApp.Core.Models
         public decimal PropertyTaxRate { get; set; } // e.g. 0.012 for 1.2%
         public string Comments { get; set; } = string.Empty; // Peters Comments
         public string Notes { get; set; } = string.Empty;
-        public int Rating { get; set; } // 1-5
+        public string QuickNotes { get; set; } = string.Empty; // JSON array of quick note chips
+        public decimal Rating { get; set; } // 1-5 (allows decimals like 3.5)
         public bool LookAt { get; set; }
         public bool Interest { get; set; }
         public bool IsArchived { get; set; }
@@ -93,6 +94,7 @@ namespace HomeBuyingApp.Core.Models
         public List<MortgageScenario> MortgageScenarios { get; set; } = new List<MortgageScenario>();
         public List<ViewingAppointment> Viewings { get; set; } = new List<ViewingAppointment>();
         public List<PropertyAttachment> Attachments { get; set; } = new List<PropertyAttachment>();
+        public List<PropertyTag> Tags { get; set; } = new List<PropertyTag>();
 
         // Property images (pasted from clipboard, up to 4)
         public string ImagePath1 { get; set; } = string.Empty;

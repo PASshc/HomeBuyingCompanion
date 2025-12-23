@@ -6,11 +6,11 @@ namespace HomeBuyingApp.Core.Models
     {
         public int Id { get; set; }
         public int PropertyId { get; set; }
-        public Property Property { get; set; }
+        public Property? Property { get; set; }
 
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
-        public string AgentName { get; set; }
-        public string Notes { get; set; }
+        public string AgentName { get; set; } = string.Empty;
+        public string Notes { get; set; } = string.Empty;
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using HomeBuyingApp.Core.Services;
 using HomeBuyingApp.Infrastructure.Data;
@@ -60,6 +61,7 @@ namespace HomeBuyingApp.UI
             // Services
             services.AddSingleton<IMortgageCalculatorService, MortgageCalculatorService>();
             services.AddScoped<IPropertyService, PropertyService>();
+            services.AddScoped<ITagService, TagService>();
             services.AddScoped<ICsvService, CsvService>();
             services.AddSingleton<IBackupService>(provider => new BackupService(dbPath, Path.Combine(appDataPath, "Attachments")));
 
@@ -140,14 +142,22 @@ namespace HomeBuyingApp.UI
                         "ImagePath1 TEXT DEFAULT ''",
                         "ImagePath2 TEXT DEFAULT ''",
                         "ImagePath3 TEXT DEFAULT ''",
-                        "ImagePath4 TEXT DEFAULT ''"
+                        "ImagePath4 TEXT DEFAULT ''",
+                        // Note: Pros/Cons columns kept for DB backwards compatibility but UI feature removed in v5.1.0
+                        "Pros TEXT DEFAULT ''",
+                        "Cons TEXT DEFAULT ''",
+                        // v6.0.0 - Quick Notes (JSON array of note chips)
+                        "QuickNotes TEXT DEFAULT ''"
                     };
 
                     foreach (var col in columns)
                     {
                         try
                         {
+                            // Suppressing EF1002: column names are hardcoded, not user input
+#pragma warning disable EF1002
                             context.Database.ExecuteSqlRaw($"ALTER TABLE Properties ADD COLUMN {col};");
+#pragma warning restore EF1002
                         }
                         catch { /* Ignore if exists */ }
                     }
@@ -169,7 +179,10 @@ namespace HomeBuyingApp.UI
                     {
                         try
                         {
+                            // Suppressing EF1002: column names are hardcoded, not user input
+#pragma warning disable EF1002
                             context.Database.ExecuteSqlRaw($"UPDATE Properties SET {col} = 0 WHERE {col} IS NULL;");
+#pragma warning restore EF1002
                         }
                         catch { /* Ignore errors */ }
                     }
@@ -196,6 +209,14 @@ namespace HomeBuyingApp.UI
                     }
                     catch { /* Ignore */ }
 
+                    // v5.1.0: Ensure Rating column allows decimal values (SQLite handles this automatically)
+                    // Just ensure no NULL values exist
+                    try
+                    {
+                        context.Database.ExecuteSqlRaw("UPDATE Properties SET Rating = 0 WHERE Rating IS NULL;");
+                    }
+                    catch { /* Ignore */ }
+
                     // Create Attachments table if not exists (for v1.5.0 update)
                     context.Database.ExecuteSqlRaw(@"
                         CREATE TABLE IF NOT EXISTS Attachments (
@@ -209,6 +230,27 @@ namespace HomeBuyingApp.UI
                         );
                         CREATE INDEX IF NOT EXISTS IX_Attachments_PropertyId ON Attachments (PropertyId);
                     ");
+
+                    // v6.0.0: Create PropertyTags and junction table for PROs/CONs tag system
+                    context.Database.ExecuteSqlRaw(@"
+                        CREATE TABLE IF NOT EXISTS PropertyTags (
+                            Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            Name TEXT NOT NULL,
+                            Type INTEGER NOT NULL DEFAULT 0,
+                            IsCustom INTEGER NOT NULL DEFAULT 0
+                        );
+                        CREATE TABLE IF NOT EXISTS PropertyPropertyTag (
+                            PropertiesId INTEGER NOT NULL,
+                            TagsId INTEGER NOT NULL,
+                            PRIMARY KEY (PropertiesId, TagsId),
+                            FOREIGN KEY (PropertiesId) REFERENCES Properties (Id) ON DELETE CASCADE,
+                            FOREIGN KEY (TagsId) REFERENCES PropertyTags (Id) ON DELETE CASCADE
+                        );
+                        CREATE INDEX IF NOT EXISTS IX_PropertyPropertyTag_TagsId ON PropertyPropertyTag (TagsId);
+                    ");
+
+                    // Seed predefined tags if table is empty
+                    SeedPredefinedTags(context);
                 }
                 catch { }
             }
@@ -230,6 +272,50 @@ namespace HomeBuyingApp.UI
             {
                 MessageBox.Show($"A fatal error occurred: {ex.Message}", "Fatal Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private static void SeedPredefinedTags(AppDbContext context)
+        {
+            try
+            {
+                // Check if any tags exist
+                var count = context.Database.ExecuteSqlRaw("SELECT COUNT(*) FROM PropertyTags");
+                var hasData = context.PropertyTags.Any();
+                if (hasData) return;
+
+                // PRO tags (Type = 0)
+                var proTags = new[]
+                {
+                    "Great Layout", "Updated Kitchen", "Large Backyard", "Quiet Street",
+                    "Good Schools", "Move-in Ready", "Natural Light", "Storage Space",
+                    "New Roof", "Updated Bathrooms", "Open Floor Plan", "Corner Lot",
+                    "Low HOA", "Energy Efficient", "Great View", "Cul-de-sac"
+                };
+
+                // CON tags (Type = 1)
+                var conTags = new[]
+                {
+                    "Needs Work", "Small Yard", "Busy Street", "Outdated Kitchen",
+                    "HOA Restrictions", "Poor Layout", "No Garage", "Flood Zone",
+                    "Old Roof", "Small Rooms", "No Updates", "High Taxes",
+                    "High HOA", "Foundation Issues", "Bad Neighbors", "Far from Work"
+                };
+
+                foreach (var name in proTags)
+                {
+#pragma warning disable EF1002
+                    context.Database.ExecuteSqlRaw($"INSERT OR IGNORE INTO PropertyTags (Name, Type, IsCustom) VALUES ('{name}', 0, 0);");
+#pragma warning restore EF1002
+                }
+
+                foreach (var name in conTags)
+                {
+#pragma warning disable EF1002
+                    context.Database.ExecuteSqlRaw($"INSERT OR IGNORE INTO PropertyTags (Name, Type, IsCustom) VALUES ('{name}', 1, 0);");
+#pragma warning restore EF1002
+                }
+            }
+            catch { /* Ignore seeding errors */ }
         }
     }
 }

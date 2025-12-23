@@ -12,6 +12,7 @@
         <converters:BooleanToYesNoConverter x:Key="BooleanToYesNoConverter"/>
         <converters:NumberWithCommasConverter x:Key="NumberWithCommasConverter"/>
         <converters:StatusToBorderBrushConverter x:Key="StatusToBorderBrushConverter"/>
+        <converters:TagTypeToColorConverter x:Key="TagTypeToColorConverter"/>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </UserControl.Resources>
     <Grid Margin="10">
@@ -117,8 +118,28 @@
                     <DataGridTextColumn Header="SqFt" Binding="{Binding SquareFeet, Converter={StaticResource NumberWithCommasConverter}}" Width="60" IsReadOnly="True"/>
                     <DataGridTextColumn Header="HOA" Binding="{Binding HasHoa, Converter={StaticResource BooleanToYesNoConverter}}" Width="50" IsReadOnly="True"/>
                     <DataGridTextColumn Header="HOA $" Binding="{Binding HoaFee, Converter={StaticResource CurrencyConverter}}" Width="60" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Peter's Notes" Binding="{Binding CommentsPreview}" Width="150" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="General Notes" Binding="{Binding NotesPreview}" Width="150" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Comments" Binding="{Binding CommentsPreview}" Width="150" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Notes" Binding="{Binding NotesPreview}" Width="150" IsReadOnly="True"/>
+                    <DataGridTemplateColumn Header="PROs" Width="120" IsReadOnly="True">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding ProTagsSummary}" 
+                                           Foreground="ForestGreen" 
+                                           TextTrimming="CharacterEllipsis" 
+                                           ToolTip="{Binding ProTagsSummary}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="CONs" Width="120" IsReadOnly="True">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding ConTagsSummary}" 
+                                           Foreground="Firebrick" 
+                                           TextTrimming="CharacterEllipsis" 
+                                           ToolTip="{Binding ConTagsSummary}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>

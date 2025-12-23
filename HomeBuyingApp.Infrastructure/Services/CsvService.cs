@@ -81,7 +81,7 @@ namespace HomeBuyingApp.Infrastructure.Services
                         PropertyTaxRate = ParseDecimal(values[14]),
                         Comments = values[15],
                         Notes = values[16],
-                        Rating = ParseInt(values[17]),
+                        Rating = ParseDecimal(values[17]),
                         LookAt = ParseBool(values[18]),
                         Interest = ParseBool(values[19]),
                         IsArchived = ParseBool(values[20])

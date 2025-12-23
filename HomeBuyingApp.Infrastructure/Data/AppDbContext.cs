@@ -9,6 +9,7 @@ namespace HomeBuyingApp.Infrastructure.Data
         public DbSet<MortgageScenario> MortgageScenarios { get; set; }
         public DbSet<ViewingAppointment> Viewings { get; set; }
         public DbSet<PropertyAttachment> Attachments { get; set; }
+        public DbSet<PropertyTag> PropertyTags { get; set; }
 
         public AppDbContext()
         {
@@ -42,6 +43,12 @@ namespace HomeBuyingApp.Infrastructure.Data
                 .WithOne(v => v.Property)
                 .HasForeignKey(v => v.PropertyId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // Many-to-many: Property <-> PropertyTag
+            modelBuilder.Entity<Property>()
+                .HasMany(p => p.Tags)
+                .WithMany(t => t.Properties)
+                .UsingEntity(j => j.ToTable("PropertyPropertyTag"));
         }
     }
 }

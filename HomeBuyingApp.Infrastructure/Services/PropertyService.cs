@@ -18,12 +18,16 @@ namespace HomeBuyingApp.Infrastructure.Services
 
         public async Task<List<Property>> GetAllPropertiesAsync()
         {
-            return await _context.Properties.ToListAsync();
+            return await _context.Properties
+                .Include(p => p.Tags)
+                .Include(p => p.Attachments)
+                .ToListAsync();
         }
 
         public async Task<Property?> GetPropertyByIdAsync(int id)
         {
             return await _context.Properties
+                .Include(p => p.Tags)
                 .Include(p => p.Attachments)
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
@@ -62,6 +66,12 @@ namespace HomeBuyingApp.Infrastructure.Services
         public async Task AddAttachmentAsync(PropertyAttachment attachment)
         {
             _context.Attachments.Add(attachment);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateAttachmentAsync(PropertyAttachment attachment)
+        {
+            _context.Attachments.Update(attachment);
             await _context.SaveChangesAsync();
         }
 

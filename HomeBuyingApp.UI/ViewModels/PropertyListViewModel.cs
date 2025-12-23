@@ -13,14 +13,15 @@ namespace HomeBuyingApp.UI.ViewModels
     public class PropertyListViewModel : ViewModelBase
     {
         private readonly IPropertyService _propertyService;
+        private readonly ITagService _tagService;
         private readonly ICsvService _csvService;
         private readonly IBackupService _backupService;
         private readonly AppDbContext _dbContext;
-        private ObservableCollection<PropertyViewModel> _properties;
+        private ObservableCollection<PropertyViewModel> _properties = new ObservableCollection<PropertyViewModel>();
         private List<PropertyViewModel> _allProperties = new List<PropertyViewModel>();
-        private PropertyDetailViewModel _currentDetailViewModel;
+        private PropertyDetailViewModel? _currentDetailViewModel;
         private bool _isDetailVisible;
-        private PropertyViewModel _selectedProperty;
+        private PropertyViewModel? _selectedProperty;
         private bool _showArchived;
         private string _filterCity = string.Empty;
         private string _filterState = string.Empty;
@@ -77,7 +78,7 @@ namespace HomeBuyingApp.UI.ViewModels
             }
         }
 
-        public PropertyViewModel SelectedProperty
+        public PropertyViewModel? SelectedProperty
         {
             get => _selectedProperty;
             set
@@ -87,7 +88,7 @@ namespace HomeBuyingApp.UI.ViewModels
             }
         }
 
-        public PropertyDetailViewModel CurrentDetailViewModel
+        public PropertyDetailViewModel? CurrentDetailViewModel
         {
             get => _currentDetailViewModel;
             set
@@ -119,9 +120,10 @@ namespace HomeBuyingApp.UI.ViewModels
         public ICommand BackupCommand { get; }
         public ICommand RestoreCommand { get; }
 
-        public PropertyListViewModel(IPropertyService propertyService, ICsvService csvService, IBackupService backupService, AppDbContext dbContext)
+        public PropertyListViewModel(IPropertyService propertyService, ITagService tagService, ICsvService csvService, IBackupService backupService, AppDbContext dbContext)
         {
             _propertyService = propertyService;
+            _tagService = tagService;
             _csvService = csvService;
             _backupService = backupService;
             _dbContext = dbContext;
@@ -280,6 +282,7 @@ namespace HomeBuyingApp.UI.ViewModels
         {
             CurrentDetailViewModel = new PropertyDetailViewModel(
                 _propertyService,
+                _tagService,
                 property, 
                 OnSave, 
                 OnCancel);
@@ -289,14 +292,14 @@ namespace HomeBuyingApp.UI.ViewModels
         private async void OnSave()
         {
             IsDetailVisible = false;
-            CurrentDetailViewModel = null;
+            CurrentDetailViewModel = null!;
             await LoadPropertiesAsync();
         }
 
         private void OnCancel()
         {
             IsDetailVisible = false;
-            CurrentDetailViewModel = null;
+            CurrentDetailViewModel = null!;
             // Reload to revert any changes made in the VM but not saved to DB
             _ = LoadPropertiesAsync();
         }

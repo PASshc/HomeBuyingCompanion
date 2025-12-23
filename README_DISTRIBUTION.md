@@ -1,31 +1,87 @@
-# HomeBuyingApp Distribution
+# HomeBuyingApp Distribution Guide
 
-This project is set up to be published as a self-contained single-file executable for Windows.
+This document describes how to build and distribute the Home Buying Companion application.
 
-## How to Build the Installer/Executable
+## Quick Start
 
-1. Open a terminal in the solution root (`d:\dev\home-buying-app`).
-2. Run the `publish_app.ps1` script:
-   ```powershell
-   .\publish_app.ps1
-   ```
+Run the all-in-one publish script:
 
-## Output
+```powershell
+.\publish_app.ps1
+```
 
-The build artifacts will be placed in the `Dist/HomeBuyingApp` folder.
+This will:
+1. Clean previous builds
+2. Publish a self-contained executable
+3. Create the installer (if Inno Setup is installed)
 
-- **HomeBuyingApp.UI.exe**: This is the main application. You can copy this file (and any other files in that folder) to any Windows computer and run it. No .NET installation is required on the target machine.
+## Build Outputs
 
-## Creating a Setup Installer (Optional)
+| Output | Location | Description |
+|--------|----------|-------------|
+| Executable | `Dist/HomeBuyingApp/HomeBuyingApp.UI.exe` | Self-contained, no .NET required |
+| Installer | `Dist/Installer/HomeBuyingAppSetup_v5.2.0.exe` | Windows installer with shortcuts |
 
-If you want a traditional `setup.exe` installer:
+## Manual Build Steps
 
-1. Download and install [Inno Setup](https://jrsoftware.org/isdl.php).
-2. Run `publish.bat` to generate the application files.
-3. Open `setup.iss` (located in the root folder) with Inno Setup.
-4. Click **Build > Compile**.
-5. The installer will be created in `Dist/Installer/HomeBuyingAppSetup.exe`.
+### 1. Publish the Application
+
+```powershell
+dotnet publish "HomeBuyingApp.UI/HomeBuyingApp.UI.csproj" `
+    -c Release `
+    -r win-x64 `
+    --self-contained true `
+    -p:PublishSingleFile=true `
+    -p:IncludeNativeLibrariesForSelfExtract=true `
+    -p:PublishReadyToRun=true `
+    -o "./Dist/HomeBuyingApp"
+```
+
+### 2. Create the Installer (Optional)
+
+Requires [Inno Setup 6](https://jrsoftware.org/isdl.php).
+
+```powershell
+& "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" setup.iss
+```
+
+## Distributing Without Installer
+
+You can distribute the application without the installer:
+
+1. Run `publish_app.ps1` or the manual publish command above
+2. Zip the contents of `Dist/HomeBuyingApp/`
+3. Share the zip file
+
+Users can extract and run `HomeBuyingApp.UI.exe` directly - no installation required.
+
+## Version Updates
+
+When releasing a new version, update these files:
+
+1. **HomeBuyingApp.UI/HomeBuyingApp.UI.csproj**:
+   - `<Version>X.X.X</Version>`
+   - `<AssemblyVersion>X.X.X.0</AssemblyVersion>`
+   - `<FileVersion>X.X.X.0</FileVersion>`
+
+2. **setup.iss**:
+   - `#define MyAppVersion "X.X.X"`
+   - `OutputBaseFilename=HomeBuyingAppSetup_vX.X.X`
+
+3. **README.md**:
+   - Update current version
+   - Add to version history
 
 ## Troubleshooting
 
-If the script fails, ensure you have the .NET SDK installed and that you can run `dotnet build` successfully.
+### Build Fails
+- Ensure .NET 8 SDK is installed: `dotnet --version`
+- Try cleaning: `dotnet clean` then `dotnet build`
+
+### Installer Not Created
+- Install [Inno Setup 6](https://jrsoftware.org/isdl.php)
+- Ensure it's installed at `C:\Program Files (x86)\Inno Setup 6\`
+
+### Application Won't Start
+- Check Windows Event Viewer for .NET errors
+- Try running from command line to see error output

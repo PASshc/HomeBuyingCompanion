@@ -1,5 +1,7 @@
 using HomeBuyingApp.Core.Models;
 using HomeBuyingApp.UI.Helpers;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace HomeBuyingApp.UI.ViewModels
 {
@@ -240,6 +242,19 @@ namespace HomeBuyingApp.UI.ViewModels
 
         public string NotesPreview => RichTextBoxBinding.ToPlainText(_model.Notes);
 
+        public string QuickNotes
+        {
+            get => _model.QuickNotes;
+            set
+            {
+                if (_model.QuickNotes != value)
+                {
+                    _model.QuickNotes = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public string Comments
         {
             get => _model.Comments;
@@ -295,7 +310,7 @@ namespace HomeBuyingApp.UI.ViewModels
             }
         }
 
-        public int Rating
+        public decimal Rating
         {
             get => _model.Rating;
             set
@@ -609,6 +624,31 @@ namespace HomeBuyingApp.UI.ViewModels
                     OnPropertyChanged();
                 }
             }
+        }
+
+        // Tags (PROs/CONs)
+        public List<PropertyTag> Tags => _model.Tags ?? new List<PropertyTag>();
+
+        public IEnumerable<PropertyTag> ProTags => Tags.Where(t => t.Type == TagType.Pro);
+        public IEnumerable<PropertyTag> ConTags => Tags.Where(t => t.Type == TagType.Con);
+
+        public bool HasTags => Tags.Count > 0;
+        public bool HasProTags => ProTags.Any();
+        public bool HasConTags => ConTags.Any();
+
+        public string ProTagsSummary => HasProTags ? string.Join(", ", ProTags.Select(t => t.Name)) : "";
+        public string ConTagsSummary => HasConTags ? string.Join(", ", ConTags.Select(t => t.Name)) : "";
+
+        public void RefreshTags()
+        {
+            OnPropertyChanged(nameof(Tags));
+            OnPropertyChanged(nameof(ProTags));
+            OnPropertyChanged(nameof(ConTags));
+            OnPropertyChanged(nameof(HasTags));
+            OnPropertyChanged(nameof(HasProTags));
+            OnPropertyChanged(nameof(HasConTags));
+            OnPropertyChanged(nameof(ProTagsSummary));
+            OnPropertyChanged(nameof(ConTagsSummary));
         }
     }
 }

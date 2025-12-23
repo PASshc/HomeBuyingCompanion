@@ -13,6 +13,7 @@ namespace HomeBuyingApp.Core.Services
         Task DeletePropertyAsync(int id);
         Task<bool> PropertyExistsAsync(string address, string city, string state, string zipCode);
         Task AddAttachmentAsync(PropertyAttachment attachment);
+        Task UpdateAttachmentAsync(PropertyAttachment attachment);
         Task DeleteAttachmentAsync(int attachmentId);
     }
 }

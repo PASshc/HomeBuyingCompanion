@@ -66,7 +66,6 @@ namespace HomeBuyingApp.UI.Helpers
             {
                 var newDoc = CreateDocumentFromXamlOrPlainText(newValue);
                 richTextBox.Document = newDoc;
-                // Force focus to ensure the document is fully loaded
                 richTextBox.CaretPosition = newDoc.ContentStart;
             }
             finally
@@ -81,8 +80,44 @@ namespace HomeBuyingApp.UI.Helpers
 
             richTextBox.TextChanged += RichTextBoxOnTextChanged;
             richTextBox.Unloaded += RichTextBoxOnUnloaded;
+            richTextBox.DataContextChanged += RichTextBoxOnDataContextChanged;
+            richTextBox.IsVisibleChanged += RichTextBoxOnIsVisibleChanged;
 
             SetIsHooked(richTextBox, true);
+        }
+
+        private static void RichTextBoxOnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (sender is not RichTextBox richTextBox) return;
+            if (e.NewValue is not true) return;
+
+            RefreshFromBindingSource(richTextBox);
+        }
+
+        private static void RichTextBoxOnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (sender is not RichTextBox richTextBox) return;
+
+            RefreshFromBindingSource(richTextBox);
+        }
+
+        private static void RefreshFromBindingSource(RichTextBox richTextBox)
+        {
+            SetIsUpdating(richTextBox, true);
+            try
+            {
+                var bindingExpression = System.Windows.Data.BindingOperations.GetBindingExpression(richTextBox, XamlTextProperty);
+                bindingExpression?.UpdateTarget();
+                
+                var newValue = GetXamlText(richTextBox);
+                var newDoc = CreateDocumentFromXamlOrPlainText(newValue);
+                richTextBox.Document = newDoc;
+                richTextBox.CaretPosition = newDoc.ContentStart;
+            }
+            finally
+            {
+                SetIsUpdating(richTextBox, false);
+            }
         }
 
         private static void RichTextBoxOnUnloaded(object sender, RoutedEventArgs e)
@@ -91,6 +126,8 @@ namespace HomeBuyingApp.UI.Helpers
 
             richTextBox.TextChanged -= RichTextBoxOnTextChanged;
             richTextBox.Unloaded -= RichTextBoxOnUnloaded;
+            richTextBox.DataContextChanged -= RichTextBoxOnDataContextChanged;
+            richTextBox.IsVisibleChanged -= RichTextBoxOnIsVisibleChanged;
             SetIsHooked(richTextBox, false);
         }
 

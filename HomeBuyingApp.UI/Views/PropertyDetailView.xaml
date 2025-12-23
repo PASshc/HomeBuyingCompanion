@@ -6,6 +6,8 @@
              xmlns:local="clr-namespace:HomeBuyingApp.UI.Views"
              xmlns:converters="clr-namespace:HomeBuyingApp.UI.Converters"
              xmlns:helpers="clr-namespace:HomeBuyingApp.UI.Helpers"
+             xmlns:controls="clr-namespace:HomeBuyingApp.UI.Controls"
+             xmlns:models="clr-namespace:HomeBuyingApp.Core.Models;assembly=HomeBuyingApp.Core"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="800">
     <UserControl.Resources>
@@ -15,6 +17,7 @@
         <converters:NumberWithCommasConverter x:Key="NumberWithCommasConverter"/>
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
+        <converters:TagTypeToColorConverter x:Key="TagTypeToColorConverter"/>
     </UserControl.Resources>
     <Grid Margin="20">
         <Grid.RowDefinitions>
@@ -56,7 +59,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/> <!-- Row 12: PROs/CONs Tags -->
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -115,8 +118,8 @@
                 <TextBlock Text="Status:" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center" Margin="0,5"/>
                 <ComboBox ItemsSource="{Binding Statuses}" SelectedItem="{Binding Property.Status, Mode=TwoWay}" Grid.Row="4" Grid.Column="1" Margin="0,5"/>
 
-                <TextBlock Text="Rating (1-5):" Grid.Row="4" Grid.Column="3" VerticalAlignment="Center" Margin="0,5"/>
-                <TextBox Text="{Binding Property.Rating, UpdateSourceTrigger=PropertyChanged}" Grid.Row="4" Grid.Column="4" Margin="0,5"/>
+                <TextBlock Text="Rating:" Grid.Row="4" Grid.Column="3" VerticalAlignment="Center" Margin="0,5"/>
+                <controls:StarRatingControl Rating="{Binding Property.Rating, Mode=TwoWay}" Grid.Row="4" Grid.Column="4" VerticalAlignment="Center" Margin="0,5"/>
 
                 <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="6" Grid.ColumnSpan="5" Margin="0,5" VerticalAlignment="Center">
                     <CheckBox Content="Look At?" IsChecked="{Binding Property.LookAt}" Margin="0,0,20,0"/>
@@ -146,7 +149,10 @@
                 </StackPanel>
 
                 <!-- Interior Features -->
-                <TextBlock Text="Interior Features:" Grid.Row="7" Grid.Column="0" VerticalAlignment="Top" Margin="0,5" FontWeight="SemiBold"/>
+                <StackPanel Orientation="Horizontal" Grid.Row="7" Grid.Column="0" VerticalAlignment="Top" Margin="0,5">
+                    <TextBlock Text="■" Foreground="#4CAF50" FontSize="14" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                    <TextBlock Text="Interior:" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                </StackPanel>
                 <StackPanel Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="10" Margin="0,5">
                     <!-- Flooring -->
                     <TextBlock Text="Flooring" FontSize="11" Foreground="Gray" Margin="0,0,0,3"/>
@@ -181,7 +187,10 @@
                 </StackPanel>
 
                 <!-- Exterior Features -->
-                <TextBlock Text="Exterior Features:" Grid.Row="8" Grid.Column="0" VerticalAlignment="Top" Margin="0,5" FontWeight="SemiBold"/>
+                <StackPanel Orientation="Horizontal" Grid.Row="8" Grid.Column="0" VerticalAlignment="Top" Margin="0,5">
+                    <TextBlock Text="●" Foreground="#8BC34A" FontSize="14" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                    <TextBlock Text="Exterior:" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                </StackPanel>
                 <StackPanel Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="10" Margin="0,5">
                     <!-- Outdoor -->
                     <TextBlock Text="Outdoor" FontSize="11" Foreground="Gray" Margin="0,0,0,3"/>
@@ -206,7 +215,10 @@
                 </StackPanel>
 
                 <!-- Other Features -->
-                <TextBlock Text="Other Features:" Grid.Row="9" Grid.Column="0" VerticalAlignment="Top" Margin="0,5" FontWeight="SemiBold"/>
+                <StackPanel Orientation="Horizontal" Grid.Row="9" Grid.Column="0" VerticalAlignment="Top" Margin="0,5">
+                    <TextBlock Text="★" Foreground="#FFC107" FontSize="14" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                    <TextBlock Text="Other:" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                </StackPanel>
                 <StackPanel Grid.Row="9" Grid.Column="1" Grid.ColumnSpan="10" Margin="0,5">
                     <UniformGrid Columns="4" Margin="0,0,0,8">
                         <CheckBox Content="Solar Panels" IsChecked="{Binding Property.HasSolarPanels}" Margin="0,0,10,3"/>
@@ -227,26 +239,172 @@
                              Margin="0,0,0,5"/>
                 </StackPanel>
 
+                <!-- Quick Notes (Chips) -->
+                <StackPanel Orientation="Horizontal" Grid.Row="11" Grid.Column="0" VerticalAlignment="Top" Margin="0,5">
+                    <TextBlock Text="✎" Foreground="#2196F3" FontSize="14" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                    <TextBlock Text="Notes:" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Grid.Row="11" Grid.Column="1" Grid.ColumnSpan="10" Margin="0,5">
+                    <!-- Current Notes as Chips -->
+                    <ItemsControl ItemsSource="{Binding QuickNotesList}" Margin="0,0,0,8">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="#5C6BC0" CornerRadius="12" Padding="10,5" Margin="0,0,6,6">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding}" Foreground="White" VerticalAlignment="Center"/>
+                                        <Button Content="✕" 
+                                                Command="{Binding DataContext.RemoveQuickNoteCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                                CommandParameter="{Binding}"
+                                                Background="Transparent" Foreground="White" BorderThickness="0"
+                                                Padding="6,0,0,0" FontWeight="Bold" Cursor="Hand"
+                                                VerticalAlignment="Center" FontSize="10"/>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    
+                    <!-- Add New Note -->
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox Text="{Binding NewQuickNote, UpdateSourceTrigger=PropertyChanged}" 
+                                 Width="300" Margin="0,0,8,0" 
+                                 ToolTip="Type a quick note and press Add"/>
+                        <Button Content="➕ Add Note" Command="{Binding AddQuickNoteCommand}" Padding="10,5"/>
+                    </StackPanel>
+                </StackPanel>
+
                 <!-- Comments -->
-                <TextBlock Text="Comments:" Grid.Row="10" Grid.Column="0" VerticalAlignment="Top" Margin="0,5"/>
+                <StackPanel Orientation="Horizontal" Grid.Row="12" Grid.Column="0" VerticalAlignment="Top" Margin="0,5">
+                    <TextBlock Text="❝" Foreground="#FF9800" FontSize="14" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                    <TextBlock Text="Comments:" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                </StackPanel>
                 <RichTextBox helpers:RichTextBoxBinding.XamlText="{Binding Property.Comments, Mode=TwoWay}"
-                             Grid.Row="10" Grid.Column="1" Grid.ColumnSpan="10"
+                             Grid.Row="12" Grid.Column="1" Grid.ColumnSpan="10"
                              MinHeight="60" MaxHeight="200"
                              VerticalScrollBarVisibility="Auto"
                              Margin="0,5" />
 
-                <!-- Notes -->
-                <TextBlock Text="Notes:" Grid.Row="11" Grid.Column="0" VerticalAlignment="Top" Margin="0,5"/>
-                <RichTextBox helpers:RichTextBoxBinding.XamlText="{Binding Property.Notes, Mode=TwoWay}"
-                             Grid.Row="11" Grid.Column="1" Grid.ColumnSpan="10"
-                             MinHeight="60" MaxHeight="200"
-                             VerticalScrollBarVisibility="Auto"
-                             Margin="0,5" />
+                <!-- PROs & CONs Section -->
+                <StackPanel Orientation="Horizontal" Grid.Row="10" Grid.Column="0" VerticalAlignment="Top" Margin="0,5">
+                    <TextBlock Text="⚖" Foreground="#9C27B0" FontSize="14" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                    <TextBlock Text="PROs/CONs:" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                </StackPanel>
+                <Grid Grid.Row="10" Grid.Column="1" Grid.ColumnSpan="10" Margin="0,5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- PROs Section (Left) -->
+                    <Border Grid.Column="0" BorderBrush="ForestGreen" BorderThickness="1" CornerRadius="5" Padding="10">
+                        <StackPanel>
+                            <TextBlock Text="✓ PROs" FontSize="14" FontWeight="Bold" Foreground="ForestGreen" Margin="0,0,0,10"/>
+                            
+                            <!-- Current PRO Tags -->
+                            <ItemsControl ItemsSource="{Binding PropertyProTags}" Margin="0,0,0,10">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Background="ForestGreen" CornerRadius="3" Padding="8,4" Margin="0,0,5,5">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding Name}" Foreground="White" VerticalAlignment="Center"/>
+                                                <Button Content="✕" 
+                                                        Command="{Binding DataContext.RemoveProTagCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                                        CommandParameter="{Binding}"
+                                                        Background="Transparent" Foreground="White" BorderThickness="0"
+                                                        Padding="5,0,0,0" FontWeight="Bold" Cursor="Hand"
+                                                        VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            
+                            <!-- Add PRO Tag -->
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                <ComboBox ItemsSource="{Binding AvailableProTags}" 
+                                          SelectedItem="{Binding SelectedProTag}"
+                                          DisplayMemberPath="Name"
+                                          Width="180" Margin="0,0,8,0"/>
+                                <Button Content="Add" Command="{Binding AddProTagCommand}" Padding="10,3" Background="#E8F5E9"/>
+                            </StackPanel>
+                            
+                            <!-- Create New PRO Tag -->
+                            <StackPanel Orientation="Horizontal">
+                                <TextBox Text="{Binding NewProTagName, UpdateSourceTrigger=PropertyChanged}" 
+                                         Width="180" Margin="0,0,8,0" 
+                                         ToolTip="Create a custom PRO"/>
+                                <Button Content="Create" Command="{Binding CreateProTagCommand}" Padding="10,3" Background="#E8F5E9"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- CONs Section (Right) -->
+                    <Border Grid.Column="2" BorderBrush="Firebrick" BorderThickness="1" CornerRadius="5" Padding="10">
+                        <StackPanel>
+                            <TextBlock Text="✗ CONs" FontSize="14" FontWeight="Bold" Foreground="Firebrick" Margin="0,0,0,10"/>
+                            
+                            <!-- Current CON Tags -->
+                            <ItemsControl ItemsSource="{Binding PropertyConTags}" Margin="0,0,0,10">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Background="Firebrick" CornerRadius="3" Padding="8,4" Margin="0,0,5,5">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding Name}" Foreground="White" VerticalAlignment="Center"/>
+                                                <Button Content="✕" 
+                                                        Command="{Binding DataContext.RemoveConTagCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                                        CommandParameter="{Binding}"
+                                                        Background="Transparent" Foreground="White" BorderThickness="0"
+                                                        Padding="5,0,0,0" FontWeight="Bold" Cursor="Hand"
+                                                        VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            
+                            <!-- Add CON Tag -->
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                <ComboBox ItemsSource="{Binding AvailableConTags}" 
+                                          SelectedItem="{Binding SelectedConTag}"
+                                          DisplayMemberPath="Name"
+                                          Width="180" Margin="0,0,8,0"/>
+                                <Button Content="Add" Command="{Binding AddConTagCommand}" Padding="10,3" Background="#FFEBEE"/>
+                            </StackPanel>
+                            
+                            <!-- Create New CON Tag -->
+                            <StackPanel Orientation="Horizontal">
+                                <TextBox Text="{Binding NewConTagName, UpdateSourceTrigger=PropertyChanged}" 
+                                         Width="180" Margin="0,0,8,0" 
+                                         ToolTip="Create a custom CON"/>
+                                <Button Content="Create" Command="{Binding CreateConTagCommand}" Padding="10,3" Background="#FFEBEE"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </Grid>
 
                 <!-- Property Images (up to 4) -->
-                <TextBlock Text="Property Images" FontSize="18" FontWeight="Bold" Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="11" Margin="0,20,0,10"/>
+                <StackPanel Orientation="Horizontal" Grid.Row="15" Grid.Column="0" Grid.ColumnSpan="11" Margin="0,20,0,10">
+                    <TextBlock Text="▣" Foreground="#E91E63" FontSize="18" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                    <TextBlock Text="Property Images" FontSize="18" FontWeight="Bold" VerticalAlignment="Center"/>
+                </StackPanel>
                 
-                <Grid Grid.Row="13" Grid.Column="0" Grid.ColumnSpan="11">
+                <Grid Grid.Row="16" Grid.Column="0" Grid.ColumnSpan="11">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
@@ -326,7 +484,10 @@
                 </Grid>
 
                 <!-- Attachments -->
-                <TextBlock Text="Attachments" FontSize="18" FontWeight="Bold" Grid.Row="13" Grid.Column="0" Grid.ColumnSpan="11" Margin="0,20,0,10"/>
+                <StackPanel Orientation="Horizontal" Grid.Row="13" Grid.Column="0" Grid.ColumnSpan="11" Margin="0,20,0,10">
+                    <TextBlock Text="✿" Foreground="#00BCD4" FontSize="18" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                    <TextBlock Text="Attachments" FontSize="18" FontWeight="Bold" VerticalAlignment="Center"/>
+                </StackPanel>
                 
                 <Grid Grid.Row="14" Grid.Column="0" Grid.ColumnSpan="11">
                     <Grid.RowDefinitions>
@@ -351,13 +512,24 @@
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
+                                <GridViewColumn Header="Notes" Width="450">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBox Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                     TextWrapping="Wrap" AcceptsReturn="True" 
+                                                     MinHeight="40" MaxHeight="80" Width="430"
+                                                     VerticalScrollBarVisibility="Auto"
+                                                     BorderThickness="1" BorderBrush="#CCCCCC" Padding="3"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
                             </GridView>
                         </ListView.View>
                     </ListView>
                 </Grid>
 
                 <!-- Mortgage Calculator -->
-                <local:MortgageCalculatorView Grid.Row="15" Grid.Column="0" Grid.ColumnSpan="11" DataContext="{Binding MortgageCalculator}"/>
+                <local:MortgageCalculatorView Grid.Row="17" Grid.Column="0" Grid.ColumnSpan="11" DataContext="{Binding MortgageCalculator}"/>
 
             </Grid>
         </ScrollViewer>

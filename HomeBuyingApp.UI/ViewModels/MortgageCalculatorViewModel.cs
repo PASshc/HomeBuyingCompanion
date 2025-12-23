@@ -10,6 +10,7 @@ namespace HomeBuyingApp.UI.ViewModels
         private readonly IMortgageCalculatorService _calculatorService;
         private MortgageScenario _scenario;
         private bool _isUpdatingDownPayment;
+        private IReadOnlyList<AmortizationEntry> _amortizationSchedule = new List<AmortizationEntry>();
 
         public List<decimal> DownPaymentPercentOptions { get; } = new List<decimal>
         {
@@ -179,10 +180,9 @@ namespace HomeBuyingApp.UI.ViewModels
         public decimal PmiMonthlyAmount => _scenario.PmiMonthlyAmount;
         public decimal TotalMonthlyPayment => _scenario.TotalMonthlyPayment;
 
-        private List<AmortizationEntry> _amortizationSchedule;
         public List<AmortizationEntry> AmortizationSchedule
         {
-            get => _amortizationSchedule;
+            get => (List<AmortizationEntry>)_amortizationSchedule;
             set
             {
                 _amortizationSchedule = value;

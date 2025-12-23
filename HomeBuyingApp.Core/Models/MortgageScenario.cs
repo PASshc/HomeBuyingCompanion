@@ -4,9 +4,9 @@ namespace HomeBuyingApp.Core.Models
     {
         public int Id { get; set; }
         public int PropertyId { get; set; }
-        public Property Property { get; set; }
+        public Property? Property { get; set; }
 
-        public string Name { get; set; } // e.g. "20% Down"
+        public string Name { get; set; } = string.Empty; // e.g. "20% Down"
         public decimal PurchasePrice { get; set; }
         public decimal DownPaymentAmount { get; set; }
         public decimal InterestRate { get; set; } // e.g. 0.065 for 6.5%
