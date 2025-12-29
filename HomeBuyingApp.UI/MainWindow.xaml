@@ -8,15 +8,72 @@
         xmlns:vm="clr-namespace:HomeBuyingApp.UI.ViewModels"
         mc:Ignorable="d"
         Title="Home Buying App" Height="600" Width="900"
-        Icon="pack://application:,,,/Resources/homeBuyAppIcon_v2.ico">
-    <Grid>
-        <TabControl>
-            <TabItem Header="Mortgage Calculator &amp; Comparison">
-                <views:MortgageComparisonView DataContext="{Binding MortgageComparisonViewModel}"/>
-            </TabItem>
-            <TabItem Header="My Properties">
-                <views:PropertyListView DataContext="{Binding PropertyListViewModel}"/>
-            </TabItem>
-        </TabControl>
-    </Grid>
+        Icon="pack://application:,,,/Resources/homeBuyAppIcon_v2.ico"
+        Loaded="Window_Loaded">
+    <DockPanel>
+        <!-- Menu Bar -->
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Backup Database..." Click="BackupDatabase_Click"/>
+                <MenuItem Header="_Restore Database..." Click="RestoreDatabase_Click"/>
+                <Separator/>
+                <MenuItem Header="E_xit" Click="Exit_Click"/>
+            </MenuItem>
+            <MenuItem Header="_Help">
+                <MenuItem Header="_Check for Updates..." Click="CheckForUpdates_Click"/>
+                <MenuItem Header="_User Guide" Click="UserGuide_Click"/>
+                <Separator/>
+                <MenuItem Header="_About" Click="About_Click"/>
+            </MenuItem>
+        </Menu>
+
+        <!-- Update Notification Banner -->
+        <Border x:Name="UpdateBanner" 
+                DockPanel.Dock="Top" 
+                Background="#FFF3CD" 
+                BorderBrush="#FFC107" 
+                BorderThickness="0,0,0,1" 
+                Padding="10,8"
+                Visibility="Collapsed">
+            <DockPanel>
+                <Button DockPanel.Dock="Right" 
+                        Content="✕" 
+                        Background="Transparent" 
+                        BorderThickness="0" 
+                        FontWeight="Bold"
+                        Cursor="Hand"
+                        Padding="8,0"
+                        Click="DismissUpdate_Click"/>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="🎉 " FontSize="14" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="UpdateMessage" 
+                               Text="A new version is available!" 
+                               VerticalAlignment="Center"
+                               Margin="0,0,10,0"/>
+                    <TextBlock VerticalAlignment="Center">
+                        <Hyperlink x:Name="DownloadLink" 
+                                   NavigateUri="https://github.com/PASshc/HomeBuyingCompanion/releases/latest"
+                                   RequestNavigate="Hyperlink_RequestNavigate">
+                            <Run Text="Download Now"/>
+                        </Hyperlink>
+                    </TextBlock>
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <!-- Main Content -->
+        <Grid>
+            <TabControl>
+                <TabItem Header="Mortgage Calculator &amp; Comparison">
+                    <views:MortgageComparisonView DataContext="{Binding MortgageComparisonViewModel}"/>
+                </TabItem>
+                <TabItem Header="My Properties">
+                    <views:PropertyListView DataContext="{Binding PropertyListViewModel}"/>
+                </TabItem>
+                <TabItem Header="User Guide" x:Name="UserGuideTab">
+                    <views:UserGuideView/>
+                </TabItem>
+            </TabControl>
+        </Grid>
+    </DockPanel>
 </Window>

@@ -12,6 +12,8 @@
         <converters:BooleanToYesNoConverter x:Key="BooleanToYesNoConverter"/>
         <converters:NumberWithCommasConverter x:Key="NumberWithCommasConverter"/>
         <converters:StatusToBorderBrushConverter x:Key="StatusToBorderBrushConverter"/>
+        <converters:StatusToBackgroundConverter x:Key="StatusToBackgroundConverter"/>
+        <converters:RatingToStarsConverter x:Key="RatingToStarsConverter"/>
         <converters:TagTypeToColorConverter x:Key="TagTypeToColorConverter"/>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </UserControl.Resources>
@@ -90,10 +92,30 @@
                 </DataGrid.ColumnHeaderStyle>
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn Header="Archived" Binding="{Binding IsArchived, UpdateSourceTrigger=PropertyChanged}" Width="60" IsReadOnly="False"/>
-                    <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="80" IsReadOnly="True"/>
+                    <DataGridTemplateColumn Header="Status" Width="110" IsReadOnly="True" SortMemberPath="Status">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Border Background="{Binding Status, Converter={StaticResource StatusToBackgroundConverter}}" 
+                                        CornerRadius="3" Padding="6,2" Margin="-5,-4">
+                                    <TextBlock Text="{Binding Status}" 
+                                               FontWeight="SemiBold" 
+                                               HorizontalAlignment="Center"/>
+                                </Border>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                     <DataGridCheckBoxColumn Header="Look At" Binding="{Binding LookAt, UpdateSourceTrigger=PropertyChanged}" Width="60" IsReadOnly="False"/>
                     <DataGridCheckBoxColumn Header="Interest" Binding="{Binding Interest, UpdateSourceTrigger=PropertyChanged}" Width="60" IsReadOnly="False"/>
-                    <DataGridTextColumn Header="Rank" Binding="{Binding Rating}" Width="40" IsReadOnly="True"/>
+                    <DataGridTemplateColumn Header="Rank" Width="80" IsReadOnly="True" SortMemberPath="Rating">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Rating, Converter={StaticResource RatingToStarsConverter}}" 
+                                           Foreground="#FFB300" 
+                                           FontSize="12"
+                                           ToolTip="{Binding Rating, StringFormat='{}{0:N1} stars'}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                     <DataGridTextColumn Header="Address" Binding="{Binding Address}" Width="150" IsReadOnly="True"/>
                     <DataGridTextColumn Header="City" Binding="{Binding City}" Width="100" IsReadOnly="True"/>
                     <DataGridTextColumn Header="State" Binding="{Binding State}" Width="50" IsReadOnly="True"/>
@@ -110,14 +132,62 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTextColumn Header="Price" Binding="{Binding ListPrice, Converter={StaticResource CurrencyConverter}}" Width="90" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Est. Offer" Binding="{Binding EstimatedOffer, Converter={StaticResource CurrencyConverter}}" Width="90" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Willing To Pay" Binding="{Binding WillingToPay, Converter={StaticResource CurrencyConverter}}" Width="90" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Beds" Binding="{Binding Bedrooms}" Width="40" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Baths" Binding="{Binding Bathrooms}" Width="40" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="SqFt" Binding="{Binding SquareFeet, Converter={StaticResource NumberWithCommasConverter}}" Width="60" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="HOA" Binding="{Binding HasHoa, Converter={StaticResource BooleanToYesNoConverter}}" Width="50" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="HOA $" Binding="{Binding HoaFee, Converter={StaticResource CurrencyConverter}}" Width="60" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Price" Binding="{Binding ListPrice, Converter={StaticResource CurrencyConverter}}" Width="90" IsReadOnly="True">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Est. Offer" Binding="{Binding EstimatedOffer, Converter={StaticResource CurrencyConverter}}" Width="90" IsReadOnly="True">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Willing To Pay" Binding="{Binding WillingToPay, Converter={StaticResource CurrencyConverter}}" Width="100" IsReadOnly="True">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Beds" Binding="{Binding Bedrooms}" Width="40" IsReadOnly="True">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Baths" Binding="{Binding Bathrooms}" Width="45" IsReadOnly="True">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="SqFt" Binding="{Binding SquareFeet, Converter={StaticResource NumberWithCommasConverter}}" Width="65" IsReadOnly="True">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="HOA" Binding="{Binding HasHoa, Converter={StaticResource BooleanToYesNoConverter}}" Width="45" IsReadOnly="True">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="HOA $" Binding="{Binding HoaFee, Converter={StaticResource CurrencyConverter}}" Width="70" IsReadOnly="True">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
                     <DataGridTextColumn Header="Comments" Binding="{Binding CommentsPreview}" Width="150" IsReadOnly="True"/>
                     <DataGridTextColumn Header="Notes" Binding="{Binding NotesPreview}" Width="150" IsReadOnly="True"/>
                     <DataGridTemplateColumn Header="PROs" Width="120" IsReadOnly="True">

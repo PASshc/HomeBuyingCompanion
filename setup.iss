@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Home Buying App"
-#define MyAppVersion "5.2.0"
+#define MyAppVersion "5.5.0"
 #define MyAppPublisher "Home Buyer"
 #define MyAppExeName "HomeBuyingApp.UI.exe"
 
@@ -17,7 +17,7 @@ DisableProgramGroupPage=yes
 ; Remove the following line if you want to require admin privileges
 PrivilegesRequired=lowest
 OutputDir=Dist\Installer
-OutputBaseFilename=HomeBuyingAppSetup_v5.2.0
+OutputBaseFilename=HomeBuyingAppSetup_v5.5.0
 SetupIconFile=HomeBuyingApp.UI\Resources\homeBuyAppIcon_v2.ico
 Compression=lzma
 SolidCompression=yes

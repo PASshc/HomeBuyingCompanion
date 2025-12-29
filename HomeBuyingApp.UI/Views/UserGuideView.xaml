@@ -1,0 +1,335 @@
+<UserControl x:Class="HomeBuyingApp.UI.Views.UserGuideView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="800">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="20">
+        <StackPanel>
+            <!-- Header -->
+            <TextBlock Text="📖 Home Buying Companion - User Guide" 
+                       FontSize="24" FontWeight="Bold" 
+                       Foreground="#2C3E50"
+                       Margin="0,0,0,20"/>
+            
+            <TextBlock Text="Version 5.2.0" 
+                       FontSize="14" FontStyle="Italic" 
+                       Foreground="#7F8C8D"
+                       Margin="0,0,0,10"/>
+
+            <!-- GitHub Link -->
+            <Border Background="#E8F4F8" 
+                    BorderBrush="#3498DB" 
+                    BorderThickness="1" 
+                    CornerRadius="5" 
+                    Padding="15" 
+                    Margin="0,0,0,25">
+                <StackPanel>
+                    <TextBlock FontWeight="SemiBold" Foreground="#2C3E50" Margin="0,0,0,8">
+                        <Run Text="📚 Full Documentation &amp; Updates"/>
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" Foreground="#34495E">
+                        <Run Text="For complete documentation, source code, and updates, visit our GitHub repository:"/>
+                    </TextBlock>
+                    <TextBlock Margin="0,8,0,0">
+                        <Hyperlink NavigateUri="https://github.com/PASshc/HomeBuyingCompanion" 
+                                   RequestNavigate="Hyperlink_RequestNavigate"
+                                   Foreground="#3498DB">
+                            <Run Text="https://github.com/PASshc/HomeBuyingCompanion"/>
+                        </Hyperlink>
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+
+            <!-- Getting Started -->
+            <Border Background="#FAFAFA" Padding="15" Margin="0,0,0,15" CornerRadius="5">
+                <StackPanel>
+                    <TextBlock Text="🚀 Getting Started" 
+                               FontSize="18" FontWeight="Bold" 
+                               Foreground="#2C3E50"
+                               Margin="0,0,0,10"/>
+                    <TextBlock TextWrapping="Wrap" Margin="0,0,0,8">
+                        <Run Text="Home Buying Companion helps you track properties through your entire home buying journey:"/>
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" Margin="0,0,0,5" FontStyle="Italic" Foreground="#7F8C8D" FontSize="12">
+                        <Run Text="💡 The app automatically checks for updates on launch. You'll see a notification if a new version is available!"/>
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" Margin="10,5,0,0">
+                        <Run Text="1. " FontWeight="Bold"/>
+                        <Run Text="Add properties from listings or manually"/>
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" Margin="10,3,0,0">
+                        <Run Text="2. " FontWeight="Bold"/>
+                        <Run Text="Rate and organize with tags, notes, and images"/>
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" Margin="10,3,0,0">
+                        <Run Text="3. " FontWeight="Bold"/>
+                        <Run Text="Calculate mortgages and compare scenarios"/>
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" Margin="10,3,0,0">
+                        <Run Text="4. " FontWeight="Bold"/>
+                        <Run Text="Track viewing appointments and important dates"/>
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" Margin="10,3,0,8">
+                        <Run Text="5. " FontWeight="Bold"/>
+                        <Run Text="Update status as you progress toward closing"/>
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" FontStyle="Italic" Foreground="#7F8C8D">
+                        <Run Text="All data is stored locally on your computer - no cloud, no subscriptions!"/>
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+
+            <!-- Property Management -->
+            <Border Background="#FAFAFA" Padding="15" Margin="0,0,0,15" CornerRadius="5">
+                <StackPanel>
+                    <TextBlock Text="🏠 Managing Properties" 
+                               FontSize="18" FontWeight="Bold" 
+                               Foreground="#2C3E50"
+                               Margin="0,0,0,10"/>
+                    
+                    <TextBlock Text="Adding Properties" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                    <TextBlock TextWrapping="Wrap" Margin="10,0,0,8">
+                        • Click <Run FontWeight="Bold">Add New Property</Run> in the My Properties tab<LineBreak/>
+                        • Use <Run FontWeight="Bold">Paste from Clipboard</Run> to import from Zillow/Redfin (copy listing text first)<LineBreak/>
+                        • Import multiple properties via <Run FontWeight="Bold">CSV Import</Run>
+                    </TextBlock>
+
+                    <TextBlock Text="Property Status" FontWeight="SemiBold" Margin="0,8,0,5"/>
+                    <TextBlock TextWrapping="Wrap" Margin="10,0,0,8">
+                        Track your progress with 8 status types (color-coded in the list):<LineBreak/>
+                        • <Run Foreground="#95A5A6">Researching</Run> → Just discovered<LineBreak/>
+                        • <Run Foreground="#3498DB">Interested</Run> → Want to learn more<LineBreak/>
+                        • <Run Foreground="#F39C12">Pending Visit</Run> → Scheduled viewing<LineBreak/>
+                        • <Run Foreground="#9B59B6">Property Inspection</Run> → Under inspection<LineBreak/>
+                        • <Run Foreground="#1ABC9C">Offer Made</Run> → Offer submitted<LineBreak/>
+                        • <Run Foreground="#E74C3C">Offer Rejected</Run> → Not accepted<LineBreak/>
+                        • <Run Foreground="#27AE60">Closed</Run> → Purchase complete!<LineBreak/>
+                        • <Run Foreground="#95A5A6">Not Interested</Run> → Ruled out
+                    </TextBlock>
+
+                    <TextBlock Text="Quick Filters" FontWeight="SemiBold" Margin="0,8,0,5"/>
+                    <TextBlock TextWrapping="Wrap" Margin="10,0,0,0">
+                        • Toggle <Run FontWeight="Bold">Look At</Run> or <Run FontWeight="Bold">Interest</Run> checkboxes for quick access<LineBreak/>
+                        • Filter by City or Status using dropdown menus<LineBreak/>
+                        • Toggle <Run FontWeight="Bold">Show Archived</Run> to view/hide old properties
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+
+            <!-- Rating & Organization -->
+            <Border Background="#FAFAFA" Padding="15" Margin="0,0,0,15" CornerRadius="5">
+                <StackPanel>
+                    <TextBlock Text="⭐ Rating &amp; Organization" 
+                               FontSize="18" FontWeight="Bold" 
+                               Foreground="#2C3E50"
+                               Margin="0,0,0,10"/>
+                    
+                    <TextBlock Text="Star Ratings" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                    <TextBlock TextWrapping="Wrap" Margin="10,0,0,8">
+                        Click the stars (★) to rate properties from 1-5. Supports half-stars (3.5, 4.5, etc.)
+                    </TextBlock>
+
+                    <TextBlock Text="Quick Notes (Chips)" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                    <TextBlock TextWrapping="Wrap" Margin="10,0,0,8">
+                        • Add short reminders as purple chips (e.g., "Great school district", "Needs work")<LineBreak/>
+                        • Click the ✕ to remove a chip<LineBreak/>
+                        • Perfect for quick reference when scanning your property list
+                    </TextBlock>
+
+                    <TextBlock Text="PROs &amp; CONs Tags" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                    <TextBlock TextWrapping="Wrap" Margin="10,0,0,8">
+                        • Select from predefined tags or create custom ones<LineBreak/>
+                        • <Run Foreground="#27AE60" FontWeight="Bold">PROs</Run> appear in green, <Run Foreground="#E74C3C" FontWeight="Bold">CONs</Run> in red<LineBreak/>
+                        • Tags are reusable across all properties<LineBreak/>
+                        • Examples: "Move-in Ready" (PRO), "Busy Street" (CON)
+                    </TextBlock>
+
+                    <TextBlock Text="Rich Text Notes" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                    <TextBlock TextWrapping="Wrap" Margin="10,0,0,0">
+                        • <Run FontWeight="Bold">Comments:</Run> First impressions, showing notes<LineBreak/>
+                        • <Run FontWeight="Bold">Notes:</Run> Detailed analysis, renovation ideas<LineBreak/>
+                        • Use bold, italic, underline, and bullet lists for formatting
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+
+            <!-- Property Features -->
+            <Border Background="#FAFAFA" Padding="15" Margin="0,0,0,15" CornerRadius="5">
+                <StackPanel>
+                    <TextBlock Text="✅ Property Features (25+ Checkboxes)" 
+                               FontSize="18" FontWeight="Bold" 
+                               Foreground="#2C3E50"
+                               Margin="0,0,0,10"/>
+                    
+                    <TextBlock Text="Interior Features" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                    <TextBlock TextWrapping="Wrap" Margin="10,0,0,8">
+                        Flooring (Carpet, Tile, Wood) • Appliances (Oven, Refrigerator, Washer/Dryer, Dishwasher)<LineBreak/>
+                        Climate (A/C, Central Heat, Fireplace, Ceiling Fans) • Storage (Walk-in Closet, Attic, Basement)
+                    </TextBlock>
+
+                    <TextBlock Text="Exterior Features" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                    <TextBlock TextWrapping="Wrap" Margin="10,0,0,8">
+                        Outdoor (Pool, Jacuzzi, Lanai, Covered Patio, Deck, Fenced Yard, Sprinklers)<LineBreak/>
+                        Structures (Garage, Carport, Storage Shed, Guest House)
+                    </TextBlock>
+
+                    <TextBlock Text="Other" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                    <TextBlock TextWrapping="Wrap" Margin="10,0,0,0">
+                        Solar Panels • Security System • 2 Custom Features (you name them!)
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+
+            <!-- Images & Attachments -->
+            <Border Background="#FAFAFA" Padding="15" Margin="0,0,0,15" CornerRadius="5">
+                <StackPanel>
+                    <TextBlock Text="📷 Images &amp; Attachments" 
+                               FontSize="18" FontWeight="Bold" 
+                               Foreground="#2C3E50"
+                               Margin="0,0,0,10"/>
+                    
+                    <TextBlock Text="Images (up to 4)" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                    <TextBlock TextWrapping="Wrap" Margin="10,0,0,8">
+                        • Copy image → Click <Run FontWeight="Bold">Paste Image</Run><LineBreak/>
+                        • Click thumbnail to view full size<LineBreak/>
+                        • Use for exterior shots, room photos, neighborhood
+                    </TextBlock>
+
+                    <TextBlock Text="Attachments (unlimited)" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                    <TextBlock TextWrapping="Wrap" Margin="10,0,0,0">
+                        • Attach PDFs, inspection reports, contracts, etc.<LineBreak/>
+                        • Add notes to each attachment for context<LineBreak/>
+                        • Click file name to open in default app<LineBreak/>
+                        • Perfect for: Disclosures, HOA docs, floor plans, appraisals
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+
+            <!-- Mortgage Calculator -->
+            <Border Background="#FAFAFA" Padding="15" Margin="0,0,0,15" CornerRadius="5">
+                <StackPanel>
+                    <TextBlock Text="💰 Mortgage Calculator" 
+                               FontSize="18" FontWeight="Bold" 
+                               Foreground="#2C3E50"
+                               Margin="0,0,0,10"/>
+                    
+                    <TextBlock Text="Basic Calculation" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                    <TextBlock TextWrapping="Wrap" Margin="10,0,0,8">
+                        Enter: Purchase Price, Down Payment, Interest Rate, Loan Term<LineBreak/>
+                        Optional: Property Tax, Insurance, PMI, HOA fees<LineBreak/>
+                        Get instant breakdown: Principal &amp; Interest, Taxes, Insurance, Total Payment
+                    </TextBlock>
+
+                    <TextBlock Text="Scenario Comparison" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                    <TextBlock TextWrapping="Wrap" Margin="10,0,0,8">
+                        • Create multiple scenarios per property (20% vs 10% down, 30-year vs 15-year)<LineBreak/>
+                        • Compare side-by-side in the <Run FontWeight="Bold">Mortgage Calculator &amp; Comparison</Run> tab<LineBreak/>
+                        • View full amortization schedule (month-by-month breakdown)
+                    </TextBlock>
+
+                    <TextBlock Text="Saved Calculations" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                    <TextBlock TextWrapping="Wrap" Margin="10,0,0,0">
+                        All calculations are automatically saved with each property for future reference.
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+
+            <!-- Data Management -->
+            <Border Background="#FAFAFA" Padding="15" Margin="0,0,0,15" CornerRadius="5">
+                <StackPanel>
+                    <TextBlock Text="💾 Data Management" 
+                               FontSize="18" FontWeight="Bold" 
+                               Foreground="#2C3E50"
+                               Margin="0,0,0,10"/>
+                    
+                    <TextBlock Text="Backup &amp; Restore" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                    <TextBlock TextWrapping="Wrap" Margin="10,0,0,8">
+                        • Click <Run FontWeight="Bold">Backup Database</Run> to create a ZIP file<LineBreak/>
+                        • Includes database + all images and attachments<LineBreak/>
+                        • Use <Run FontWeight="Bold">Restore Database</Run> to recover from backup<LineBreak/>
+                        • Recommended: Backup before major updates or monthly
+                    </TextBlock>
+
+                    <TextBlock Text="CSV Import/Export" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                    <TextBlock TextWrapping="Wrap" Margin="10,0,0,8">
+                        • Export all properties to CSV for analysis in Excel<LineBreak/>
+                        • Import properties from CSV (useful for bulk entry)
+                    </TextBlock>
+
+                    <TextBlock Text="Data Location" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                    <TextBlock TextWrapping="Wrap" Margin="10,0,0,0" Foreground="#7F8C8D" FontStyle="Italic">
+                        <Run Text="Database: "/>
+                        <Run FontFamily="Consolas" FontSize="11">%LocalAppData%\HomeBuyingApp\homebuying.db</Run><LineBreak/>
+                        <Run Text="Your data persists across app updates and is never sent to the cloud."/>
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+
+            <!-- Tips & Tricks -->
+            <Border Background="#FFF9E6" BorderBrush="#F39C12" BorderThickness="1" Padding="15" Margin="0,0,0,15" CornerRadius="5">
+                <StackPanel>
+                    <TextBlock Text="💡 Tips &amp; Tricks" 
+                               FontSize="18" FontWeight="Bold" 
+                               Foreground="#2C3E50"
+                               Margin="0,0,0,10"/>
+                    
+                    <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                        • <Run FontWeight="Bold">Quick Property Entry:</Run> Copy listing from Zillow/Redfin, use "Paste from Clipboard"
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                        • <Run FontWeight="Bold">Viewing Workflow:</Run> Mark as "Pending Visit" → Add viewing appointment → Update after tour
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                        • <Run FontWeight="Bold">Organize by Area:</Run> Use City filter to compare properties in same neighborhood
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                        • <Run FontWeight="Bold">Tag Strategy:</Run> Create custom tags for your priorities ("Good Schools", "Low HOA", "Fixer-Upper")
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                        • <Run FontWeight="Bold">Archive Old Properties:</Run> Keep your list focused on active searches
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" Margin="0,0,0,0">
+                        • <Run FontWeight="Bold">Multiple Scenarios:</Run> Compare different down payments and loan terms to find your best option
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+
+            <!-- Support -->
+            <Border Background="#FAFAFA" Padding="15" Margin="0,0,0,20" CornerRadius="5">
+                <StackPanel>
+                    <TextBlock Text="❓ Need Help?" 
+                               FontSize="18" FontWeight="Bold" 
+                               Foreground="#2C3E50"
+                               Margin="0,0,0,10"/>
+                    
+                    <TextBlock TextWrapping="Wrap" Margin="0,0,0,8">
+                        • Check the <Run FontWeight="Bold">ARCHITECTURE.md</Run> file for technical details
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" Margin="0,0,0,8">
+                        • Visit our GitHub repository for full documentation and updates
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" Margin="0,0,0,0">
+                        • Report issues or suggest features on GitHub Issues:
+                    </TextBlock>
+                    <TextBlock Margin="10,5,0,0">
+                        <Hyperlink NavigateUri="https://github.com/PASshc/HomeBuyingCompanion/issues" 
+                                   RequestNavigate="Hyperlink_RequestNavigate"
+                                   Foreground="#3498DB">
+                            <Run Text="https://github.com/PASshc/HomeBuyingCompanion/issues"/>
+                        </Hyperlink>
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+
+            <!-- Footer -->
+            <TextBlock Text="Happy House Hunting! 🏡" 
+                       FontSize="16" 
+                       FontWeight="SemiBold"
+                       Foreground="#27AE60"
+                       HorizontalAlignment="Center"
+                       Margin="0,10,0,20"/>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

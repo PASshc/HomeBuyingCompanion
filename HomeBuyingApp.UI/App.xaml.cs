@@ -68,6 +68,9 @@ namespace HomeBuyingApp.UI
                 Path.Combine(appDataPath, "Attachments"),
                 Path.Combine(appDataPath, "Images")));
 
+            // Update Service
+            services.AddSingleton<HomeBuyingApp.UI.Services.IUpdateService, HomeBuyingApp.UI.Services.UpdateService>();
+
             // ViewModels
             services.AddTransient<MortgageCalculatorViewModel>();
             services.AddTransient<MortgageComparisonViewModel>();
