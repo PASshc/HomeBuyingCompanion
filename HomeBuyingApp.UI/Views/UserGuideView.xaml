@@ -13,7 +13,7 @@
                        Foreground="#2C3E50"
                        Margin="0,0,0,20"/>
             
-            <TextBlock Text="Version 5.2.0" 
+            <TextBlock Text="Version 6.0.0" 
                        FontSize="14" FontStyle="Italic" 
                        Foreground="#7F8C8D"
                        Margin="0,0,0,10"/>
@@ -112,7 +112,7 @@
                     <TextBlock Text="Quick Filters" FontWeight="SemiBold" Margin="0,8,0,5"/>
                     <TextBlock TextWrapping="Wrap" Margin="10,0,0,0">
                         • Toggle <Run FontWeight="Bold">Look At</Run> or <Run FontWeight="Bold">Interest</Run> checkboxes for quick access<LineBreak/>
-                        • Filter by City or Status using dropdown menus<LineBreak/>
+                        • Filter by Street #, City, or State using the filter row<LineBreak/>
                         • Toggle <Run FontWeight="Bold">Show Archived</Run> to view/hide old properties
                     </TextBlock>
                 </StackPanel>
@@ -146,11 +146,12 @@
                         • Examples: "Move-in Ready" (PRO), "Busy Street" (CON)
                     </TextBlock>
 
-                    <TextBlock Text="Rich Text Notes" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                    <TextBlock Text="Rich Text Comments" FontWeight="SemiBold" Margin="0,0,0,5"/>
                     <TextBlock TextWrapping="Wrap" Margin="10,0,0,0">
                         • <Run FontWeight="Bold">Comments:</Run> First impressions, showing notes<LineBreak/>
-                        • <Run FontWeight="Bold">Notes:</Run> Detailed analysis, renovation ideas<LineBreak/>
-                        • Use bold, italic, underline, and bullet lists for formatting
+                        • <Run FontWeight="Bold">Formatting Toolbar:</Run> Bold, Italic, Underline, Bullet/Numbered lists<LineBreak/>
+                        • <Run FontWeight="Bold">Highlighting:</Run> Yellow and green text highlighting<LineBreak/>
+                        • <Run FontWeight="Bold">Clear Formatting:</Run> Remove all formatting with one click
                     </TextBlock>
                 </StackPanel>
             </Border>
@@ -176,8 +177,15 @@
                     </TextBlock>
 
                     <TextBlock Text="Other" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                    <TextBlock TextWrapping="Wrap" Margin="10,0,0,0">
+                    <TextBlock TextWrapping="Wrap" Margin="10,0,0,8">
                         Solar Panels • Security System • 2 Custom Features (you name them!)
+                    </TextBlock>
+
+                    <TextBlock Text="Other Features (Teal Chips)" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                    <TextBlock TextWrapping="Wrap" Margin="10,0,0,0">
+                        • Add custom features as teal-colored chips (e.g., "Crown Molding", "Smart Home")<LineBreak/>
+                        • Click the ✕ to remove a chip<LineBreak/>
+                        • Great for unique property features not covered by checkboxes
                     </TextBlock>
                 </StackPanel>
             </Border>
@@ -193,7 +201,8 @@
                     <TextBlock Text="Images (up to 4)" FontWeight="SemiBold" Margin="0,0,0,5"/>
                     <TextBlock TextWrapping="Wrap" Margin="10,0,0,8">
                         • Copy image → Click <Run FontWeight="Bold">Paste Image</Run><LineBreak/>
-                        • Click thumbnail to view full size<LineBreak/>
+                        • <Run FontWeight="Bold">Click to Enlarge:</Run> Click any thumbnail to view in popup window<LineBreak/>
+                        • Press Escape or click to close enlarged view<LineBreak/>
                         • Use for exterior shots, room photos, neighborhood
                     </TextBlock>
 
@@ -282,13 +291,13 @@
                         • <Run FontWeight="Bold">Viewing Workflow:</Run> Mark as "Pending Visit" → Add viewing appointment → Update after tour
                     </TextBlock>
                     <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
-                        • <Run FontWeight="Bold">Organize by Area:</Run> Use City filter to compare properties in same neighborhood
+                        • <Run FontWeight="Bold">Organize by Area:</Run> Use City or Street # filter to compare properties in same neighborhood
                     </TextBlock>
                     <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
                         • <Run FontWeight="Bold">Tag Strategy:</Run> Create custom tags for your priorities ("Good Schools", "Low HOA", "Fixer-Upper")
                     </TextBlock>
                     <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
-                        • <Run FontWeight="Bold">Archive Old Properties:</Run> Keep your list focused on active searches
+                        • <Run FontWeight="Bold">Archive Old Properties:</Run> Archiving automatically sets status to "Not Interested"
                     </TextBlock>
                     <TextBlock TextWrapping="Wrap" Margin="0,0,0,0">
                         • <Run FontWeight="Bold">Multiple Scenarios:</Run> Compare different down payments and loan terms to find your best option

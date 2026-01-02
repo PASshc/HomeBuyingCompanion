@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Home Buying App"
-#define MyAppVersion "5.5.0"
+#define MyAppVersion "6.0.0"
 #define MyAppPublisher "Home Buyer"
 #define MyAppExeName "HomeBuyingApp.UI.exe"
 
@@ -12,16 +12,25 @@ AppId={{8A6B4C2D-1E3F-5G7H-9I0J-K1L2M3N4O5P6}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 AppPublisher={#MyAppPublisher}
+AppVerName={#MyAppName} {#MyAppVersion}
+AppPublisherURL=https://github.com/PASshc/HomeBuyingCompanion
+AppSupportURL=https://github.com/PASshc/HomeBuyingCompanion/issues
+AppUpdatesURL=https://github.com/PASshc/HomeBuyingCompanion/releases
 DefaultDirName={autopf}\{#MyAppName}
 DisableProgramGroupPage=yes
 ; Remove the following line if you want to require admin privileges
 PrivilegesRequired=lowest
 OutputDir=Dist\Installer
-OutputBaseFilename=HomeBuyingAppSetup_v5.5.0
+OutputBaseFilename=HomeBuyingAppSetup_v{#MyAppVersion}
 SetupIconFile=HomeBuyingApp.UI\Resources\homeBuyAppIcon_v2.ico
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
+; Critical for Microsoft Store validation
+UninstallDisplayName={#MyAppName}
+UninstallDisplayIcon={app}\{#MyAppExeName}
+; Ensure proper Add/Remove Programs registration
+CreateUninstallRegKey=yes
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"

@@ -38,6 +38,7 @@ namespace HomeBuyingApp.UI.Views
         {
             if (DataContext is PropertyListViewModel viewModel)
             {
+                viewModel.FilterStreetNumber = string.Empty;
                 viewModel.FilterCity = string.Empty;
                 viewModel.FilterState = string.Empty;
             }

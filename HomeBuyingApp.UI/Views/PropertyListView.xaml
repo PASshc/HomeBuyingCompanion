@@ -43,7 +43,9 @@
 
             <!-- Filter Row -->
             <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,10">
-                <TextBlock Text="Filter by City:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                <TextBlock Text="Street #:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                <TextBox Text="{Binding FilterStreetNumber, UpdateSourceTrigger=PropertyChanged}" Width="80" Margin="0,0,15,0" Padding="5,3"/>
+                <TextBlock Text="City:" VerticalAlignment="Center" Margin="0,0,5,0"/>
                 <TextBox Text="{Binding FilterCity, UpdateSourceTrigger=PropertyChanged}" Width="150" Margin="0,0,15,0" Padding="5,3"/>
                 <TextBlock Text="State:" VerticalAlignment="Center" Margin="0,0,5,0"/>
                 <TextBox Text="{Binding FilterState, UpdateSourceTrigger=PropertyChanged}" Width="100" Margin="0,0,15,0" Padding="5,3"/>

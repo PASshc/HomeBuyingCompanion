@@ -2,7 +2,7 @@
 
 A comprehensive desktop application designed to assist home buyers in tracking properties, calculating mortgages, and managing the home buying process.
 
-**Current Version: 5.2.0**
+**Current Version: 6.0.0**
 
 ## Features
 
@@ -10,16 +10,17 @@ A comprehensive desktop application designed to assist home buyers in tracking p
 - **Property Tracking**: Store details about properties including address, price, bedrooms, bathrooms, and square footage
 - **Status Tracking**: Mark properties as "Researching", "Interested", "Offer Made", "Under Contract", "Closed", or "Passed"
 - **Rating System**: Rate properties from 1-5 (supports decimal values like 3.5)
-- **Quick Filters**: Filter by "Look At" and "Interest" flags for quick property shortlisting
+- **Quick Filters**: Filter by Street #, City, and State for quick property searching
 - **Archive**: Hide properties you're no longer considering without deleting them
 
 ### Property Details
 - **Interior Features**: Track flooring types (carpet, tile, wood), appliances, and climate systems
 - **Exterior Features**: Pool, jacuzzi, lanai, landscape, fenced yard, patio, and more
 - **Custom Features**: Two customizable feature checkboxes with editable labels
-- **Images**: Attach up to 4 images per property with thumbnail preview
+- **Other Features**: Tag-based chips for additional property features (teal colored)
+- **Images**: Attach up to 4 images per property with thumbnail preview and click-to-enlarge
 - **Attachments**: Attach files (PDFs, documents) to specific properties
-- **Rich Text Notes**: Format notes and comments with bold, italic, underline, and bullet lists
+- **Rich Text Comments**: Full formatting toolbar with bold, italic, underline, bullet/numbered lists, and highlighting
 
 ### Mortgage Calculator
 - **Built-in Calculator**: Estimate monthly payments including principal, interest, PMI, HOA, taxes, and insurance

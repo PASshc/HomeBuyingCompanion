@@ -43,9 +43,12 @@ namespace HomeBuyingApp.Core.Services
             return new ParsedListing
             {
                 ListPrice = ParsePrice(text),
-                Bedrooms = ParseDecimalToken(text, @"(?<v>\d+(?:\.\d+)?)\s*(?:bd|bds|bed|beds)\b"),
-                Bathrooms = ParseDecimalToken(text, @"(?<v>\d+(?:\.\d+)?)\s*(?:ba|bas|bath|baths)\b"),
-                SquareFeet = ParseIntToken(text, @"(?<v>[\d,]+)\s*(?:sq\s*\.?\s*ft|sqft|square\s+feet)\b"),
+                Bedrooms = ParseDecimalToken(text, @"(?<v>\d+(?:\.\d+)?)\s*(?:bd|bds|bed|beds|bedroom|bedrooms)\b") 
+                          ?? ParseDecimalToken(text, @"(?:^|\n)\s*Bed(?:room)?s?\s*[:\-]?\s*(?<v>\d+(?:\.\d+)?)\b"),
+                Bathrooms = ParseDecimalToken(text, @"(?<v>\d+(?:\.\d+)?)\s*(?:ba|bas|bath|baths|bathroom|bathrooms)\b")
+                           ?? ParseDecimalToken(text, @"(?:^|\n)\s*Bath(?:room)?s?\s*[:\-]?\s*(?<v>\d+(?:\.\d+)?)\b"),
+                SquareFeet = ParseIntToken(text, @"(?<v>[\d,]+)\s*(?:sq\s*\.?\s*ft|sqft|square\s+feet|sq\.\s*ft\.)\b")
+                            ?? ParseIntToken(text, @"(?:^|\n)\s*(?:Square\s+Feet|Living\s+Area|Size)\s*[:\-]?\s*(?<v>[\d,]+)\b"),
                 AddressLine = addressLine,
                 City = city,
                 State = state,
@@ -155,15 +158,21 @@ namespace HomeBuyingApp.Core.Services
             var match = Regex.Match(text, @"\$(?<num>\d{1,3}(?:,\d{3})+|\d+(?:\.\d+)?)(?<suffix>[KkMm])?\b");
             if (!match.Success)
             {
-                // Fallback for sites that omit the '$' but label the price.
+                // Fallback for sites that omit the '$' but label the price (Zillow, Realtor.com, OneHome, etc.)
                 match = Regex.Match(
                     text,
-                    @"\b(?:price|listed\s+for)\s*[:\-]?\s*(?<num>\d{1,3}(?:,\d{3})+|\d+(?:\.\d+)?)(?<suffix>[KkMm])?\b",
+                    @"\b(?:price|listed\s+for|list\s+price|asking)\s*[:\-]?\s*\$?(?<num>\d{1,3}(?:,\d{3})+|\d+(?:\.\d+)?)(?<suffix>[KkMm])?\b",
                     RegexOptions.IgnoreCase);
 
                 if (!match.Success)
                 {
-                    return null;
+                    // OneHome format: "Price: 425000" or just a plain large number in early lines
+                    match = Regex.Match(text, @"(?:^|\n)\s*(?:Price|Listing Price)[:\s]+(?<num>\d{1,3}(?:,\d{3})+|\d+)\b", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                    
+                    if (!match.Success)
+                    {
+                        return null;
+                    }
                 }
             }
 

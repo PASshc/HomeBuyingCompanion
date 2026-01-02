@@ -306,6 +306,12 @@ namespace HomeBuyingApp.UI.ViewModels
                 {
                     _model.IsArchived = value;
                     OnPropertyChanged();
+                    
+                    // Automatically set status to NotInterested when archiving
+                    if (value && _model.Status != PropertyStatus.NotInterested)
+                    {
+                        Status = PropertyStatus.NotInterested;
+                    }
                 }
             }
         }

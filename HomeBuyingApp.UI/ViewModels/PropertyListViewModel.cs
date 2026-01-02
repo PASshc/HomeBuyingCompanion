@@ -25,6 +25,7 @@ namespace HomeBuyingApp.UI.ViewModels
         private bool _showArchived;
         private string _filterCity = string.Empty;
         private string _filterState = string.Empty;
+        private string _filterStreetNumber = string.Empty;
 
         public bool ShowArchived
         {
@@ -62,6 +63,20 @@ namespace HomeBuyingApp.UI.ViewModels
                 if (_filterState != value)
                 {
                     _filterState = value;
+                    OnPropertyChanged();
+                    ApplyFilter();
+                }
+            }
+        }
+
+        public string FilterStreetNumber
+        {
+            get => _filterStreetNumber;
+            set
+            {
+                if (_filterStreetNumber != value)
+                {
+                    _filterStreetNumber = value;
                     OnPropertyChanged();
                     ApplyFilter();
                 }
@@ -256,11 +271,24 @@ namespace HomeBuyingApp.UI.ViewModels
                 bool matchesStateFilter = string.IsNullOrWhiteSpace(FilterState) || 
                     (property.State?.Contains(FilterState, System.StringComparison.OrdinalIgnoreCase) == true);
                 
-                if (matchesArchiveFilter && matchesCityFilter && matchesStateFilter)
+                bool matchesStreetNumberFilter = string.IsNullOrWhiteSpace(FilterStreetNumber) || 
+                    GetStreetNumber(property.Address).StartsWith(FilterStreetNumber, System.StringComparison.OrdinalIgnoreCase);
+                
+                if (matchesArchiveFilter && matchesCityFilter && matchesStateFilter && matchesStreetNumberFilter)
                 {
                     Properties.Add(property);
                 }
             }
+        }
+
+        private static string GetStreetNumber(string? address)
+        {
+            if (string.IsNullOrWhiteSpace(address))
+                return string.Empty;
+            
+            // Extract leading digits from the address (the street number)
+            var match = System.Text.RegularExpressions.Regex.Match(address.Trim(), @"^\d+");
+            return match.Success ? match.Value : string.Empty;
         }
 
         private void AddProperty()

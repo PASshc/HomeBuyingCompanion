@@ -15,6 +15,8 @@ namespace HomeBuyingApp.UI
     {
         private IServiceProvider _serviceProvider;
 
+        public IServiceProvider ServiceProvider => _serviceProvider;
+
         public App()
         {
             var services = new ServiceCollection();

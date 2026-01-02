@@ -133,7 +133,7 @@ License: MIT";
         }
     }
 
-    private void RestoreDatabase_Click(object sender, RoutedEventArgs e)
+    private async void RestoreDatabase_Click(object sender, RoutedEventArgs e)
     {
         if (_backupService == null)
         {
@@ -157,15 +157,45 @@ License: MIT";
             {
                 try
                 {
-                    _backupService.RestoreBackupAsync(dialog.FileName).Wait();
-                    MessageBox.Show("Restore completed successfully! Please restart the application.", 
+                    // Disable UI during restore
+                    this.IsEnabled = false;
+                    this.Cursor = Cursors.Wait;
+                    
+                    await Task.Run(async () =>
+                    {
+                        // Close all database connections before restore
+                        await Application.Current.Dispatcher.InvokeAsync(() =>
+                        {
+                            var serviceProvider = ((App)Application.Current).ServiceProvider;
+                            using (var scope = serviceProvider.CreateScope())
+                            {
+                                var dbContext = scope.ServiceProvider.GetRequiredService<HomeBuyingApp.Infrastructure.Data.AppDbContext>();
+                                dbContext.Dispose();
+                            }
+                            
+                            // Clear SQLite connection pool
+                            Microsoft.Data.Sqlite.SqliteConnection.ClearAllPools();
+                            GC.Collect();
+                            GC.WaitForPendingFinalizers();
+                        });
+
+                        // Perform restore on background thread
+                        await _backupService.RestoreBackupAsync(dialog.FileName);
+                    });
+                    
+                    MessageBox.Show("Restore completed successfully! The application will now restart.", 
                         "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    
+                    // Restart the application
+                    System.Diagnostics.Process.Start(Environment.ProcessPath ?? System.Reflection.Assembly.GetExecutingAssembly().Location);
                     Application.Current.Shutdown();
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Restore failed: {ex.Message}", "Error", 
-                        MessageBoxButton.OK, MessageBoxImage.Error);
+                    this.IsEnabled = true;
+                    this.Cursor = Cursors.Arrow;
+                    MessageBox.Show($"Restore failed: {ex.Message}\n\nDetails: {ex.InnerException?.Message}", 
+                        "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }

@@ -89,24 +89,40 @@ namespace HomeBuyingApp.Infrastructure.Services
                     
                     if (File.Exists(dbSource))
                     {
-                        // Close connections and clear pools
+                        // Close all SQLite connections for this database
+                        SqliteConnection.ClearAllPools();
+                        
+                        // Force garbage collection to release file handles
                         GC.Collect();
                         GC.WaitForPendingFinalizers();
+                        GC.Collect();
                         
-                        // Backup current
+                        // Small delay to ensure file locks are released
+                        System.Threading.Thread.Sleep(100);
+                        
+                        // Backup current database
                         var backup = _dbPath + ".bak";
                         if (File.Exists(backup)) File.Delete(backup);
                         if (File.Exists(_dbPath)) File.Move(_dbPath, backup);
 
                         // Delete WAL/SHM files if they exist
-                        if (File.Exists(_dbPath + "-wal")) File.Delete(_dbPath + "-wal");
-                        if (File.Exists(_dbPath + "-shm")) File.Delete(_dbPath + "-shm");
+                        var walPath = _dbPath + "-wal";
+                        var shmPath = _dbPath + "-shm";
+                        if (File.Exists(walPath)) File.Delete(walPath);
+                        if (File.Exists(shmPath)) File.Delete(shmPath);
 
+                        // Copy restored database
                         File.Copy(dbSource, _dbPath);
                         
                         // Restore WAL/SHM if they exist in backup
-                        if (File.Exists(dbSource + "-wal")) File.Copy(dbSource + "-wal", _dbPath + "-wal", true);
-                        if (File.Exists(dbSource + "-shm")) File.Copy(dbSource + "-shm", _dbPath + "-shm", true);
+                        var walSource = dbSource + "-wal";
+                        var shmSource = dbSource + "-shm";
+                        if (File.Exists(walSource)) File.Copy(walSource, walPath, true);
+                        if (File.Exists(shmSource)) File.Copy(shmSource, shmPath, true);
+                    }
+                    else
+                    {
+                        throw new FileNotFoundException($"Database file not found in backup: {dbName}");
                     }
 
                     // 2. Restore Attachments

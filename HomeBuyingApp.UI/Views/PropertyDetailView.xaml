@@ -234,9 +234,38 @@
                                      Width="120" VerticalAlignment="Center" Padding="2"/>
                         </StackPanel>
                     </UniformGrid>
-                    <TextBox Text="{Binding Property.OtherFeatures, UpdateSourceTrigger=PropertyChanged}" 
-                             ToolTip="Other features not listed above"
-                             Margin="0,0,0,5"/>
+                    
+                    <!-- Other Features as Chips -->
+                    <ItemsControl ItemsSource="{Binding OtherFeaturesList}" Margin="0,0,0,8">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="#00897B" CornerRadius="12" Padding="10,5" Margin="0,0,6,6">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding}" Foreground="White" VerticalAlignment="Center"/>
+                                        <Button Content="✕" 
+                                                Command="{Binding DataContext.RemoveOtherFeatureCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                                CommandParameter="{Binding}"
+                                                Background="Transparent" Foreground="White" BorderThickness="0"
+                                                Padding="6,0,0,0" FontWeight="Bold" Cursor="Hand"
+                                                VerticalAlignment="Center" FontSize="10"/>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    
+                    <!-- Add New Feature -->
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox Text="{Binding NewOtherFeature, UpdateSourceTrigger=PropertyChanged}" 
+                                 Width="300" Margin="0,0,8,0" 
+                                 ToolTip="Type a feature and press Add"/>
+                        <Button Content="➕ Add Feature" Command="{Binding AddOtherFeatureCommand}" Padding="10,5"/>
+                    </StackPanel>
                 </StackPanel>
 
                 <!-- Quick Notes (Chips) -->
@@ -283,11 +312,41 @@
                     <TextBlock Text="❝" Foreground="#FF9800" FontSize="14" VerticalAlignment="Center" Margin="0,0,5,0"/>
                     <TextBlock Text="Comments:" FontWeight="SemiBold" VerticalAlignment="Center"/>
                 </StackPanel>
-                <RichTextBox helpers:RichTextBoxBinding.XamlText="{Binding Property.Comments, Mode=TwoWay}"
-                             Grid.Row="12" Grid.Column="1" Grid.ColumnSpan="10"
-                             MinHeight="60" MaxHeight="200"
-                             VerticalScrollBarVisibility="Auto"
-                             Margin="0,5" />
+                <StackPanel Grid.Row="12" Grid.Column="1" Grid.ColumnSpan="10" Margin="0,5">
+                    <!-- Formatting Toolbar -->
+                    <ToolBar Background="#F5F5F5" Padding="2" Margin="0,0,0,2">
+                        <Button x:Name="BoldButton" Content="B" FontWeight="Bold" Width="28" Height="24"
+                                Click="FormatBold_Click" ToolTip="Bold (Ctrl+B)"/>
+                        <Button x:Name="ItalicButton" Content="I" FontStyle="Italic" Width="28" Height="24"
+                                Click="FormatItalic_Click" ToolTip="Italic (Ctrl+I)"/>
+                        <Button x:Name="UnderlineButton" Width="28" Height="24"
+                                Click="FormatUnderline_Click" ToolTip="Underline (Ctrl+U)">
+                            <TextBlock Text="U" TextDecorations="Underline"/>
+                        </Button>
+                        <Separator/>
+                        <Button x:Name="BulletListButton" Content="•≡" Width="28" Height="24"
+                                Click="BulletList_Click" ToolTip="Bullet List"/>
+                        <Button x:Name="NumberedListButton" Content="1." Width="28" Height="24"
+                                Click="NumberedList_Click" ToolTip="Numbered List"/>
+                        <Separator/>
+                        <Button x:Name="HighlightYellowButton" Width="28" Height="24"
+                                Click="HighlightYellow_Click" ToolTip="Highlight Yellow">
+                            <Border Background="Yellow" Width="16" Height="16" CornerRadius="2"/>
+                        </Button>
+                        <Button x:Name="HighlightGreenButton" Width="28" Height="24"
+                                Click="HighlightGreen_Click" ToolTip="Highlight Green">
+                            <Border Background="LightGreen" Width="16" Height="16" CornerRadius="2"/>
+                        </Button>
+                        <Separator/>
+                        <Button x:Name="ClearFormattingButton" Content="✖" Width="28" Height="24"
+                                Click="ClearFormatting_Click" ToolTip="Clear Formatting"/>
+                    </ToolBar>
+                    <!-- RichTextBox -->
+                    <RichTextBox x:Name="CommentsRichTextBox" 
+                                 helpers:RichTextBoxBinding.XamlText="{Binding Property.Comments, Mode=TwoWay}"
+                                 MinHeight="60" MaxHeight="200"
+                                 VerticalScrollBarVisibility="Auto"/>
+                </StackPanel>
 
                 <!-- PROs & CONs Section -->
                 <StackPanel Orientation="Horizontal" Grid.Row="10" Grid.Column="0" VerticalAlignment="Top" Margin="0,5">
@@ -316,6 +375,13 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Border Background="ForestGreen" CornerRadius="3" Padding="8,4" Margin="0,0,5,5">
+                                            <Border.ContextMenu>
+                                                <ContextMenu>
+                                                    <MenuItem Header="Delete Tag Permanently" 
+                                                              Command="{Binding DataContext.DeleteProTagCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                              CommandParameter="{Binding}"/>
+                                                </ContextMenu>
+                                            </Border.ContextMenu>
                                             <StackPanel Orientation="Horizontal">
                                                 <TextBlock Text="{Binding Name}" Foreground="White" VerticalAlignment="Center"/>
                                                 <Button Content="✕" 
@@ -337,6 +403,9 @@
                                           DisplayMemberPath="Name"
                                           Width="180" Margin="0,0,8,0"/>
                                 <Button Content="Add" Command="{Binding AddProTagCommand}" Padding="10,3" Background="#E8F5E9"/>
+                                <Button Content="🗑" Command="{Binding DeleteSelectedProTagCommand}" 
+                                        Padding="5,3" Margin="5,0,0,0" Background="#FFEBEE" 
+                                        ToolTip="Delete selected tag permanently" FontSize="12"/>
                             </StackPanel>
                             
                             <!-- Create New PRO Tag -->
@@ -364,10 +433,17 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Border Background="Firebrick" CornerRadius="3" Padding="8,4" Margin="0,0,5,5">
+                                            <Border.ContextMenu>
+                                                <ContextMenu>
+                                                    <MenuItem Header="Delete Tag Permanently" 
+                                                              Command="{Binding DataContext.DeleteConTagCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                              CommandParameter="{Binding}"/>
+                                                </ContextMenu>
+                                            </Border.ContextMenu>
                                             <StackPanel Orientation="Horizontal">
                                                 <TextBlock Text="{Binding Name}" Foreground="White" VerticalAlignment="Center"/>
                                                 <Button Content="✕" 
-                                                        Command="{Binding DataContext.RemoveConTagCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                                        Command="{Binding DataContext.RemoveConTagCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                         CommandParameter="{Binding}"
                                                         Background="Transparent" Foreground="White" BorderThickness="0"
                                                         Padding="5,0,0,0" FontWeight="Bold" Cursor="Hand"
@@ -385,6 +461,9 @@
                                           DisplayMemberPath="Name"
                                           Width="180" Margin="0,0,8,0"/>
                                 <Button Content="Add" Command="{Binding AddConTagCommand}" Padding="10,3" Background="#FFEBEE"/>
+                                <Button Content="🗑" Command="{Binding DeleteSelectedConTagCommand}" 
+                                        Padding="5,3" Margin="5,0,0,0" Background="#FFEBEE" 
+                                        ToolTip="Delete selected tag permanently" FontSize="12"/>
                             </StackPanel>
                             
                             <!-- Create New CON Tag -->
@@ -402,6 +481,7 @@
                 <StackPanel Orientation="Horizontal" Grid.Row="15" Grid.Column="0" Grid.ColumnSpan="11" Margin="0,20,0,10">
                     <TextBlock Text="▣" Foreground="#E91E63" FontSize="18" VerticalAlignment="Center" Margin="0,0,8,0"/>
                     <TextBlock Text="Property Images" FontSize="18" FontWeight="Bold" VerticalAlignment="Center"/>
+                    <TextBlock Text=" (click image to enlarge)" FontSize="12" Foreground="#888888" VerticalAlignment="Center" Margin="8,0,0,0"/>
                 </StackPanel>
                 
                 <Grid Grid.Row="16" Grid.Column="0" Grid.ColumnSpan="11">
@@ -423,7 +503,8 @@
                                 <Button Content="Paste Image" Command="{Binding PasteImage1Command}" Padding="10,5" HorizontalAlignment="Center"/>
                             </StackPanel>
                             <Grid Visibility="{Binding HasImage1, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <Image Source="{Binding Image1}" MaxHeight="160" MaxWidth="300" Stretch="Uniform" Margin="5"/>
+                                <Image Source="{Binding Image1}" MaxHeight="160" MaxWidth="300" Stretch="Uniform" Margin="5" 
+                                       Cursor="Hand" MouseLeftButtonDown="Image_MouseLeftButtonDown" Tag="1"/>
                                 <Button Content="✕" Command="{Binding DeleteImage1Command}" 
                                         VerticalAlignment="Top" HorizontalAlignment="Right" 
                                         Padding="5,2" Margin="5" FontWeight="Bold" Background="#FF6B6B" Foreground="White"/>
@@ -440,7 +521,8 @@
                                 <Button Content="Paste Image" Command="{Binding PasteImage2Command}" Padding="10,5" HorizontalAlignment="Center"/>
                             </StackPanel>
                             <Grid Visibility="{Binding HasImage2, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <Image Source="{Binding Image2}" MaxHeight="160" MaxWidth="300" Stretch="Uniform" Margin="5"/>
+                                <Image Source="{Binding Image2}" MaxHeight="160" MaxWidth="300" Stretch="Uniform" Margin="5"
+                                       Cursor="Hand" MouseLeftButtonDown="Image_MouseLeftButtonDown" Tag="2"/>
                                 <Button Content="✕" Command="{Binding DeleteImage2Command}" 
                                         VerticalAlignment="Top" HorizontalAlignment="Right" 
                                         Padding="5,2" Margin="5" FontWeight="Bold" Background="#FF6B6B" Foreground="White"/>
@@ -457,7 +539,8 @@
                                 <Button Content="Paste Image" Command="{Binding PasteImage3Command}" Padding="10,5" HorizontalAlignment="Center"/>
                             </StackPanel>
                             <Grid Visibility="{Binding HasImage3, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <Image Source="{Binding Image3}" MaxHeight="160" MaxWidth="300" Stretch="Uniform" Margin="5"/>
+                                <Image Source="{Binding Image3}" MaxHeight="160" MaxWidth="300" Stretch="Uniform" Margin="5"
+                                       Cursor="Hand" MouseLeftButtonDown="Image_MouseLeftButtonDown" Tag="3"/>
                                 <Button Content="✕" Command="{Binding DeleteImage3Command}" 
                                         VerticalAlignment="Top" HorizontalAlignment="Right" 
                                         Padding="5,2" Margin="5" FontWeight="Bold" Background="#FF6B6B" Foreground="White"/>
@@ -474,7 +557,8 @@
                                 <Button Content="Paste Image" Command="{Binding PasteImage4Command}" Padding="10,5" HorizontalAlignment="Center"/>
                             </StackPanel>
                             <Grid Visibility="{Binding HasImage4, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <Image Source="{Binding Image4}" MaxHeight="160" MaxWidth="300" Stretch="Uniform" Margin="5"/>
+                                <Image Source="{Binding Image4}" MaxHeight="160" MaxWidth="300" Stretch="Uniform" Margin="5"
+                                       Cursor="Hand" MouseLeftButtonDown="Image_MouseLeftButtonDown" Tag="4"/>
                                 <Button Content="✕" Command="{Binding DeleteImage4Command}" 
                                         VerticalAlignment="Top" HorizontalAlignment="Right" 
                                         Padding="5,2" Margin="5" FontWeight="Bold" Background="#FF6B6B" Foreground="White"/>
