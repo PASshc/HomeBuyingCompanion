@@ -498,14 +498,14 @@
                     <Border Grid.Row="0" Grid.Column="0" BorderBrush="#CCCCCC" BorderThickness="1" Margin="0,0,10,10" MinHeight="180">
                         <Grid>
                             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center"
-                                        Visibility="{Binding HasImage1, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+                                        Visibility="{Binding Images.HasImage1, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                                 <TextBlock Text="Image 1" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,5"/>
-                                <Button Content="Paste Image" Command="{Binding PasteImage1Command}" Padding="10,5" HorizontalAlignment="Center"/>
+                                <Button Content="Paste Image" Command="{Binding Images.PasteImage1Command}" Padding="10,5" HorizontalAlignment="Center"/>
                             </StackPanel>
-                            <Grid Visibility="{Binding HasImage1, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <Image Source="{Binding Image1}" MaxHeight="160" MaxWidth="300" Stretch="Uniform" Margin="5" 
+                            <Grid Visibility="{Binding Images.HasImage1, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <Image Source="{Binding Images.Image1}" MaxHeight="160" MaxWidth="300" Stretch="Uniform" Margin="5" 
                                        Cursor="Hand" MouseLeftButtonDown="Image_MouseLeftButtonDown" Tag="1"/>
-                                <Button Content="✕" Command="{Binding DeleteImage1Command}" 
+                                <Button Content="✕" Command="{Binding Images.DeleteImage1Command}" 
                                         VerticalAlignment="Top" HorizontalAlignment="Right" 
                                         Padding="5,2" Margin="5" FontWeight="Bold" Background="#FF6B6B" Foreground="White"/>
                             </Grid>
@@ -516,14 +516,14 @@
                     <Border Grid.Row="0" Grid.Column="1" BorderBrush="#CCCCCC" BorderThickness="1" Margin="0,0,0,10" MinHeight="180">
                         <Grid>
                             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center"
-                                        Visibility="{Binding HasImage2, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+                                        Visibility="{Binding Images.HasImage2, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                                 <TextBlock Text="Image 2" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,5"/>
-                                <Button Content="Paste Image" Command="{Binding PasteImage2Command}" Padding="10,5" HorizontalAlignment="Center"/>
+                                <Button Content="Paste Image" Command="{Binding Images.PasteImage2Command}" Padding="10,5" HorizontalAlignment="Center"/>
                             </StackPanel>
-                            <Grid Visibility="{Binding HasImage2, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <Image Source="{Binding Image2}" MaxHeight="160" MaxWidth="300" Stretch="Uniform" Margin="5"
+                            <Grid Visibility="{Binding Images.HasImage2, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <Image Source="{Binding Images.Image2}" MaxHeight="160" MaxWidth="300" Stretch="Uniform" Margin="5"
                                        Cursor="Hand" MouseLeftButtonDown="Image_MouseLeftButtonDown" Tag="2"/>
-                                <Button Content="✕" Command="{Binding DeleteImage2Command}" 
+                                <Button Content="✕" Command="{Binding Images.DeleteImage2Command}" 
                                         VerticalAlignment="Top" HorizontalAlignment="Right" 
                                         Padding="5,2" Margin="5" FontWeight="Bold" Background="#FF6B6B" Foreground="White"/>
                             </Grid>
@@ -534,14 +534,14 @@
                     <Border Grid.Row="1" Grid.Column="0" BorderBrush="#CCCCCC" BorderThickness="1" Margin="0,0,10,10" MinHeight="180">
                         <Grid>
                             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center"
-                                        Visibility="{Binding HasImage3, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+                                        Visibility="{Binding Images.HasImage3, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                                 <TextBlock Text="Image 3" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,5"/>
-                                <Button Content="Paste Image" Command="{Binding PasteImage3Command}" Padding="10,5" HorizontalAlignment="Center"/>
+                                <Button Content="Paste Image" Command="{Binding Images.PasteImage3Command}" Padding="10,5" HorizontalAlignment="Center"/>
                             </StackPanel>
-                            <Grid Visibility="{Binding HasImage3, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <Image Source="{Binding Image3}" MaxHeight="160" MaxWidth="300" Stretch="Uniform" Margin="5"
+                            <Grid Visibility="{Binding Images.HasImage3, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <Image Source="{Binding Images.Image3}" MaxHeight="160" MaxWidth="300" Stretch="Uniform" Margin="5"
                                        Cursor="Hand" MouseLeftButtonDown="Image_MouseLeftButtonDown" Tag="3"/>
-                                <Button Content="✕" Command="{Binding DeleteImage3Command}" 
+                                <Button Content="✕" Command="{Binding Images.DeleteImage3Command}" 
                                         VerticalAlignment="Top" HorizontalAlignment="Right" 
                                         Padding="5,2" Margin="5" FontWeight="Bold" Background="#FF6B6B" Foreground="White"/>
                             </Grid>
@@ -552,14 +552,14 @@
                     <Border Grid.Row="1" Grid.Column="1" BorderBrush="#CCCCCC" BorderThickness="1" Margin="0,0,0,10" MinHeight="180">
                         <Grid>
                             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center"
-                                        Visibility="{Binding HasImage4, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+                                        Visibility="{Binding Images.HasImage4, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                                 <TextBlock Text="Image 4" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,5"/>
-                                <Button Content="Paste Image" Command="{Binding PasteImage4Command}" Padding="10,5" HorizontalAlignment="Center"/>
+                                <Button Content="Paste Image" Command="{Binding Images.PasteImage4Command}" Padding="10,5" HorizontalAlignment="Center"/>
                             </StackPanel>
-                            <Grid Visibility="{Binding HasImage4, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <Image Source="{Binding Image4}" MaxHeight="160" MaxWidth="300" Stretch="Uniform" Margin="5"
+                            <Grid Visibility="{Binding Images.HasImage4, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <Image Source="{Binding Images.Image4}" MaxHeight="160" MaxWidth="300" Stretch="Uniform" Margin="5"
                                        Cursor="Hand" MouseLeftButtonDown="Image_MouseLeftButtonDown" Tag="4"/>
-                                <Button Content="✕" Command="{Binding DeleteImage4Command}" 
+                                <Button Content="✕" Command="{Binding Images.DeleteImage4Command}" 
                                         VerticalAlignment="Top" HorizontalAlignment="Right" 
                                         Padding="5,2" Margin="5" FontWeight="Bold" Background="#FF6B6B" Foreground="White"/>
                             </Grid>
