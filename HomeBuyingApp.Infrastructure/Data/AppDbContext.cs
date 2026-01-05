@@ -10,6 +10,8 @@ namespace HomeBuyingApp.Infrastructure.Data
         public DbSet<ViewingAppointment> Viewings { get; set; }
         public DbSet<PropertyAttachment> Attachments { get; set; }
         public DbSet<PropertyTag> PropertyTags { get; set; }
+        public DbSet<JournalEntry> JournalEntries { get; set; }
+        public DbSet<JournalAttachment> JournalAttachments { get; set; }
 
         public AppDbContext()
         {
@@ -49,6 +51,13 @@ namespace HomeBuyingApp.Infrastructure.Data
                 .HasMany(p => p.Tags)
                 .WithMany(t => t.Properties)
                 .UsingEntity(j => j.ToTable("PropertyPropertyTag"));
+
+            // JournalEntry <-> JournalAttachment (one-to-many with cascade delete)
+            modelBuilder.Entity<JournalEntry>()
+                .HasMany(j => j.Attachments)
+                .WithOne(a => a.JournalEntry)
+                .HasForeignKey(a => a.JournalEntryId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

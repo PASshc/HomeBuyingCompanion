@@ -366,7 +366,7 @@
                             <TextBlock Text="✓ PROs" FontSize="14" FontWeight="Bold" Foreground="ForestGreen" Margin="0,0,0,10"/>
                             
                             <!-- Current PRO Tags -->
-                            <ItemsControl ItemsSource="{Binding PropertyProTags}" Margin="0,0,0,10">
+                            <ItemsControl ItemsSource="{Binding Tags.PropertyProTags}" Margin="0,0,0,10">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <WrapPanel/>
@@ -378,14 +378,14 @@
                                             <Border.ContextMenu>
                                                 <ContextMenu>
                                                     <MenuItem Header="Delete Tag Permanently" 
-                                                              Command="{Binding DataContext.DeleteProTagCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                              Command="{Binding DataContext.Tags.DeleteProTagCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                               CommandParameter="{Binding}"/>
                                                 </ContextMenu>
                                             </Border.ContextMenu>
                                             <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text="{Binding Name}" Foreground="White" VerticalAlignment="Center"/>
+                                                <TextBlock Text="{Binding DisplayName}" Foreground="White" VerticalAlignment="Center"/>
                                                 <Button Content="✕" 
-                                                        Command="{Binding DataContext.RemoveProTagCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                                        Command="{Binding DataContext.Tags.RemoveProTagCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
                                                         CommandParameter="{Binding}"
                                                         Background="Transparent" Foreground="White" BorderThickness="0"
                                                         Padding="5,0,0,0" FontWeight="Bold" Cursor="Hand"
@@ -398,22 +398,32 @@
                             
                             <!-- Add PRO Tag -->
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                                <ComboBox ItemsSource="{Binding AvailableProTags}" 
-                                          SelectedItem="{Binding SelectedProTag}"
-                                          DisplayMemberPath="Name"
-                                          Width="180" Margin="0,0,8,0"/>
-                                <Button Content="Add" Command="{Binding AddProTagCommand}" Padding="10,3" Background="#E8F5E9"/>
-                                <Button Content="🗑" Command="{Binding DeleteSelectedProTagCommand}" 
+                                <ComboBox ItemsSource="{Binding Tags.AvailableProTags}" 
+                                          SelectedItem="{Binding Tags.SelectedProTag}"
+                                          DisplayMemberPath="DisplayName"
+                                          Width="200" Margin="0,0,8,0"/>
+                                <Button Content="Add" Command="{Binding Tags.AddProTagCommand}" Padding="10,3" Background="#E8F5E9"/>
+                                <Button Content="🗑" Command="{Binding Tags.DeleteSelectedProTagCommand}" 
                                         Padding="5,3" Margin="5,0,0,0" Background="#FFEBEE" 
                                         ToolTip="Delete selected tag permanently" FontSize="12"/>
                             </StackPanel>
                             
-                            <!-- Create New PRO Tag -->
+                            <!-- Create New PRO Tag with Category -->
                             <StackPanel Orientation="Horizontal">
-                                <TextBox Text="{Binding NewProTagName, UpdateSourceTrigger=PropertyChanged}" 
-                                         Width="180" Margin="0,0,8,0" 
-                                         ToolTip="Create a custom PRO"/>
-                                <Button Content="Create" Command="{Binding CreateProTagCommand}" Padding="10,3" Background="#E8F5E9"/>
+                                <ComboBox ItemsSource="{Binding Tags.Categories}" 
+                                          SelectedItem="{Binding Tags.SelectedProCategory}"
+                                          Width="90" Margin="0,0,5,0"
+                                          ToolTip="Category (optional)">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding}" FontSize="11"/>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                                <TextBox Text="{Binding Tags.NewProTagName, UpdateSourceTrigger=PropertyChanged}" 
+                                         Width="100" Margin="0,0,5,0" 
+                                         ToolTip="Tag name"/>
+                                <Button Content="Create" Command="{Binding Tags.CreateProTagCommand}" Padding="8,3" Background="#E8F5E9"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>
@@ -424,7 +434,7 @@
                             <TextBlock Text="✗ CONs" FontSize="14" FontWeight="Bold" Foreground="Firebrick" Margin="0,0,0,10"/>
                             
                             <!-- Current CON Tags -->
-                            <ItemsControl ItemsSource="{Binding PropertyConTags}" Margin="0,0,0,10">
+                            <ItemsControl ItemsSource="{Binding Tags.PropertyConTags}" Margin="0,0,0,10">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <WrapPanel/>
@@ -436,14 +446,14 @@
                                             <Border.ContextMenu>
                                                 <ContextMenu>
                                                     <MenuItem Header="Delete Tag Permanently" 
-                                                              Command="{Binding DataContext.DeleteConTagCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                              Command="{Binding DataContext.Tags.DeleteConTagCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                               CommandParameter="{Binding}"/>
                                                 </ContextMenu>
                                             </Border.ContextMenu>
                                             <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text="{Binding Name}" Foreground="White" VerticalAlignment="Center"/>
+                                                <TextBlock Text="{Binding DisplayName}" Foreground="White" VerticalAlignment="Center"/>
                                                 <Button Content="✕" 
-                                                        Command="{Binding DataContext.RemoveConTagCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                        Command="{Binding DataContext.Tags.RemoveConTagCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                         CommandParameter="{Binding}"
                                                         Background="Transparent" Foreground="White" BorderThickness="0"
                                                         Padding="5,0,0,0" FontWeight="Bold" Cursor="Hand"
@@ -456,22 +466,32 @@
                             
                             <!-- Add CON Tag -->
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                                <ComboBox ItemsSource="{Binding AvailableConTags}" 
-                                          SelectedItem="{Binding SelectedConTag}"
-                                          DisplayMemberPath="Name"
-                                          Width="180" Margin="0,0,8,0"/>
-                                <Button Content="Add" Command="{Binding AddConTagCommand}" Padding="10,3" Background="#FFEBEE"/>
-                                <Button Content="🗑" Command="{Binding DeleteSelectedConTagCommand}" 
+                                <ComboBox ItemsSource="{Binding Tags.AvailableConTags}" 
+                                          SelectedItem="{Binding Tags.SelectedConTag}"
+                                          DisplayMemberPath="DisplayName"
+                                          Width="200" Margin="0,0,8,0"/>
+                                <Button Content="Add" Command="{Binding Tags.AddConTagCommand}" Padding="10,3" Background="#FFEBEE"/>
+                                <Button Content="🗑" Command="{Binding Tags.DeleteSelectedConTagCommand}" 
                                         Padding="5,3" Margin="5,0,0,0" Background="#FFEBEE" 
                                         ToolTip="Delete selected tag permanently" FontSize="12"/>
                             </StackPanel>
                             
-                            <!-- Create New CON Tag -->
+                            <!-- Create New CON Tag with Category -->
                             <StackPanel Orientation="Horizontal">
-                                <TextBox Text="{Binding NewConTagName, UpdateSourceTrigger=PropertyChanged}" 
-                                         Width="180" Margin="0,0,8,0" 
-                                         ToolTip="Create a custom CON"/>
-                                <Button Content="Create" Command="{Binding CreateConTagCommand}" Padding="10,3" Background="#FFEBEE"/>
+                                <ComboBox ItemsSource="{Binding Tags.Categories}" 
+                                          SelectedItem="{Binding Tags.SelectedConCategory}"
+                                          Width="90" Margin="0,0,5,0"
+                                          ToolTip="Category (optional)">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding}" FontSize="11"/>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                                <TextBox Text="{Binding Tags.NewConTagName, UpdateSourceTrigger=PropertyChanged}" 
+                                         Width="100" Margin="0,0,5,0" 
+                                         ToolTip="Tag name"/>
+                                <Button Content="Create" Command="{Binding Tags.CreateConTagCommand}" Padding="8,3" Background="#FFEBEE"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>

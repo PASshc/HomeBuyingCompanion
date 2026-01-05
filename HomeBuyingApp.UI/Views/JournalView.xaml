@@ -1,0 +1,378 @@
+<UserControl x:Class="HomeBuyingApp.UI.Views.JournalView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:HomeBuyingApp.UI.Views"
+             xmlns:converters="clr-namespace:HomeBuyingApp.UI.Converters"
+             xmlns:helpers="clr-namespace:HomeBuyingApp.UI.Helpers"
+             mc:Ignorable="d">
+    
+    <UserControl.Resources>
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
+        <converters:AttachmentCountToVisibilityConverter x:Key="AttachmentCountToVisibilityConverter"/>
+        
+        <!-- Category to icon/color converter -->
+        <local:JournalCategoryToIconConverter x:Key="CategoryToIconConverter"/>
+        <local:JournalCategoryToColorConverter x:Key="CategoryToColorConverter"/>
+    </UserControl.Resources>
+
+    <Grid Background="#F5F5F5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="350"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Left Panel: Entry List -->
+        <Border Grid.Column="0" Background="White" BorderBrush="#E0E0E0" BorderThickness="0,0,1,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Header -->
+                <Border Grid.Row="0" Background="#2196F3" Padding="15">
+                    <StackPanel>
+                        <TextBlock Text="Journal" FontSize="24" FontWeight="Bold" Foreground="White"/>
+                        <TextBlock Text="Track your home buying journey" FontSize="12" Foreground="#E3F2FD" Margin="0,5,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Search and Filter -->
+                <StackPanel Grid.Row="1" Margin="10">
+                    <!-- Search Box -->
+                    <Grid Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Column="0" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" 
+                                 Padding="8" FontSize="13" VerticalContentAlignment="Center">
+                            <TextBox.InputBindings>
+                                <KeyBinding Key="Return" Command="{Binding SearchCommand}"/>
+                            </TextBox.InputBindings>
+                        </TextBox>
+                        <Button Grid.Column="1" Content="🔍" Command="{Binding SearchCommand}" 
+                                Padding="10,8" Margin="5,0,0,0" FontSize="14"/>
+                    </Grid>
+
+                    <!-- Category Filter -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <ComboBox Grid.Column="0" ItemsSource="{Binding Categories}" 
+                                  SelectedItem="{Binding FilterCategory}" Padding="8" FontSize="13">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding}"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                        <Button Grid.Column="1" Content="✕" Command="{Binding ClearFilterCommand}" 
+                                Padding="10,8" Margin="5,0,0,0" ToolTip="Clear filters"/>
+                    </Grid>
+
+                    <!-- New Entry Button -->
+                    <Button Content="+ New Entry" Command="{Binding NewEntryCommand}" 
+                            Margin="0,10,0,0" Padding="12,10" FontSize="14" FontWeight="SemiBold"
+                            Background="#4CAF50" Foreground="White" Cursor="Hand">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" 
+                                                    CornerRadius="5" Padding="{TemplateBinding Padding}">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </StackPanel>
+
+                <!-- Entry List -->
+                <ListBox Grid.Row="2" ItemsSource="{Binding Entries}" 
+                         SelectedItem="{Binding SelectedEntry}"
+                         BorderThickness="0" Background="Transparent"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border Padding="10" Margin="5,2" Background="White" 
+                                    BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="5">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Category Icon -->
+                                    <Border Grid.Column="0" Width="40" Height="40" CornerRadius="20" 
+                                            Background="{Binding Category, Converter={StaticResource CategoryToColorConverter}}"
+                                            Margin="0,0,10,0" VerticalAlignment="Top">
+                                        <TextBlock Text="{Binding Category, Converter={StaticResource CategoryToIconConverter}}" 
+                                                   FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+
+                                    <!-- Entry Info -->
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text="{Binding Title}" FontWeight="SemiBold" FontSize="14" 
+                                                   TextTrimming="CharacterEllipsis" MaxWidth="200"/>
+                                        <TextBlock Text="{Binding EntryDate, StringFormat='{}{0:MMM dd, yyyy}'}" 
+                                                   FontSize="11" Foreground="#757575" Margin="0,3,0,0"/>
+                                        <TextBlock Text="{Binding Category}" FontSize="10" Foreground="#9E9E9E" 
+                                                   Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                    
+                                    <!-- Attachment Indicator -->
+                                    <StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="5,0,0,0"
+                                                Visibility="{Binding Attachments.Count, Converter={StaticResource AttachmentCountToVisibilityConverter}}">
+                                        <TextBlock Text="📎" FontSize="14" HorizontalAlignment="Center"/>
+                                        <TextBlock Text="{Binding Attachments.Count}" FontSize="9" 
+                                                   Foreground="#757575" HorizontalAlignment="Center"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="Padding" Value="0"/>
+                            <Setter Property="Margin" Value="0"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Background" Value="#E3F2FD"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                </ListBox>
+
+                <!-- Empty State -->
+                <StackPanel Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center"
+                            Visibility="{Binding HasEntries, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+                    <TextBlock Text="📝" FontSize="48" HorizontalAlignment="Center" Opacity="0.5"/>
+                    <TextBlock Text="No journal entries yet" FontSize="14" Foreground="#757575" 
+                               HorizontalAlignment="Center" Margin="0,10,0,0"/>
+                    <TextBlock Text="Click 'New Entry' to start journaling" FontSize="12" Foreground="#9E9E9E" 
+                               HorizontalAlignment="Center" Margin="0,5,0,0"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Right Panel: Entry Editor -->
+        <Grid Grid.Column="1" Margin="20">
+            <!-- No Entry Selected -->
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
+                        Visibility="{Binding IsEntrySelected, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+                <TextBlock Text="📖" FontSize="72" HorizontalAlignment="Center" Opacity="0.3"/>
+                <TextBlock Text="Select an entry to view or edit" FontSize="16" Foreground="#757575" 
+                           HorizontalAlignment="Center" Margin="0,15,0,0"/>
+                <TextBlock Text="Or create a new entry to get started" FontSize="13" Foreground="#9E9E9E" 
+                           HorizontalAlignment="Center" Margin="0,8,0,0"/>
+            </StackPanel>
+
+            <!-- Entry Editor -->
+            <Border Background="White" CornerRadius="10" Padding="25" 
+                    Visibility="{Binding IsEntrySelected, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    BorderBrush="#E0E0E0" BorderThickness="1">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Editor Header -->
+                    <TextBlock Grid.Row="0" Text="{Binding EditorTitle}" FontSize="20" FontWeight="Bold" 
+                               Foreground="#2196F3" Margin="0,0,0,20"/>
+
+                    <!-- Entry Metadata -->
+                    <Grid Grid.Row="1" Margin="0,0,0,15">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Date -->
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Date" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                        <DatePicker Grid.Row="1" Grid.Column="0" 
+                                    SelectedDate="{Binding SelectedEntry.EntryDate, Mode=TwoWay}" 
+                                    Padding="8" FontSize="13"/>
+
+                        <!-- Category -->
+                        <TextBlock Grid.Row="0" Grid.Column="2" Text="Category" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                        <ComboBox Grid.Row="1" Grid.Column="2" 
+                                  ItemsSource="{Binding Categories}" 
+                                  SelectedItem="{Binding SelectedEntry.Category, Mode=TwoWay}"
+                                  Padding="8" FontSize="13"/>
+
+                        <!-- Linked Property -->
+                        <TextBlock Grid.Row="0" Grid.Column="4" Text="Link to Property (optional)" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                        <ComboBox Grid.Row="1" Grid.Column="4" 
+                                  ItemsSource="{Binding AvailableProperties}" 
+                                  SelectedValue="{Binding SelectedEntry.PropertyId, Mode=TwoWay}"
+                                  SelectedValuePath="Id" DisplayMemberPath="Address"
+                                  Padding="8" FontSize="13"/>
+                    </Grid>
+
+                    <!-- Title -->
+                    <StackPanel Grid.Row="2" VerticalAlignment="Top">
+                        <TextBlock Text="Title" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                        <TextBox Text="{Binding SelectedEntry.Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                 Padding="10" FontSize="14" Margin="0,0,0,15"/>
+
+                        <!-- Content with Rich Text Formatting -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                            <TextBlock Text="Content" FontWeight="SemiBold"/>
+                            <TextBlock Text="  (Supports Markdown: **bold**, *italic*, ~~strike~~, `code`)" 
+                                       FontSize="11" Foreground="#757575" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        
+                        <!-- Formatting Toolbar -->
+                        <ToolBar Background="#F5F5F5" Padding="3" Margin="0,0,0,5">
+                            <Button x:Name="BoldButton" Content="B" FontWeight="Bold" Width="28" Height="24"
+                                    Click="FormatBold_Click" ToolTip="Bold (Ctrl+B)"/>
+                            <Button x:Name="ItalicButton" Content="I" FontStyle="Italic" Width="28" Height="24"
+                                    Click="FormatItalic_Click" ToolTip="Italic (Ctrl+I)"/>
+                            <Button x:Name="UnderlineButton" Width="28" Height="24"
+                                    Click="FormatUnderline_Click" ToolTip="Underline (Ctrl+U)">
+                                <TextBlock Text="U" TextDecorations="Underline"/>
+                            </Button>
+                            <Separator/>
+                            <Button x:Name="BulletListButton" Content="•≡" Width="28" Height="24"
+                                    Click="BulletList_Click" ToolTip="Bullet List"/>
+                            <Button x:Name="NumberedListButton" Content="1." Width="28" Height="24"
+                                    Click="NumberedList_Click" ToolTip="Numbered List"/>
+                            <Separator/>
+                            <Button x:Name="HighlightYellowButton" Width="28" Height="24"
+                                    Click="HighlightYellow_Click" ToolTip="Highlight Yellow">
+                                <Border Background="Yellow" Width="16" Height="16" CornerRadius="2"/>
+                            </Button>
+                            <Button x:Name="HighlightGreenButton" Width="28" Height="24"
+                                    Click="HighlightGreen_Click" ToolTip="Highlight Green">
+                                <Border Background="LightGreen" Width="16" Height="16" CornerRadius="2"/>
+                            </Button>
+                            <Separator/>
+                            <Button x:Name="ClearFormattingButton" Content="✖" Width="28" Height="24"
+                                    Click="ClearFormatting_Click" ToolTip="Clear Formatting"/>
+                        </ToolBar>
+                        
+                        <!-- RichTextBox -->
+                        <RichTextBox x:Name="ContentRichTextBox" 
+                                     helpers:RichTextBoxBinding.XamlText="{Binding SelectedEntry.Content, Mode=TwoWay}"
+                                     MinHeight="150" MaxHeight="250"
+                                     VerticalScrollBarVisibility="Auto"
+                                     Padding="10" FontSize="13"
+                                     PreviewKeyDown="ContentRichTextBox_PreviewKeyDown"/>
+                        
+                        <!-- Attachments Section -->
+                        <StackPanel Orientation="Horizontal" Margin="0,20,0,10">
+                            <TextBlock Text="📎" FontSize="16" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                            <TextBlock Text="Attachments" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center"/>
+                            <TextBlock Text="(Pre-approvals, Documents, etc.)" FontSize="11" Foreground="#757575" 
+                                       VerticalAlignment="Center" Margin="10,0,0,0"/>
+                        </StackPanel>
+                        
+                        <Button Content="+ Add Attachment" Command="{Binding AddAttachmentCommand}" 
+                                HorizontalAlignment="Left" Margin="0,0,0,10" Padding="12,6"
+                                FontSize="12" Background="#E3F2FD" Foreground="#1976D2" 
+                                BorderBrush="#BBDEFB" Cursor="Hand"/>
+                        
+                        <!-- Attachments List -->
+                        <Border BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="5" 
+                                MaxHeight="150" Margin="0,0,0,5"
+                                Visibility="{Binding HasAttachments, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <ListView ItemsSource="{Binding Attachments}" 
+                                      BorderThickness="0" Background="Transparent"
+                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="5,3">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            
+                                            <!-- File Icon -->
+                                            <TextBlock Grid.Column="0" Text="📄" FontSize="14" 
+                                                       VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                            
+                                            <!-- File Info -->
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding FileName}" FontSize="12" FontWeight="SemiBold"
+                                                           TextTrimming="CharacterEllipsis" MaxWidth="300"/>
+                                                <TextBlock FontSize="10" Foreground="#757575">
+                                                    <Run Text="Added: "/>
+                                                    <Run Text="{Binding DateAdded, StringFormat='{}{0:MMM dd, yyyy}'}" />
+                                                </TextBlock>
+                                            </StackPanel>
+                                            
+                                            <!-- Open Button -->
+                                            <Button Grid.Column="2" Content="Open" 
+                                                    Command="{Binding DataContext.OpenAttachmentCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                                    CommandParameter="{Binding}" 
+                                                    Margin="5,0" Padding="8,4" FontSize="11"
+                                                    Background="#4CAF50" Foreground="White" Cursor="Hand"/>
+                                            
+                                            <!-- Delete Button -->
+                                            <Button Grid.Column="3" Content="✕" 
+                                                    Command="{Binding DataContext.DeleteAttachmentCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                                    CommandParameter="{Binding}" 
+                                                    Padding="6,4" FontSize="11" ToolTip="Delete attachment"
+                                                    Background="#FFEBEE" Foreground="#D32F2F" Cursor="Hand"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="ListViewItem">
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                        <Setter Property="Padding" Value="0"/>
+                                        <Setter Property="Margin" Value="0"/>
+                                    </Style>
+                                </ListView.ItemContainerStyle>
+                            </ListView>
+                        </Border>
+                        
+                        <!-- No Attachments Message -->
+                        <TextBlock Text="No attachments yet. Click 'Add Attachment' to attach documents."
+                                   FontSize="11" Foreground="#9E9E9E" FontStyle="Italic"
+                                   Visibility="{Binding HasAttachments, Converter={StaticResource InverseBooleanToVisibilityConverter}}"
+                                   Margin="0,0,0,10"/>
+                    </StackPanel>
+
+                    <!-- Action Buttons -->
+                    <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+                        <Button Content="Delete" Command="{Binding DeleteEntryCommand}" 
+                                Padding="20,10" Margin="0,0,10,0" FontSize="13"
+                                Background="#FF5722" Foreground="White"/>
+                        <Button Content="Cancel" Command="{Binding CancelEditCommand}" 
+                                Padding="20,10" Margin="0,0,10,0" FontSize="13"/>
+                        <Button Content="Save Entry" Command="{Binding SaveEntryCommand}" 
+                                Padding="20,10" FontSize="13" FontWeight="SemiBold"
+                                Background="#2196F3" Foreground="White"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

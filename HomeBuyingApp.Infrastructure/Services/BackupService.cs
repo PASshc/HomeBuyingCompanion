@@ -14,12 +14,15 @@ namespace HomeBuyingApp.Infrastructure.Services
         private readonly string _dbPath;
         private readonly string _attachmentsPath;
         private readonly string _imagesPath;
+        private readonly string _journalAttachmentsPath;
 
         public BackupService(string dbPath, string attachmentsPath, string imagesPath)
         {
             _dbPath = dbPath;
             _attachmentsPath = attachmentsPath;
             _imagesPath = imagesPath;
+            // Journal attachments are stored alongside other attachments
+            _journalAttachmentsPath = Path.Combine(Path.GetDirectoryName(attachmentsPath) ?? attachmentsPath, "JournalAttachments");
         }
 
         public async Task CreateBackupAsync(string destinationPath)
@@ -60,7 +63,15 @@ namespace HomeBuyingApp.Infrastructure.Services
                         CopyDirectory(_imagesPath, destImagesPath, true);
                     }
 
-                    // 4. Zip it all
+                    // 4. Copy Journal Attachments
+                    var destJournalAttachmentsPath = Path.Combine(tempDir, "JournalAttachments");
+                    
+                    if (Directory.Exists(_journalAttachmentsPath))
+                    {
+                        CopyDirectory(_journalAttachmentsPath, destJournalAttachmentsPath, true);
+                    }
+
+                    // 5. Zip it all
                     if (File.Exists(destinationPath)) File.Delete(destinationPath);
                     ZipFile.CreateFromDirectory(tempDir, destinationPath);
                 }
@@ -143,6 +154,16 @@ namespace HomeBuyingApp.Infrastructure.Services
                         if (!Directory.Exists(_imagesPath)) Directory.CreateDirectory(_imagesPath);
                         
                         CopyDirectory(imagesSource, _imagesPath, true);
+                    }
+
+                    // 4. Restore Journal Attachments
+                    var journalAttachmentsSource = Path.Combine(tempDir, "JournalAttachments");
+                    
+                    if (Directory.Exists(journalAttachmentsSource))
+                    {
+                        if (!Directory.Exists(_journalAttachmentsPath)) Directory.CreateDirectory(_journalAttachmentsPath);
+                        
+                        CopyDirectory(journalAttachmentsSource, _journalAttachmentsPath, true);
                     }
                 }
                 finally

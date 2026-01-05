@@ -1,3 +1,107 @@
+## Version 7.4.3
+
+### ✨ Improvements
+
+- **Microsoft Store Compliance**: Added full silent install/uninstall support for Microsoft Store publishing requirements
+  - Supports `/SILENT`, `/VERYSILENT`, and `/SUPPRESSMSGBOXES` command-line switches
+  - Auto-closes running application during updates
+
+---
+
+## Version 7.4.2
+
+### 🐛 Bug Fixes
+
+- **Fixed Backup Freeze**: Resolved issue where the application would freeze when creating a backup. Backup now runs asynchronously with a wait cursor indicator.
+
+---
+
+## Version 7.4.1
+
+### 🐛 Bug Fixes
+
+- **Fixed Duplicate Attachments**: Resolved issue where journal attachments were duplicated when saving an entry
+- **Improved Markdown Processing**: Enhanced real-time Markdown formatting reliability in journal content editor
+
+---
+
+## Version 7.4.0
+
+### 🎉 New Features
+
+- **Markdown Formatting in Journal**: Write journal entries using familiar Markdown syntax
+  - Type `**text**` for **bold** formatting
+  - Type `*text*` for *italic* formatting
+  - Type `~~text~~` for ~~strikethrough~~ formatting
+  - Type `` `text` `` for `code` formatting
+  - Formatting is applied automatically when you press Space or Enter
+  - Helpful syntax hint displayed above the content editor
+
+### 🐛 Bug Fixes
+
+- **Fixed Journal Content Not Saving**: Resolved issue where text entered in journal content field wasn't being stored
+- **Fixed Journal Attachments**: Attachments now save and open correctly (was using wrong storage folder in dev mode)
+- **Fixed Property Images**: Images now save to correct folder in development mode
+- **Fixed Save Error**: Resolved "Object reference not set" error when saving existing journal entries
+
+---
+
+## Version 7.3.0
+
+### 🔧 Improvements
+
+- **Smart Category Detection**: Existing tags are now automatically assigned categories based on keywords
+  - Tags containing "Kitchen", "Island", "Cabinet" → Kitchen category
+  - Tags containing "Yard", "Backyard", "Pool", "Landscape" → Yard category
+  - Tags containing "View", "Street", "Lake", "Location" → Location category
+  - Tags containing "Flooring", "Tile", "Carpet", "Hardwood" → Flooring category
+  - And many more keyword-to-category mappings
+  - Works automatically on app startup - no manual updates needed
+
+---
+
+## Version 7.2.0
+
+### 🎉 New Features
+
+- **Category Prefixes for Tags**: Organize PROs and CONs with category prefixes for better sorting
+  - Select from predefined categories: Kitchen, Bathroom, Bedroom, Roof, HVAC, Location, and more
+  - Tags display as "Category: Name" format (e.g., "Kitchen: Remodeled", "Roof: New")
+  - Tags automatically sort alphabetically by category, then by name
+  - Category is optional - legacy tags without categories continue to work
+  - Helps keep tags organized when comparing multiple properties
+
+---
+
+## Version 7.1.0
+
+### 🎉 New Features
+
+- **Journal Attachments**: Attach documents directly to journal entries
+  - Perfect for storing pre-approval letters, loan documents, and receipts
+  - Add unlimited attachments per journal entry (PDFs, images, documents)
+  - View attachment count (📎) indicator in the entry list
+  - Click to open attachments in default application
+  - Add descriptions to each attachment for easy reference
+
+### 🐛 Bug Fixes
+
+- **Fixed PROs/CONs Tags**: Resolved issue where tags weren't displaying or saving after recent refactoring
+  - Tag dropdowns now populate correctly
+  - Creating new tags works as expected
+  - All existing tags are preserved
+
+---
+
+## Version 7.0.0
+
+### 🎉 New Features
+
+- **Property Tags Refactoring**: Improved internal architecture for better maintainability
+- Performance improvements and code cleanup
+
+---
+
 ## Version 6.0.0
 
 ### 🎉 New Features

@@ -141,6 +141,10 @@ namespace HomeBuyingApp.UI.Helpers
             {
                 var xaml = SerializeDocumentToXaml(richTextBox.Document);
                 SetXamlText(richTextBox, xaml);
+                
+                // Explicitly update the binding source to ensure the Content property is saved
+                var bindingExpression = System.Windows.Data.BindingOperations.GetBindingExpression(richTextBox, XamlTextProperty);
+                bindingExpression?.UpdateSource();
             }
             finally
             {

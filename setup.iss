@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Home Buying App"
-#define MyAppVersion "6.0.0"
+#define MyAppVersion "7.4.3"
 #define MyAppPublisher "Home Buyer"
 #define MyAppExeName "HomeBuyingApp.UI.exe"
 
@@ -31,6 +31,10 @@ UninstallDisplayName={#MyAppName}
 UninstallDisplayIcon={app}\{#MyAppExeName}
 ; Ensure proper Add/Remove Programs registration
 CreateUninstallRegKey=yes
+; Silent install/uninstall support for Microsoft Store
+CloseApplications=yes
+CloseApplicationsFilter=*.exe
+RestartApplications=no
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"

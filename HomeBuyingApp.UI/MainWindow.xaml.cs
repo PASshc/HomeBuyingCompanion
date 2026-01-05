@@ -102,7 +102,7 @@ License: MIT";
             MessageBoxButton.OK, MessageBoxImage.Information);
     }
 
-    private void BackupDatabase_Click(object sender, RoutedEventArgs e)
+    private async void BackupDatabase_Click(object sender, RoutedEventArgs e)
     {
         if (_backupService == null)
         {
@@ -121,12 +121,16 @@ License: MIT";
         {
             try
             {
-                _backupService.CreateBackupAsync(dialog.FileName).Wait();
+                // Show a status message while backup is in progress
+                Mouse.OverrideCursor = Cursors.Wait;
+                await _backupService.CreateBackupAsync(dialog.FileName);
+                Mouse.OverrideCursor = null;
                 MessageBox.Show("Backup created successfully!", "Success", 
                     MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
+                Mouse.OverrideCursor = null;
                 MessageBox.Show($"Backup failed: {ex.Message}", "Error", 
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }

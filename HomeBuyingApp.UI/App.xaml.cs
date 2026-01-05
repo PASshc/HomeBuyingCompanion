@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -16,6 +17,12 @@ namespace HomeBuyingApp.UI
         private IServiceProvider _serviceProvider;
 
         public IServiceProvider ServiceProvider => _serviceProvider;
+
+        /// <summary>
+        /// Gets the application data path (different for DEBUG vs Release).
+        /// Use this for storing images, attachments, and other user data.
+        /// </summary>
+        public static string AppDataPath { get; private set; } = string.Empty;
 
         public App()
         {
@@ -35,6 +42,9 @@ namespace HomeBuyingApp.UI
 #endif
 
             string appDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), appFolderName);
+            
+            // Store the app data path for use by other components
+            AppDataPath = appDataPath;
             if (!Directory.Exists(appDataPath))
             {
                 Directory.CreateDirectory(appDataPath);
@@ -65,6 +75,7 @@ namespace HomeBuyingApp.UI
             services.AddScoped<IPropertyService, PropertyService>();
             services.AddScoped<ITagService, TagService>();
             services.AddScoped<ICsvService, CsvService>();
+            services.AddScoped<IJournalService, JournalService>();
             services.AddSingleton<IBackupService>(provider => new BackupService(
                 dbPath, 
                 Path.Combine(appDataPath, "Attachments"),
@@ -77,6 +88,7 @@ namespace HomeBuyingApp.UI
             services.AddTransient<MortgageCalculatorViewModel>();
             services.AddTransient<MortgageComparisonViewModel>();
             services.AddTransient<PropertyListViewModel>();
+            services.AddTransient<JournalViewModel>();
             services.AddTransient<MainViewModel>();
 
             // Views
@@ -257,6 +269,49 @@ namespace HomeBuyingApp.UI
                         CREATE INDEX IF NOT EXISTS IX_PropertyPropertyTag_TagsId ON PropertyPropertyTag (TagsId);
                     ");
 
+                    // v6.1.0: Create JournalEntries table for home buying journey tracking
+                    context.Database.ExecuteSqlRaw(@"
+                        CREATE TABLE IF NOT EXISTS JournalEntries (
+                            Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            EntryDate TEXT NOT NULL,
+                            Category INTEGER NOT NULL DEFAULT 0,
+                            Title TEXT NOT NULL,
+                            Content TEXT DEFAULT '',
+                            PropertyId INTEGER NULL,
+                            CreatedAt TEXT NOT NULL,
+                            ModifiedAt TEXT NOT NULL,
+                            FOREIGN KEY (PropertyId) REFERENCES Properties (Id) ON DELETE SET NULL
+                        );
+                        CREATE INDEX IF NOT EXISTS IX_JournalEntries_EntryDate ON JournalEntries (EntryDate);
+                        CREATE INDEX IF NOT EXISTS IX_JournalEntries_Category ON JournalEntries (Category);
+                        CREATE INDEX IF NOT EXISTS IX_JournalEntries_PropertyId ON JournalEntries (PropertyId);
+                    ");
+
+                    // v6.2.0: Create JournalAttachments table for document attachments on journal entries
+                    context.Database.ExecuteSqlRaw(@"
+                        CREATE TABLE IF NOT EXISTS JournalAttachments (
+                            Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            JournalEntryId INTEGER NOT NULL,
+                            FileName TEXT NOT NULL,
+                            FilePath TEXT NOT NULL,
+                            Description TEXT DEFAULT '',
+                            DateAdded TEXT NOT NULL,
+                            FileSize INTEGER NOT NULL DEFAULT 0,
+                            FileType TEXT DEFAULT '',
+                            FOREIGN KEY (JournalEntryId) REFERENCES JournalEntries (Id) ON DELETE CASCADE
+                        );
+                        CREATE INDEX IF NOT EXISTS IX_JournalAttachments_JournalEntryId ON JournalAttachments (JournalEntryId);
+                    ");
+
+                    // v7.2.0: Add Category column to PropertyTags table for tag organization
+                    try
+                    {
+                        context.Database.ExecuteSqlRaw(@"
+                            ALTER TABLE PropertyTags ADD COLUMN Category TEXT DEFAULT '';
+                        ");
+                    }
+                    catch { /* Column may already exist */ }
+
                     // Seed predefined tags if table is empty
                     SeedPredefinedTags(context);
                 }
@@ -289,41 +344,153 @@ namespace HomeBuyingApp.UI
                 // Check if any tags exist
                 var count = context.Database.ExecuteSqlRaw("SELECT COUNT(*) FROM PropertyTags");
                 var hasData = context.PropertyTags.Any();
-                if (hasData) return;
-
-                // PRO tags (Type = 0)
-                var proTags = new[]
+                if (hasData)
                 {
-                    "Great Layout", "Updated Kitchen", "Large Backyard", "Quiet Street",
-                    "Good Schools", "Move-in Ready", "Natural Light", "Storage Space",
-                    "New Roof", "Updated Bathrooms", "Open Floor Plan", "Corner Lot",
-                    "Low HOA", "Energy Efficient", "Great View", "Cul-de-sac"
+                    // Update existing tags with categories if they don't have one
+                    UpdateExistingTagsWithCategories(context);
+                    return;
+                }
+
+                // PRO tags with categories (Type = 0)
+                var proTags = new (string Name, string Category)[]
+                {
+                    ("Updated", "Kitchen"),
+                    ("Remodeled", "Kitchen"),
+                    ("Spacious", "Kitchen"),
+                    ("Updated", "Bathroom"),
+                    ("Remodeled", "Bathroom"),
+                    ("New", "Roof"),
+                    ("Good Condition", "Roof"),
+                    ("Efficient", "HVAC"),
+                    ("Updated", "HVAC"),
+                    ("New", "Flooring"),
+                    ("Hardwood", "Flooring"),
+                    ("Large", "Yard"),
+                    ("Private", "Yard"),
+                    ("Fenced", "Yard"),
+                    ("Good Schools", "Location"),
+                    ("Quiet Street", "Location"),
+                    ("Cul-de-sac", "Location"),
+                    ("Great View", "Location"),
+                    ("Low", "HOA"),
+                    ("Spacious", "Bedroom"),
+                    ("Walk-in Closet", "Bedroom"),
+                    ("Attached", "Garage"),
+                    ("2-Car", "Garage"),
+                    ("Great Layout", ""),
+                    ("Move-in Ready", ""),
+                    ("Natural Light", ""),
+                    ("Storage Space", ""),
+                    ("Open Floor Plan", ""),
+                    ("Corner Lot", ""),
+                    ("Energy Efficient", "")
                 };
 
-                // CON tags (Type = 1)
-                var conTags = new[]
+                // CON tags with categories (Type = 1)
+                var conTags = new (string Name, string Category)[]
                 {
-                    "Needs Work", "Small Yard", "Busy Street", "Outdated Kitchen",
-                    "HOA Restrictions", "Poor Layout", "No Garage", "Flood Zone",
-                    "Old Roof", "Small Rooms", "No Updates", "High Taxes",
-                    "High HOA", "Foundation Issues", "Bad Neighbors", "Far from Work"
+                    ("Outdated", "Kitchen"),
+                    ("Small", "Kitchen"),
+                    ("Needs Work", "Kitchen"),
+                    ("Outdated", "Bathroom"),
+                    ("Small", "Bathroom"),
+                    ("Old", "Roof"),
+                    ("Needs Replacement", "Roof"),
+                    ("Old", "HVAC"),
+                    ("Needs Replacement", "HVAC"),
+                    ("Worn", "Flooring"),
+                    ("Needs Replacement", "Flooring"),
+                    ("Small", "Yard"),
+                    ("No Privacy", "Yard"),
+                    ("Poor Schools", "Location"),
+                    ("Busy Street", "Location"),
+                    ("Flood Zone", "Location"),
+                    ("Far from Work", "Location"),
+                    ("High", "HOA"),
+                    ("Restrictive", "HOA"),
+                    ("Small", "Bedroom"),
+                    ("No Closet", "Bedroom"),
+                    ("No Garage", "Garage"),
+                    ("Small", "Garage"),
+                    ("Foundation Issues", ""),
+                    ("High Taxes", ""),
+                    ("Needs Work", ""),
+                    ("Poor Layout", ""),
+                    ("No Updates", ""),
+                    ("Bad Neighbors", "")
                 };
 
-                foreach (var name in proTags)
+                foreach (var (name, category) in proTags)
                 {
 #pragma warning disable EF1002
-                    context.Database.ExecuteSqlRaw($"INSERT OR IGNORE INTO PropertyTags (Name, Type, IsCustom) VALUES ('{name}', 0, 0);");
+                    context.Database.ExecuteSqlRaw($"INSERT OR IGNORE INTO PropertyTags (Name, Category, Type, IsCustom) VALUES ('{name}', '{category}', 0, 0);");
 #pragma warning restore EF1002
                 }
 
-                foreach (var name in conTags)
+                foreach (var (name, category) in conTags)
                 {
 #pragma warning disable EF1002
-                    context.Database.ExecuteSqlRaw($"INSERT OR IGNORE INTO PropertyTags (Name, Type, IsCustom) VALUES ('{name}', 1, 0);");
+                    context.Database.ExecuteSqlRaw($"INSERT OR IGNORE INTO PropertyTags (Name, Category, Type, IsCustom) VALUES ('{name}', '{category}', 1, 0);");
 #pragma warning restore EF1002
                 }
             }
             catch { /* Ignore seeding errors */ }
+        }
+
+        private static void UpdateExistingTagsWithCategories(AppDbContext context)
+        {
+            try
+            {
+                // Update tags based on keywords in the tag name
+                // Kitchen-related
+                context.Database.ExecuteSqlRaw("UPDATE PropertyTags SET Category = 'Kitchen' WHERE (Category IS NULL OR Category = '') AND (Name LIKE '%Kitchen%' OR Name LIKE '%Island%' OR Name LIKE '%Countertop%' OR Name LIKE '%Cabinet%' OR Name LIKE '%Appliance%');");
+                
+                // Bathroom-related
+                context.Database.ExecuteSqlRaw("UPDATE PropertyTags SET Category = 'Bathroom' WHERE (Category IS NULL OR Category = '') AND (Name LIKE '%Bathroom%' OR Name LIKE '%Bath%' OR Name LIKE '%Shower%' OR Name LIKE '%Tub%' OR Name LIKE '%Vanity%');");
+                
+                // Roof-related
+                context.Database.ExecuteSqlRaw("UPDATE PropertyTags SET Category = 'Roof' WHERE (Category IS NULL OR Category = '') AND Name LIKE '%Roof%';");
+                
+                // HVAC-related
+                context.Database.ExecuteSqlRaw("UPDATE PropertyTags SET Category = 'HVAC' WHERE (Category IS NULL OR Category = '') AND (Name LIKE '%HVAC%' OR Name LIKE '%AC%' OR Name LIKE '%Heat%' OR Name LIKE '%Furnace%' OR Name LIKE '%Air Condition%');");
+                
+                // Flooring-related
+                context.Database.ExecuteSqlRaw("UPDATE PropertyTags SET Category = 'Flooring' WHERE (Category IS NULL OR Category = '') AND (Name LIKE '%Floor%' OR Name LIKE '%Tile%' OR Name LIKE '%Carpet%' OR Name LIKE '%Hardwood%' OR Name LIKE '%Laminate%');");
+                
+                // Yard-related
+                context.Database.ExecuteSqlRaw("UPDATE PropertyTags SET Category = 'Yard' WHERE (Category IS NULL OR Category = '') AND (Name LIKE '%Yard%' OR Name LIKE '%Backyard%' OR Name LIKE '%Landscape%' OR Name LIKE '%Garden%' OR Name LIKE '%Lawn%' OR Name LIKE '%Fence%' OR Name LIKE '%Patio%' OR Name LIKE '%Deck%' OR Name LIKE '%Pool%');");
+                
+                // Exterior-related
+                context.Database.ExecuteSqlRaw("UPDATE PropertyTags SET Category = 'Exterior' WHERE (Category IS NULL OR Category = '') AND (Name LIKE '%Exterior%' OR Name LIKE '%Siding%' OR Name LIKE '%Paint%' OR Name LIKE '%Curb%' OR Name LIKE '%Driveway%');");
+                
+                // Garage-related
+                context.Database.ExecuteSqlRaw("UPDATE PropertyTags SET Category = 'Garage' WHERE (Category IS NULL OR Category = '') AND (Name LIKE '%Garage%' OR Name LIKE '%Carport%' OR Name LIKE '%Parking%');");
+                
+                // Location-related
+                context.Database.ExecuteSqlRaw("UPDATE PropertyTags SET Category = 'Location' WHERE (Category IS NULL OR Category = '') AND (Name LIKE '%View%' OR Name LIKE '%Street%' OR Name LIKE '%Location%' OR Name LIKE '%Neighbor%' OR Name LIKE '%Lake%' OR Name LIKE '%Beach%' OR Name LIKE '%Mountain%' OR Name LIKE '%Cul-de-sac%' OR Name LIKE '%Corner Lot%' OR Name LIKE '%Close to%' OR Name LIKE '%Near%');");
+                
+                // Schools-related
+                context.Database.ExecuteSqlRaw("UPDATE PropertyTags SET Category = 'Schools' WHERE (Category IS NULL OR Category = '') AND (Name LIKE '%School%' OR Name LIKE '%District%');");
+                
+                // HOA-related
+                context.Database.ExecuteSqlRaw("UPDATE PropertyTags SET Category = 'HOA' WHERE (Category IS NULL OR Category = '') AND Name LIKE '%HOA%';");
+                
+                // Bedroom-related
+                context.Database.ExecuteSqlRaw("UPDATE PropertyTags SET Category = 'Bedroom' WHERE (Category IS NULL OR Category = '') AND (Name LIKE '%Bedroom%' OR Name LIKE '%Closet%' OR Name LIKE '%Master%');");
+                
+                // Plumbing-related
+                context.Database.ExecuteSqlRaw("UPDATE PropertyTags SET Category = 'Plumbing' WHERE (Category IS NULL OR Category = '') AND (Name LIKE '%Plumbing%' OR Name LIKE '%Pipe%' OR Name LIKE '%Water Heater%' OR Name LIKE '%Sewer%');");
+                
+                // Electrical-related
+                context.Database.ExecuteSqlRaw("UPDATE PropertyTags SET Category = 'Electrical' WHERE (Category IS NULL OR Category = '') AND (Name LIKE '%Electrical%' OR Name LIKE '%Wiring%' OR Name LIKE '%Panel%' OR Name LIKE '%Outlet%');");
+                
+                // Living-related
+                context.Database.ExecuteSqlRaw("UPDATE PropertyTags SET Category = 'Living' WHERE (Category IS NULL OR Category = '') AND (Name LIKE '%Living%' OR Name LIKE '%Family Room%' OR Name LIKE '%Den%' OR Name LIKE '%Layout%' OR Name LIKE '%Floor Plan%' OR Name LIKE '%Open Concept%');");
+                
+                // Basement-related
+                context.Database.ExecuteSqlRaw("UPDATE PropertyTags SET Category = 'Other' WHERE (Category IS NULL OR Category = '') AND (Name LIKE '%Basement%' OR Name LIKE '%Attic%' OR Name LIKE '%Storage%' OR Name LIKE '%Foundation%');");
+            }
+            catch { /* Ignore update errors */ }
         }
     }
 }

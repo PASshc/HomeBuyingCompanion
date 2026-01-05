@@ -127,9 +127,10 @@ namespace HomeBuyingApp.UI.ViewModels
 
                 // Create directory for images if it doesn't exist
                 var propertyId = _property.Model.Id;
-                var appDataPath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                    "HomeBuyingApp", "Images", propertyId.ToString());
+                var basePath = !string.IsNullOrEmpty(App.AppDataPath) 
+                    ? App.AppDataPath 
+                    : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "HomeBuyingApp");
+                var appDataPath = Path.Combine(basePath, "Images", propertyId.ToString());
                 Directory.CreateDirectory(appDataPath);
 
                 // Save as PNG

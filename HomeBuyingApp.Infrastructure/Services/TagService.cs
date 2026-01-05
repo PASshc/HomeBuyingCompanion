@@ -29,15 +29,16 @@ namespace HomeBuyingApp.Infrastructure.Services
         {
             return await _context.PropertyTags
                 .Where(t => t.Type == type)
-                .OrderBy(t => t.Name)
+                .OrderBy(t => t.Category)
+                .ThenBy(t => t.Name)
                 .ToListAsync();
         }
 
-        public async Task<PropertyTag> CreateTagAsync(string name, TagType type, bool isCustom = true)
+        public async Task<PropertyTag> CreateTagAsync(string name, TagType type, string category = "", bool isCustom = true)
         {
-            // Check if tag with same name exists
+            // Check if tag with same name and category exists
             var existing = await _context.PropertyTags
-                .FirstOrDefaultAsync(t => t.Name.ToLower() == name.ToLower());
+                .FirstOrDefaultAsync(t => t.Name.ToLower() == name.ToLower() && t.Category == category);
 
             if (existing != null)
                 return existing;
@@ -45,6 +46,7 @@ namespace HomeBuyingApp.Infrastructure.Services
             var tag = new PropertyTag
             {
                 Name = name.Trim(),
+                Category = category,
                 Type = type,
                 IsCustom = isCustom
             };
@@ -102,7 +104,7 @@ namespace HomeBuyingApp.Infrastructure.Services
                 .Include(p => p.Tags)
                 .FirstOrDefaultAsync(p => p.Id == propertyId);
 
-            return property?.Tags?.OrderBy(t => t.Type).ThenBy(t => t.Name).ToList() 
+            return property?.Tags?.OrderBy(t => t.Category).ThenBy(t => t.Name).ToList() 
                    ?? new List<PropertyTag>();
         }
     }

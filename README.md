@@ -2,7 +2,7 @@
 
 A comprehensive desktop application designed to assist home buyers in tracking properties, calculating mortgages, and managing the home buying process.
 
-**Current Version: 6.0.0**
+**Current Version: 7.4.3**
 
 ## Features
 
@@ -44,8 +44,10 @@ A comprehensive desktop application designed to assist home buyers in tracking p
 ### Installation
 
 1. Download the latest installer from the [Releases](https://github.com/PASshc/HomeBuyingCompanion/releases) page
-2. Run the installer (`HomeBuyingAppSetup_v5.2.0.exe`)
+2. Run the installer (`HomeBuyingAppSetup_vX.X.X.exe`)
 3. Launch the application from the Start Menu or Desktop shortcut
+
+For silent installation, enterprise deployment, and exit codes, see [INSTALLATION.md](INSTALLATION.md).
 
 ### Data Location
 
@@ -122,6 +124,11 @@ To manually create just the installer (requires [Inno Setup 6](https://jrsoftwar
 
 ## Version History
 
+- **v7.3.0**: Smart category detection for existing tags based on keywords
+- **v7.2.0**: Category prefixes for PROs/CONs tags (Kitchen: Remodeled, Roof: New, etc.)
+- **v7.1.0**: Journal attachments for pre-approvals and documentation, PROs/CONs tag fix
+- **v7.0.0**: Property tags refactoring, performance improvements
+- **v6.0.0**: Other features chips, click-to-enlarge images, rich text comments
 - **v5.2.0**: Star rating control, quick notes chips, PROs/CONs tag system, attachment notes, colorful UI icons
 - **v5.1.0**: Rating supports decimals (e.g., 3.5), codebase cleanup
 - **v5.0.0**: Rich text Notes/Comments, multi-image support (4 per property)

@@ -70,6 +70,9 @@
                 <TabItem Header="My Properties">
                     <views:PropertyListView DataContext="{Binding PropertyListViewModel}"/>
                 </TabItem>
+                <TabItem Header="Journal">
+                    <views:JournalView DataContext="{Binding JournalViewModel}"/>
+                </TabItem>
                 <TabItem Header="User Guide" x:Name="UserGuideTab">
                     <views:UserGuideView/>
                 </TabItem>

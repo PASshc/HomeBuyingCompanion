@@ -13,7 +13,7 @@
                        Foreground="#2C3E50"
                        Margin="0,0,0,20"/>
             
-            <TextBlock Text="Version 6.0.0" 
+            <TextBlock Text="Version 7.4.3" 
                        FontSize="14" FontStyle="Italic" 
                        Foreground="#7F8C8D"
                        Margin="0,0,0,10"/>
@@ -146,6 +146,15 @@
                         • Examples: "Move-in Ready" (PRO), "Busy Street" (CON)
                     </TextBlock>
 
+                    <TextBlock Text="Category Prefixes (New in v7.2)" FontWeight="SemiBold" Foreground="#27AE60" Margin="0,0,0,5"/>
+                    <TextBlock TextWrapping="Wrap" Margin="10,0,0,8">
+                        • Organize tags with category prefixes for better sorting<LineBreak/>
+                        • Categories include: Kitchen, Bathroom, Bedroom, Roof, HVAC, Location, and more<LineBreak/>
+                        • Tags display as "Category: Name" (e.g., "Kitchen: Remodeled", "Roof: New")<LineBreak/>
+                        • Tags automatically sort by category, then alphabetically<LineBreak/>
+                        • <Run FontWeight="Bold">Smart Detection (v7.3):</Run> Existing tags are auto-categorized based on keywords
+                    </TextBlock>
+
                     <TextBlock Text="Rich Text Comments" FontWeight="SemiBold" Margin="0,0,0,5"/>
                     <TextBlock TextWrapping="Wrap" Margin="10,0,0,0">
                         • <Run FontWeight="Bold">Comments:</Run> First impressions, showing notes<LineBreak/>
@@ -241,6 +250,49 @@
                     <TextBlock Text="Saved Calculations" FontWeight="SemiBold" Margin="0,0,0,5"/>
                     <TextBlock TextWrapping="Wrap" Margin="10,0,0,0">
                         All calculations are automatically saved with each property for future reference.
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+
+            <!-- Journal & Documentation -->
+            <Border Background="#FAFAFA" Padding="15" Margin="0,0,0,15" CornerRadius="5">
+                <StackPanel>
+                    <TextBlock Text="📓 Journal &amp; Documentation" 
+                               FontSize="18" FontWeight="Bold" 
+                               Foreground="#2C3E50"
+                               Margin="0,0,0,10"/>
+                    
+                    <TextBlock Text="Journal Entries" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                    <TextBlock TextWrapping="Wrap" Margin="10,0,0,8">
+                        • Track your home buying journey with timestamped entries<LineBreak/>
+                        • Record meetings, phone calls, decisions, and milestones<LineBreak/>
+                        • Link entries to specific properties for organized tracking
+                    </TextBlock>
+
+                    <TextBlock Text="Markdown Formatting (New in v7.4)" FontWeight="SemiBold" Foreground="#27AE60" Margin="0,8,0,5"/>
+                    <TextBlock TextWrapping="Wrap" Margin="10,0,0,8">
+                        • <Run FontWeight="Bold">**bold**</Run> → creates bold text<LineBreak/>
+                        • <Run FontStyle="Italic">*italic*</Run> → creates italic text<LineBreak/>
+                        • <Run TextDecorations="Strikethrough">~~strikethrough~~</Run> → creates strikethrough text<LineBreak/>
+                        • <Run FontFamily="Consolas" Background="#F0F0F0">`code`</Run> → creates inline code formatting<LineBreak/>
+                        • Press Space or Enter after typing to apply formatting
+                    </TextBlock>
+
+                    <TextBlock Text="Journal Attachments (New in v7.1)" FontWeight="SemiBold" Foreground="#27AE60" Margin="0,8,0,5"/>
+                    <TextBlock TextWrapping="Wrap" Margin="10,0,0,8">
+                        • <Run FontWeight="Bold">Pre-Approval Letters:</Run> Attach your mortgage pre-approval documents<LineBreak/>
+                        • <Run FontWeight="Bold">Financial Documents:</Run> Store loan estimates, closing disclosures, receipts<LineBreak/>
+                        • <Run FontWeight="Bold">Correspondence:</Run> Save important emails, contracts, and agreements<LineBreak/>
+                        • <Run FontWeight="Bold">Unlimited Files:</Run> Add as many attachments as needed per entry<LineBreak/>
+                        • <Run FontWeight="Bold">📎 Indicator:</Run> Entries with attachments show a paperclip icon in the list
+                    </TextBlock>
+
+                    <TextBlock Text="Attachment Tips" FontWeight="SemiBold" Margin="0,8,0,5"/>
+                    <TextBlock TextWrapping="Wrap" Margin="10,0,0,0">
+                        • Click <Run FontWeight="Bold">Add Attachment</Run> to browse and attach files<LineBreak/>
+                        • Add descriptions to keep attachments organized<LineBreak/>
+                        • Click filename to open in default application<LineBreak/>
+                        • Attachments are included in backup/restore operations
                     </TextBlock>
                 </StackPanel>
             </Border>

@@ -24,6 +24,7 @@ namespace HomeBuyingApp.UI.ViewModels
         public PropertyViewModel Property => _property;
         public MortgageCalculatorViewModel MortgageCalculator { get; }
         public PropertyImagesViewModel Images { get; }
+        public PropertyTagsViewModel Tags { get; }
         public ObservableCollection<PropertyAttachment> Attachments { get; }
 
         // Quick Notes (note chips)
@@ -46,40 +47,6 @@ namespace HomeBuyingApp.UI.ViewModels
             set { _newOtherFeature = value; OnPropertyChanged(); }
         }
 
-        // Tag collections - separate for PROs and CONs
-        public ObservableCollection<PropertyTag> AvailableProTags { get; } = new ObservableCollection<PropertyTag>();
-        public ObservableCollection<PropertyTag> AvailableConTags { get; } = new ObservableCollection<PropertyTag>();
-        public ObservableCollection<PropertyTag> PropertyProTags { get; } = new ObservableCollection<PropertyTag>();
-        public ObservableCollection<PropertyTag> PropertyConTags { get; } = new ObservableCollection<PropertyTag>();
-
-        private PropertyTag? _selectedProTag;
-        public PropertyTag? SelectedProTag
-        {
-            get => _selectedProTag;
-            set { _selectedProTag = value; OnPropertyChanged(); }
-        }
-
-        private PropertyTag? _selectedConTag;
-        public PropertyTag? SelectedConTag
-        {
-            get => _selectedConTag;
-            set { _selectedConTag = value; OnPropertyChanged(); }
-        }
-
-        private string _newProTagName = string.Empty;
-        public string NewProTagName
-        {
-            get => _newProTagName;
-            set { _newProTagName = value; OnPropertyChanged(); }
-        }
-
-        private string _newConTagName = string.Empty;
-        public string NewConTagName
-        {
-            get => _newConTagName;
-            set { _newConTagName = value; OnPropertyChanged(); }
-        }
-
         public IEnumerable<PropertyStatus> Statuses => new[]
         {
             PropertyStatus.PendingVisit,
@@ -97,18 +64,6 @@ namespace HomeBuyingApp.UI.ViewModels
         public ICommand AddAttachmentCommand { get; }
         public ICommand DeleteAttachmentCommand { get; }
         public ICommand OpenAttachmentCommand { get; }
-
-        // Tag commands - separate for PROs and CONs
-        public ICommand AddProTagCommand { get; }
-        public ICommand AddConTagCommand { get; }
-        public ICommand RemoveProTagCommand { get; }
-        public ICommand RemoveConTagCommand { get; }
-        public ICommand DeleteProTagCommand { get; }
-        public ICommand DeleteConTagCommand { get; }
-        public ICommand DeleteSelectedProTagCommand { get; }
-        public ICommand DeleteSelectedConTagCommand { get; }
-        public ICommand CreateProTagCommand { get; }
-        public ICommand CreateConTagCommand { get; }
 
         // Quick Notes commands
         public ICommand AddQuickNoteCommand { get; }
@@ -138,6 +93,9 @@ namespace HomeBuyingApp.UI.ViewModels
             // Initialize Images ViewModel
             Images = new PropertyImagesViewModel(_property);
 
+            // Initialize Tags ViewModel
+            Tags = new PropertyTagsViewModel(_tagService, _property);
+
             Attachments = new ObservableCollection<PropertyAttachment>(_property.Model.Attachments ?? new List<PropertyAttachment>());
 
             SaveCommand = new RelayCommand(async _ => await SaveAsync());
@@ -147,18 +105,6 @@ namespace HomeBuyingApp.UI.ViewModels
             DeleteAttachmentCommand = new RelayCommand(param => { if (param is PropertyAttachment a) DeleteAttachment(a); });
             OpenAttachmentCommand = new RelayCommand(param => { if (param is PropertyAttachment a) OpenAttachment(a); });
 
-            // Tag commands - separate for PROs and CONs
-            AddProTagCommand = new RelayCommand(async _ => await AddTagToPropertyAsync(SelectedProTag, TagType.Pro), _ => SelectedProTag != null);
-            AddConTagCommand = new RelayCommand(async _ => await AddTagToPropertyAsync(SelectedConTag, TagType.Con), _ => SelectedConTag != null);
-            RemoveProTagCommand = new RelayCommand(async param => { if (param is PropertyTag t) await RemoveTagFromPropertyAsync(t, TagType.Pro); });
-            RemoveConTagCommand = new RelayCommand(async param => { if (param is PropertyTag t) await RemoveTagFromPropertyAsync(t, TagType.Con); });
-            DeleteProTagCommand = new RelayCommand(async param => { if (param is PropertyTag t) await DeleteTagPermanentlyAsync(t, TagType.Pro); });
-            DeleteConTagCommand = new RelayCommand(async param => { if (param is PropertyTag t) await DeleteTagPermanentlyAsync(t, TagType.Con); });
-            DeleteSelectedProTagCommand = new RelayCommand(async _ => { if (SelectedProTag != null) await DeleteTagPermanentlyAsync(SelectedProTag, TagType.Pro); }, _ => SelectedProTag != null);
-            DeleteSelectedConTagCommand = new RelayCommand(async _ => { if (SelectedConTag != null) await DeleteTagPermanentlyAsync(SelectedConTag, TagType.Con); }, _ => SelectedConTag != null);
-            CreateProTagCommand = new RelayCommand(async _ => await CreateAndAddTagAsync(NewProTagName, TagType.Pro), _ => !string.IsNullOrWhiteSpace(NewProTagName));
-            CreateConTagCommand = new RelayCommand(async _ => await CreateAndAddTagAsync(NewConTagName, TagType.Con), _ => !string.IsNullOrWhiteSpace(NewConTagName));
-
             // Quick Notes commands
             AddQuickNoteCommand = new RelayCommand(_ => AddQuickNote(), _ => !string.IsNullOrWhiteSpace(NewQuickNote));
             RemoveQuickNoteCommand = new RelayCommand(param => { if (param is string note) RemoveQuickNote(note); });
@@ -166,9 +112,6 @@ namespace HomeBuyingApp.UI.ViewModels
             // Other Features commands
             AddOtherFeatureCommand = new RelayCommand(_ => AddOtherFeature(), _ => !string.IsNullOrWhiteSpace(NewOtherFeature));
             RemoveOtherFeatureCommand = new RelayCommand(param => { if (param is string feature) RemoveOtherFeature(feature); });
-
-            // Load tags
-            _ = LoadTagsAsync();
 
             // Load quick notes
             LoadQuickNotes();
@@ -275,202 +218,6 @@ namespace HomeBuyingApp.UI.ViewModels
             {
                 SaveOtherFeatures();
             }
-        }
-
-        private async System.Threading.Tasks.Task LoadTagsAsync()
-        {
-            try
-            {
-                // Load available PRO tags
-                var proTags = await _tagService.GetTagsByTypeAsync(TagType.Pro);
-                AvailableProTags.Clear();
-                foreach (var tag in proTags)
-                {
-                    AvailableProTags.Add(tag);
-                }
-
-                // Load available CON tags
-                var conTags = await _tagService.GetTagsByTypeAsync(TagType.Con);
-                AvailableConTags.Clear();
-                foreach (var tag in conTags)
-                {
-                    AvailableConTags.Add(tag);
-                }
-
-                // Load property's current tags (separated by type)
-                PropertyProTags.Clear();
-                PropertyConTags.Clear();
-                IEnumerable<PropertyTag> propertyTags;
-                
-                if (_property.Model.Id > 0)
-                {
-                    propertyTags = await _tagService.GetTagsForPropertyAsync(_property.Model.Id);
-                }
-                else
-                {
-                    propertyTags = _property.Model.Tags ?? new List<PropertyTag>();
-                }
-
-                foreach (var tag in propertyTags)
-                {
-                    if (tag.Type == TagType.Pro)
-                        PropertyProTags.Add(tag);
-                    else if (tag.Type == TagType.Con)
-                        PropertyConTags.Add(tag);
-                }
-            }
-            catch { /* Ignore tag loading errors */ }
-        }
-
-        private async System.Threading.Tasks.Task AddTagToPropertyAsync(PropertyTag? tag, TagType type)
-        {
-            if (tag == null) return;
-
-            var targetCollection = type == TagType.Pro ? PropertyProTags : PropertyConTags;
-
-            // Check if already added
-            if (targetCollection.Any(t => t.Id == tag.Id)) return;
-
-            if (_property.Model.Id > 0)
-            {
-                await _tagService.AddTagToPropertyAsync(_property.Model.Id, tag.Id);
-            }
-            else
-            {
-                // For new properties, add to in-memory collection
-                _property.Model.Tags.Add(tag);
-            }
-
-            targetCollection.Add(tag);
-            _property.RefreshTags();
-
-            // Clear selection
-            if (type == TagType.Pro)
-                SelectedProTag = null;
-            else
-                SelectedConTag = null;
-        }
-
-        private async System.Threading.Tasks.Task RemoveTagFromPropertyAsync(PropertyTag tag, TagType type)
-        {
-            if (_property.Model.Id > 0)
-            {
-                await _tagService.RemoveTagFromPropertyAsync(_property.Model.Id, tag.Id);
-            }
-            else
-            {
-                _property.Model.Tags.Remove(tag);
-            }
-
-            var targetCollection = type == TagType.Pro ? PropertyProTags : PropertyConTags;
-            var availableCollection = type == TagType.Pro ? AvailableProTags : AvailableConTags;
-            
-            targetCollection.Remove(tag);
-            
-            // Add tag back to available list if not already there
-            if (!availableCollection.Any(t => t.Id == tag.Id))
-            {
-                availableCollection.Add(tag);
-            }
-            
-            _property.RefreshTags();
-        }
-
-        private async System.Threading.Tasks.Task DeleteTagPermanentlyAsync(PropertyTag tag, TagType type)
-        {
-            var result = MessageBox.Show(
-                $"Are you sure you want to permanently delete the tag \"{tag.Name}\"?\n\nThis will remove it from all properties.",
-                "Delete Tag",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Warning);
-
-            if (result != MessageBoxResult.Yes)
-                return;
-
-            try
-            {
-                await _tagService.DeleteTagAsync(tag.Id);
-
-                // Remove from all collections by finding items with matching ID
-                var proPropTag = PropertyProTags.FirstOrDefault(t => t.Id == tag.Id);
-                if (proPropTag != null) PropertyProTags.Remove(proPropTag);
-                
-                var conPropTag = PropertyConTags.FirstOrDefault(t => t.Id == tag.Id);
-                if (conPropTag != null) PropertyConTags.Remove(conPropTag);
-                
-                var availableProTag = AvailableProTags.FirstOrDefault(t => t.Id == tag.Id);
-                if (availableProTag != null) AvailableProTags.Remove(availableProTag);
-                
-                var availableConTag = AvailableConTags.FirstOrDefault(t => t.Id == tag.Id);
-                if (availableConTag != null) AvailableConTags.Remove(availableConTag);
-
-                // Clear selection if the deleted tag was selected
-                if (SelectedProTag?.Id == tag.Id) SelectedProTag = null;
-                if (SelectedConTag?.Id == tag.Id) SelectedConTag = null;
-
-                _property.RefreshTags();
-
-                MessageBox.Show($"Tag \"{tag.Name}\" has been deleted.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error deleting tag: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private async System.Threading.Tasks.Task CreateAndAddTagAsync(string tagName, TagType type)
-        {
-            if (string.IsNullOrWhiteSpace(tagName)) return;
-
-            var normalizedName = tagName.Trim();
-            var availableCollection = type == TagType.Pro ? AvailableProTags : AvailableConTags;
-            var propertyCollection = type == TagType.Pro ? PropertyProTags : PropertyConTags;
-
-            // Check if tag already exists (case-insensitive)
-            var existingTag = availableCollection.FirstOrDefault(t => 
-                string.Equals(t.Name, normalizedName, StringComparison.OrdinalIgnoreCase));
-
-            PropertyTag tagToAdd;
-            
-            if (existingTag != null)
-            {
-                // Use existing tag instead of creating a duplicate
-                tagToAdd = existingTag;
-                MessageBox.Show($"Tag '{existingTag.Name}' already exists. Using existing tag.", 
-                    "Duplicate Tag", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            else
-            {
-                // Create new tag
-                tagToAdd = await _tagService.CreateTagAsync(normalizedName, type, isCustom: true);
-                
-                // Add to available tags
-                if (!availableCollection.Any(t => t.Id == tagToAdd.Id))
-                {
-                    availableCollection.Add(tagToAdd);
-                }
-            }
-
-            // Add to property if not already added
-            if (!propertyCollection.Any(t => t.Id == tagToAdd.Id))
-            {
-                if (_property.Model.Id > 0)
-                {
-                    await _tagService.AddTagToPropertyAsync(_property.Model.Id, tagToAdd.Id);
-                }
-                else
-                {
-                    _property.Model.Tags.Add(tagToAdd);
-                }
-                propertyCollection.Add(tagToAdd);
-                _property.RefreshTags();
-            }
-
-            // Clear input
-            if (type == TagType.Pro)
-                NewProTagName = string.Empty;
-            else
-                NewConTagName = string.Empty;
         }
 
         private void PasteDetailsFromClipboard()
