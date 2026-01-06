@@ -1,6 +1,6 @@
 # Home Buying Companion - Application Architecture
 
-**Version:** 5.2.0  
+**Version:** 7.4.3  
 **Platform:** Windows Desktop (WPF)  
 **Framework:** .NET 8.0  
 **Database:** SQLite (Entity Framework Core)

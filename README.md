@@ -124,6 +124,10 @@ To manually create just the installer (requires [Inno Setup 6](https://jrsoftwar
 
 ## Version History
 
+- **v7.4.3**: Microsoft Store compliance with full silent install/uninstall support
+- **v7.4.2**: Fixed backup freeze issue with async backup processing
+- **v7.4.1**: Fixed duplicate attachments and improved Markdown processing
+- **v7.4.0**: Markdown formatting in journal entries (**bold**, *italic*, ~~strikethrough~~, `code`)
 - **v7.3.0**: Smart category detection for existing tags based on keywords
 - **v7.2.0**: Category prefixes for PROs/CONs tags (Kitchen: Remodeled, Roof: New, etc.)
 - **v7.1.0**: Journal attachments for pre-approvals and documentation, PROs/CONs tag fix

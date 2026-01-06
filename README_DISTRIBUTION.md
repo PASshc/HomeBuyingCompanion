@@ -20,7 +20,7 @@ This will:
 | Output | Location | Description |
 |--------|----------|-------------|
 | Executable | `Dist/HomeBuyingApp/HomeBuyingApp.UI.exe` | Self-contained, no .NET required |
-| Installer | `Dist/Installer/HomeBuyingAppSetup_v5.2.0.exe` | Windows installer with shortcuts |
+| Installer | `Dist/Installer/HomeBuyingAppSetup_v7.4.3.exe` | Windows installer with shortcuts |
 
 ## Manual Build Steps
 
